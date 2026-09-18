@@ -1,0 +1,154 @@
+# Halftone morph hero
+
+Scroll and cursor driven halftone landscape for Jules Bockelee Morvan's personal site.
+Three places (Cassis, Paris, New York) share one fixed dot lattice. Each dot resizes and
+changes opacity to the ink coverage of whichever photograph is currently dominant, so the
+image transitions without the dots ever moving.
+
+This folder is a working prototype extracted from a browser artifact. It is framework
+agnostic on purpose. The target stack is Astro, GitHub Desktop, Vercel.
+
+## Run it
+
+Any static server from the project root. The paths are absolute (`/img/...`, `/src/...`),
+so opening `index.html` from the filesystem will not work.
+
+```
+npx serve .          # or: python3 -m http.server
+```
+
+## Files
+
+```
+index.html            page markup and all CSS, plus the tuning panel
+src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
+public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
+public/img/photo/     the original photographs, no longer used
+tools/                build_sources.py (descreen refs), build_single.py (one-file HTML)
+public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
+```
+
+## How the renderer works
+
+One fullscreen triangle, one fragment shader, no geometry per dot. Everything happens
+per pixel.
+
+1. **Lattice.** `cid = floor(px / cell)` where `cell = bandWidth / dotsAcross`. The grid is
+   orthogonal at 0 degrees with round dots, matching the reference halftones. The lattice is
+   anchored to the band, not to the image, which is what makes the morph work.
+
+2. **Tone pipeline, per cell, in the shader.** The photographs are sampled as colour and
+   converted live, so every tone control is a uniform rather than a baked asset:
+   - greyscale weights, lerped between Rec.709 luma and a blue-heavy mix (`blue filter`)
+   - local contrast: `d + amount * (d - blurred)`, where the blur is the same texture at
+     `lod + 1.32`, roughly 2.5 cells. This is not optional. Without it the Cassis water
+     collapses into a dead mass, because the screen eats exactly the frequencies that make
+     water read as water.
+   - levels and gamma: `pow(clamp((d - black) / (white - black)), gamma)`
+   - a 1.2% toe, so skies land at exactly zero coverage and draw nothing
+
+3. **Mipmapped sampling.** `lod = log2(cell * textureWidth / drawnWidth)` gives each dot a
+   proper area average of the photograph at any pitch. This is why `dotsAcross` can run
+   90 to 560 without aliasing.
+
+4. **Radius from coverage.** For a square lattice of circles, coverage is `pi * rho^2` up to
+   `rho = 0.5` (78.5% coverage, circles touching), then bends through an overlap branch and
+   saturates at `rho = 0.7071`. That curve has no clean closed form, so it lives in
+   `dot-lut.png`. Do not replace it with `sqrt(coverage)`: the shadows then never merge into
+   solid black with white pinholes, which is most of what makes it read as printed.
+
+5. **Per dot stagger.** A hash of the cell id delays each dot's transition, so the change
+   sweeps through the field instead of cross fading. Stagger 0 is a plain dissolve.
+
+6. **Opacity depth.** `alpha *= mix(1.0, 0.18 + 0.82 * coverage, depth)`. Light dots recede.
+   Above about 0.7 this stops being a halftone and starts being a greyscale image with dots
+   on it, because a partly transparent dot is arithmetically a lighter ink.
+
+7. **Text keep-out.** Distance from each cell centre to the copy block's live bounding box.
+   Dots inside the padding are dropped whole, never clipped mid dot, with a fade band
+   outside. Open question below.
+
+8. **Ink opacity.** A global alpha multiplier, 0.70 by default, so the field sits lighter
+   than the reference art.
+
+9. **Hue.** Each place has an ink (Cassis marine pine, Paris warm sepia, New York cool
+   graphite). Light dots carry the full hue, heavy dots pull to neutral, mimicking ink
+   density. Inverts in dark mode.
+
+## Sources: reference art, not photographs
+
+The tone sources are the halftone reference images in `../refs/`, not the photographs.
+No tone curve on a photo reproduces them (Cassis pines are bright in the photo, black in
+the art). `tools/build_sources.py` notches the art's own screen out of the spectrum
+(it sits at ~17.5px pitch, 233 dots across, the same for all three) and keeps sub-dot
+detail. The renderer re-screens it on our lattice at 233 dots across.
+
+- **Detail** pulls each pixel's tone from under that pixel instead of the cell centre,
+  sampled about a quarter cell wide, so edges cut through dots as in the art.
+- **Softness** (per place) blends in continuous tone. The art is 28 to 47% mid-grey
+  pixels; Paris is the most photographic.
+- Tone is neutral: black 0.075 is the `#ECECEC` paper the art was exported on.
+
+## Layout, all measured from the mockups, not chosen
+
+Reference frame is 1440 x 1024.
+
+| | value |
+|---|---|
+| Band | centred, width `min(0.96 × viewport height, viewport width)`. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
+| Text column | left edge 29.8% into the band (35.42% of a 1440 frame), 420px wide, 14 / 21px |
+| Logo | 27px at 4.86% / 5.18vh |
+| Page | `#ECECEC` paper, near `#0A0A0A` ink |
+| Cassis | aspect 2.530 (reference art), bottom on the fold |
+| Paris | aspect 1.830 (reference art), bottom on the fold |
+| New York | aspect 2.292 (reference art), bottom on the fold |
+
+Every image is drawn at the full band width, so the width is identical across all three.
+Only the vertical offset differs. The crops were recovered by correlating each master
+photograph against the mockup exports; see the numbers in `PLACES`.
+
+## The tuning panel
+
+`index.html` contains a control panel that writes straight into the renderer's uniforms.
+It is a development tool. **Strip it before shipping**, along with the `.panel` CSS and the
+control wiring in `halftone.js`, and replace the slider reads with a plain config object.
+Copy config emits that object as JSON.
+
+## Open items
+
+1. **The keep-out is a rectangle** and shows as a rectangular void where the field behind
+   the text is dense. Two candidate fixes: mask per line of text rather than per block, or
+   fade dots by opacity near the text instead of removing them so the field stays continuous.
+   The second is probably the right one.
+2. ~~Cursor drive on one continuous distance axis~~ Resolved: cursor mode now uses nested
+   zones around the copy (outside = Cassis, middle ring = Paris, tight ring = New York,
+   rounded like a distance field). Zone sizes are a share of the band width (5.3% and 10.5%, so 70px and 140px at a 1330px band) and scale with the picture; hysteresis is 0.9%. Entering a zone starts a fixed-length
+   morph (1s per step, eased), and Cassis to New York passes through Paris. Scroll mode is
+   still continuous. The "Zones" panel button draws the rings.
+3. **Mobile.** 311 dots across a 390px viewport is a 1.25px cell. Needs a breakpoint dropping
+   to roughly 110 to 130, which is a visibly coarser artwork. Decide whether that is
+   acceptable before shipping.
+4. **Paris resolution.** Its crop is 778px wide out of a 2046px panorama. Fine at 311 dots,
+   soft past about 400 while the other two stay sharp. Re-crop wider or source a better frame.
+5. **Local contrast halos.** Above roughly 2.5 expect visible halos along hard edges, most
+   obviously the New York skyline against sky. The fix is a wider blur radius, not less
+   amount, which means exposing the `+1.32` lod offset as a fourth tone control.
+6. **Accessibility.** `prefers-reduced-motion` is honoured (no damping, no drift). The canvas
+   is decorative and has no alt text; add an `aria-hidden` and make sure the copy reads
+   standalone.
+
+## Constraints worth not breaking
+
+- The band is `pointer-events: none` so the canvas never eats clicks on the copy.
+- Premultiplied alpha, `blendFunc(ONE, ONE_MINUS_SRC_ALPHA)`, canvas cleared to transparent.
+  The page shows through, so paper colour is never painted and cannot mismatch the CSS.
+- `UNPACK_FLIP_Y_WEBGL` is true for the photographs and false for the LUT. Getting this
+  wrong flips the images or reverses the dot curve.
+- `devicePixelRatio` is capped at 2. Uncapped it kills performance on 3x phones for no
+  visible gain at this dot size.
+
+## Port to Astro
+
+Straight lift. `index.html` becomes a page or layout, the `<script>` becomes
+`client:visible`, `public/img` stays as it is. The renderer has no dependencies and no build
+step. Do not reach for three.js: it is 150KB to draw one triangle.

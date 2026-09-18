@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halftone morph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
+    --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
+    /* band width follows the viewport height so the picture keeps the same vertical
+       composition at every window size; it only gives way when the window is too narrow */
+    --band-k:0.96;
+    --bw:min(calc(var(--band-k) * 100vh), 100vw);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
+      --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
+    --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
+  }
+  :root[data-theme="light"]{
+    --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
+    --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:14px;line-height:21px;-webkit-font-smoothing:antialiased}
+
+  .stage{height:400vh;position:relative}
+  body.cursor .stage{height:100vh}
+  .pin{position:sticky;top:0;height:100vh;overflow:hidden}
+
+  .mark{position:absolute;left:4.86%;top:5.18vh;width:27px;height:27px;color:var(--ink);z-index:4}
+  .mark svg{width:100%;height:100%;display:block}
+
+  /* the matrix: centred, bottom flush to the fold */
+  .band{position:absolute;left:calc(50% - var(--bw) / 2);width:var(--bw);top:0;bottom:0;z-index:1;overflow:hidden;pointer-events:none}
+  .band canvas{display:block;width:100%;height:100%}
+
+  /* the copy is placed against the band (29.8% in), so the image sits beside it the same way */
+  .copy{position:absolute;left:max(24px, min(calc(50% - var(--bw) * 0.202), calc(100% - 444px)));top:35.2vh;width:420px;max-width:52%;z-index:3}
+  .copy nav{display:flex;gap:19px}
+  .copy nav b{font-weight:500}
+  .copy nav a{color:var(--muted);text-decoration:none}
+  .copy nav a:hover{color:var(--ink)}
+  .copy p{margin:21px 0 0}
+  .copy .lede{font-weight:500}
+  .copy .dim{color:var(--muted)}
+  .copy .gap{margin-top:50px}
+  .copy b.k{font-weight:500;color:var(--ink)}
+  .copy a.msg{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+
+  .caption{position:absolute;right:4.86%;top:5.18vh;height:27px;z-index:4;
+    display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
+  .caption .now{color:var(--ink)}
+  .caption .bar{width:64px;height:2px;background:var(--rule);position:relative}
+  .caption .bar i{position:absolute;inset:0 auto 0 0;background:var(--ink);width:0}
+
+  /* dev tool: hidden unless the page is loaded with #tune, or T is pressed */
+  .panel{display:none}
+  body.tune .panel{display:block;position:fixed;right:18px;bottom:18px;z-index:10;background:var(--panel);
+    backdrop-filter:blur(10px);border:1px solid var(--rule);padding:12px 14px 10px;width:246px;
+    font-size:12px;line-height:1.5;color:var(--muted);max-height:calc(100vh - 36px);overflow-y:auto}
+  .panel h4{margin:0 0 8px;font-size:12px;font-weight:500;color:var(--ink)}
+  .panel h4:not(:first-child){margin-top:12px;padding-top:10px;border-top:1px solid var(--rule)}
+  .panel label{display:block;margin-bottom:7px}
+  .panel .row{display:flex;justify-content:space-between;margin-bottom:1px}
+  .panel .row span:last-child{color:var(--ink);font-variant-numeric:tabular-nums}
+  .panel input[type=range]{width:100%;accent-color:var(--ink);margin:0;height:14px}
+  .panel .btns{display:flex;gap:5px;margin-bottom:8px}
+  .panel button{font:inherit;color:var(--muted);background:none;border:1px solid var(--rule);
+    padding:3px 5px;cursor:pointer;flex:1}
+  .panel button:hover{border-color:var(--ink);color:var(--ink)}
+  .panel button[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
+  .zone{position:fixed;z-index:5;pointer-events:none;border:1px dashed var(--rule)}
+  .zone.on{border-color:var(--ink)}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+  @media (max-width:820px){
+    .mark{left:24px;top:24px}
+    .copy{left:6%;width:88%;max-width:none;top:22vh}
+    .caption{right:24px;top:26px}
+    body.tune .panel{left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="pin">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="12" cy="3.6" r="3"/><circle cx="4.6" cy="10.6" r="2.7"/><circle cx="19.4" cy="10.6" r="2.7"/>
+        <rect x="11" y="5.6" width="2" height="15.4" rx="1"/>
+        <circle cx="6.8" cy="17.6" r="2.1"/><circle cx="17.2" cy="17.6" r="2.1"/>
+      </svg>
+    </div>
+    <div class="band" id="band"><canvas id="c"></canvas></div>
+    <div class="copy" id="copy">
+      <nav><b>Jules Bockelee Morvan</b><a href="#">Timeline</a><a href="#">Thoughts</a></nav>
+      <p class="lede">Independent music producer &amp; composer.</p>
+      <p class="dim">I make records and soundtracks for moving images.</p>
+      <p class="dim gap">I'm based in San Francisco and enjoy finding unexpected sounds for artists, films, and culture.</p>
+      <p class="dim"><b class="k">Clients include:</b> Kendrick Lamar, Nike, A24, Apple, The Weeknd, NBA, Figma, Arc'teryx, Spotify, and Cash App.</p>
+      <p class="dim">For collaborations, or just to say hello, <a class="msg" href="#">Message me.</a></p>
+    </div>
+    <div class="caption">
+      <span class="now" id="now">Cassis</span>
+      <span class="bar"><i id="bar"></i></span>
+      <span id="next">Paris</span>
+    </div>
+  </div>
+</div>
+
+<div class="zone" hidden></div><div class="zone" hidden></div>
+
+<div class="panel" role="group" aria-label="Controls">
+  <h4>Theme</h4>
+  <div class="btns">
+    <button id="thAuto" aria-pressed="true">Auto</button>
+    <button id="thLight">Light</button>
+    <button id="thDark">Dark</button>
+  </div>
+
+  <h4>Drive</h4>
+  <div class="btns"><button id="mCursor" aria-pressed="true">Cursor</button><button id="mScroll">Scroll</button><button id="zonesBtn" aria-pressed="false">Zones</button></div>
+  <label><span class="row"><span>Morph time</span><span id="vMorph">1.0 s</span></span>
+    <input id="morph" type="range" min="0.2" max="8" step="0.1" value="1"></label>
+  <label><span class="row"><span>New York zone</span><span id="vZNy">5.3 % / 70 px</span></span>
+    <input id="zNy" type="range" min="0" max="25" step="0.1" value="5.3"></label>
+  <label><span class="row"><span>Paris zone</span><span id="vZParis">10.5 % / 140 px</span></span>
+    <input id="zParis" type="range" min="0" max="40" step="0.1" value="10.5"></label>
+
+  <h4>Screen</h4>
+  <label><span class="row"><span>Dots across</span><span id="vCells">311</span></span>
+    <input id="cells" type="range" min="90" max="560" step="1" value="311"></label>
+  <label><span class="row"><span>Stagger</span><span id="vStag">0.28</span></span>
+    <input id="stag" type="range" min="0" max="0.92" step="0.01" value="0.28"></label>
+  <label><span class="row"><span>Lattice drift</span><span id="vDrift">0.0</span></span>
+    <input id="drift" type="range" min="0" max="24" step="0.5" value="0"></label>
+  <label><span class="row"><span>Ink opacity</span><span id="vOpacity">0.61</span></span>
+    <input id="opacity" type="range" min="0.1" max="1" step="0.01" value="0.61"></label>
+  <label><span class="row"><span>Opacity depth</span><span id="vDepth">0.00</span></span>
+    <input id="depth" type="range" min="0" max="1" step="0.01" value="0"></label>
+  <label><span class="row"><span>Hue</span><span id="vTint">0.00</span></span>
+    <input id="tint" type="range" min="0" max="1" step="0.01" value="0"></label>
+  <label><span class="row"><span>Detail</span><span id="vDetail">1.00</span></span>
+    <input id="detail" type="range" min="0" max="1" step="0.01" value="1"></label>
+
+  <h4>Frame</h4>
+  <label><span class="row"><span>Band width</span><span id="vInset">0.96 vh</span></span>
+    <input id="inset" type="range" min="0.4" max="1.6" step="0.01" value="0.96"></label>
+  <label><span class="row"><span>Text keep-out</span><span id="vGap">8 px</span></span>
+    <input id="gap" type="range" min="0" max="120" step="1" value="8"></label>
+  <label><span class="row"><span>Keep-out fade</span><span id="vFeather">14 px</span></span>
+    <input id="feather" type="range" min="0" max="120" step="1" value="14"></label>
+  <label><span class="row"><span>Image lift</span><span id="vLift">0.00</span></span>
+    <input id="lift" type="range" min="-0.5" max="0.5" step="0.01" value="0"></label>
+
+  <h4 id="tuneH">Tone</h4>
+  <div class="btns">
+    <button id="tCassis" aria-pressed="true">Cassis</button>
+    <button id="tParis">Paris</button>
+    <button id="tNyc">NY</button>
+  </div>
+  <label><span class="row"><span>Black point</span><span id="vBlack">0.08</span></span>
+    <input id="black" type="range" min="0" max="0.7" step="0.005" value="0.075"></label>
+  <label><span class="row"><span>White point</span><span id="vWhite">1.00</span></span>
+    <input id="white" type="range" min="0.4" max="2" step="0.01" value="1"></label>
+  <label><span class="row"><span>Gamma</span><span id="vGamma">1.00</span></span>
+    <input id="gamma" type="range" min="0.3" max="6" step="0.02" value="1"></label>
+  <label><span class="row"><span>Local contrast</span><span id="vLc">0.00</span></span>
+    <input id="lc" type="range" min="0" max="4" step="0.05" value="0"></label>
+  <label><span class="row"><span>Blue filter</span><span id="vBlue">0.00</span></span>
+    <input id="blue" type="range" min="0" max="1" step="0.01" value="0"></label>
+  <label><span class="row"><span>Softness</span><span id="vSoft">0.15</span></span>
+    <input id="soft" type="range" min="0" max="1" step="0.01" value="0.15"></label>
+  <div class="btns" style="margin-top:2px"><button id="reset">Reset</button><button id="copyBtn">Copy config</button></div>
+</div>
+
+<script type="module" src="/src/halftone.js"></script>
+</body>
+</html>

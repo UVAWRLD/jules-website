@@ -1,0 +1,4 @@
+.DS_Store
+exec-*.png
+# the three references, already kept with readable names in refs/
+image *.png
