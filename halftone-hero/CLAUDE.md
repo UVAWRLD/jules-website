@@ -10,8 +10,8 @@ agnostic on purpose. The target stack is Astro, GitHub Desktop, Vercel.
 
 ## Run it
 
-Any static server from the project root. The paths are absolute (`/img/...`, `/src/...`),
-so opening `index.html` from the filesystem will not work.
+Any static server from this folder. Paths are relative, but `index.html` still needs to be
+served rather than opened from the filesystem (the renderer is a module).
 
 ```
 npx serve .          # or: python3 -m http.server

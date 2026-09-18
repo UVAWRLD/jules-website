@@ -1,5 +1,7 @@
-const SRC = { cassis:"/img/cassis.jpg", paris:"/img/paris.jpg", nyc:"/img/nyc.jpg" };
-const LUTSRC = "/img/dot-lut.png";
+// paths are relative to index.html, so the folder runs from any static server.
+// moving to Astro means public/img/x.jpg becomes /img/x.jpg.
+const SRC = { cassis:"public/img/cassis.jpg", paris:"public/img/paris.jpg", nyc:"public/img/nyc.jpg" };
+const LUTSRC = "public/img/dot-lut.png";
 
 const PLACES = [
   // sources are the reference art, descreened by tools/build_sources.py. Each one spans the
