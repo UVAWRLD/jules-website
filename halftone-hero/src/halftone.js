@@ -28,11 +28,13 @@ void main(){ vec2 p=vec2((gl_VertexID<<1)&2, gl_VertexID&2); gl_Position=vec4(p*
 const FS=`#version 300 es
 precision highp float;
 out vec4 outColor;
-uniform sampler2D uSrcA,uSrcB,uLut;
+uniform sampler2D uSrcA,uSrcB,uLut,uDepA,uDepB;
 uniform vec4  uXfA,uXfB,uToneA,uToneB;
 uniform vec2  uBlueAB,uSoftAB;
 uniform vec3  uHueA,uHueB,uInk;
 uniform float uDpr,uCell,uMix,uStagger,uDrift,uTint,uDepth,uDetail,uOpacity;
+uniform float uPar,uFog,uRelief,uShowDep;
+uniform vec2  uSway;
 uniform vec2 uTexW;
 uniform vec4 uTextRect;
 uniform vec2 uTextPad;
@@ -45,17 +47,32 @@ float vnoise(vec2 p){
   vec2 i=floor(p),f=fract(p); vec2 u=f*f*(3.0-2.0*f);
   return mix(mix(hash(i),hash(i+vec2(1,0)),u.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x), u.y);
 }
-float coverage(sampler2D t, vec4 xf, vec4 tone, float blueW, vec2 c, vec2 p, float lod, float detail){
+// depth map: 1 near, 0 far, pixel aligned with the source. Depth Anything V2, see
+// tools/build_depth.py. near is returned so the caller can size the dot by distance.
+float coverage(sampler2D t, sampler2D dt, vec4 xf, vec4 tone, float blueW, vec2 c, vec2 p,
+               float lod, float detail, vec2 shift, out float near){
   // tone is read at the cell centre, then pulled toward the value under this pixel so
   // edges can cut through a dot (threshold screening) instead of every dot being round
   vec2 uv=mix(c,p,detail);
   uv=(uv-xf.xy)/xf.zw;
+  near=0.5;
   if(uv.x<0.0||uv.x>1.0||uv.y<0.0||uv.y>1.0) return 0.0;
+
+  // parallax: walk against the depth map twice, so a near edge can cover what is behind it
+  float dep=textureLod(dt,uv,lod+2.0).r;
+  vec2 uvp=clamp(uv+shift*(dep-0.5),0.0,1.0);
+  dep=textureLod(dt,uvp,lod+2.0).r;
+  uvp=uv+shift*(dep-0.5);
+  if(uvp.x<0.0||uvp.x>1.0||uvp.y<0.0||uvp.y>1.0) return 0.0;
+  near=dep;
+
   vec3 w=mix(LUMA,BLUEF,blueW);
-  float d =1.0-dot(textureLod(t,uv,lod).rgb,w);
-  float db=1.0-dot(textureLod(t,uv,lod+1.32).rgb,w);
+  float d =1.0-dot(textureLod(t,uvp,lod).rgb,w);
+  float db=1.0-dot(textureLod(t,uvp,lod+1.32).rgb,w);
   d=clamp(d+tone.w*(d-db),0.0,1.0);
   float cov=pow(clamp((d-tone.x)/max(tone.y-tone.x,0.02),0.0,1.0), tone.z);
+  // aerial perspective: distance thins the ink
+  cov*=mix(1.0, 0.45+0.55*dep, uFog);
   return cov<0.012 ? 0.0 : cov;
 }
 
@@ -77,8 +94,13 @@ void main(){
   float lodK=mix(1.0,-1.0,uDetail);
   float lodA=max(log2(uCell*uTexW.x/uXfA.z)+lodK,0.0);
   float lodB=max(log2(uCell*uTexW.y/uXfB.z)+lodK,0.0);
-  float cov=mix(coverage(uSrcA,uXfA,uToneA,uBlueAB.x,c,px,lodA,uDetail),
-                coverage(uSrcB,uXfB,uToneB,uBlueAB.y,c,px,lodB,uDetail), tl);
+  // the sway is in pixels of the drawn image, so convert per source
+  float nearA,nearB;
+  float covA=coverage(uSrcA,uDepA,uXfA,uToneA,uBlueAB.x,c,px,lodA,uDetail,uSway*uPar/uXfA.zw,nearA);
+  float covB=coverage(uSrcB,uDepB,uXfB,uToneB,uBlueAB.y,c,px,lodB,uDetail,uSway*uPar/uXfB.zw,nearB);
+  float cov=mix(covA,covB,tl);
+  float near=mix(nearA,nearB,tl);
+  if(uShowDep>0.5) cov=near;                 // debug: draw the depth map itself
   if(cov<0.004){ outColor=vec4(0.0); return; }
 
   // keep clear of the text block: whole dots are dropped, judged at the cell centre
@@ -88,7 +110,8 @@ void main(){
   if(clear <= 0.001){ outColor=vec4(0.0); return; }
 
   float rho=texture(uLut,vec2(cov,0.5)).r*0.75;
-  float r=rho*uCell;
+  // relief: near dots grow, far ones shrink, as if the lattice sat on the surface
+  float r=rho*uCell*mix(1.0, 0.72+0.56*near, uRelief);
   float aa=min(0.75,r*0.9);
   float a=1.0-smoothstep(r-aa,r+aa,length(px-c));
 
@@ -112,12 +135,12 @@ gl.linkProgram(prog); gl.useProgram(prog);
 if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
 const U={}; ["uSrcA","uSrcB","uLut","uXfA","uXfB","uToneA","uToneB","uBlueAB","uHueA","uHueB",
   "uInk","uDpr","uCell","uMix","uStagger","uDrift","uTint","uDepth","uTexW","uTextRect","uTextPad",
-  "uSoftAB","uDetail","uOpacity"]
+  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep"]
   .forEach(n=>U[n]=gl.getUniformLocation(prog,n));
 gl.bindVertexArray(gl.createVertexArray());
 
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
-const tex={}; let lutTex=null, ready=0;
+const tex={}, dep={}; let lutTex=null, ready=0;
 {
   const im=new Image();
   im.onload=()=>{
@@ -132,7 +155,9 @@ const tex={}; let lutTex=null, ready=0;
   };
   im.src=LUTSRC;
 }
+const NTEX=PLACES.length*2+1;      // art + depth per place, plus the dot LUT
 PLACES.forEach(p=>{
+  [["",tex],["-depth",dep]].forEach(([suffix,store])=>{
   const im=new Image();
   im.onload=()=>{
     const t=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,t);
@@ -142,9 +167,10 @@ PLACES.forEach(p=>{
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    tex[p.key]=t; ready++;
+    store[p.key]=t; ready++;
   };
-  im.src=SRC[p.key];
+  im.src=SRC[p.key].replace(/\.jpg$/,suffix+".jpg");
+  });
 });
 
 const inkRGB=()=>getComputedStyle(document.body).color.match(/\d+(\.\d+)?/g).slice(0,3).map(x=>+x/255);
@@ -229,7 +255,7 @@ const nowEl=document.getElementById("now"), nextEl=document.getElementById("next
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
 const zoneUnit=()=>band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["par","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -253,6 +279,8 @@ function labels(){
   s("vLift",(+ctl.lift.value).toFixed(2));   s("vBlack",(+ctl.black.value).toFixed(2));
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
+  s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vFog",(+ctl.fog.value).toFixed(2));
+  s("vRelief",(+ctl.relief.value).toFixed(2));
   s("vSoft",(+ctl.soft.value).toFixed(2));   s("vDetail",(+ctl.detail.value).toFixed(2));
   document.getElementById("tuneH").textContent="Tone — "+PLACES[tuning].label;
 }
@@ -267,6 +295,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
+  ctl.par.value=26; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
 };
@@ -276,13 +305,20 @@ document.getElementById("copyBtn").onclick=e=>{
     opacityDepth:+ctl.depth.value, hue:+ctl.tint.value, detail:+ctl.detail.value,
     bandWidthVh:+ctl.inset.value, textKeepOutPx:+ctl.gap.value, keepOutFadePx:+ctl.feather.value, imageLift:+ctl.lift.value,
     morphSeconds:+ctl.morph.value, zoneNyPctOfBand:+ctl.zNy.value, zoneParisPctOfBand:+ctl.zParis.value,
-    inkOpacity:+ctl.opacity.value, tone:Object.fromEntries(PLACES.map(p=>[p.key,p.tone]))
+    inkOpacity:+ctl.opacity.value, parallaxPx:+ctl.par.value, aerialFade:+ctl.fog.value,
+    relief:+ctl.relief.value, tone:Object.fromEntries(PLACES.map(p=>[p.key,p.tone]))
   };
   navigator.clipboard?.writeText(JSON.stringify(cfg,null,2));
   e.target.textContent="Copied"; setTimeout(()=>e.target.textContent="Copy config",1200);
 };
 pullTone(); labels(); resize(); setMode(mode);
 addEventListener("load",()=>resize());
+
+const sway=[0,0];
+let showDep=false;
+document.getElementById("depBtn").onclick=e=>{
+  showDep=!showDep; e.target.setAttribute("aria-pressed",showDep);
+};
 
 const zoneEls=[...document.querySelectorAll(".zone")];
 let showZones=false;
@@ -316,7 +352,16 @@ function frame(){
   }
   drawZones();
 
-  if(ready===PLACES.length+1){
+  // the viewpoint leans toward the cursor; everything else follows from the depth map
+  const r=cv.getBoundingClientRect();
+  const want=mouse&&!reduce
+    ? [Math.max(-1,Math.min(1,(mouse.x-(r.left+r.width/2))/(r.width/2))),
+       Math.max(-1,Math.min(1,(mouse.y-(r.top+r.height/2))/(r.height/2)))]
+    : [0,0];
+  sway[0]+=(want[0]-sway[0])*0.06;
+  sway[1]+=(want[1]-sway[1])*0.06;
+
+  if(ready===NTEX){
     const i=Math.min(Math.floor(current),PLACES.length-2), f0=current-i;
     const f=mode==="cursor" ? f0*f0*(3-2*f0) : f0;   // ease each timed step in and out
     const A=PLACES[i], B=PLACES[i+1], lift=+ctl.lift.value, ink=inkRGB();
@@ -325,6 +370,8 @@ function frame(){
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,tex[A.key]); gl.uniform1i(U.uSrcA,0);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D,tex[B.key]); gl.uniform1i(U.uSrcB,1);
     gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D,lutTex);     gl.uniform1i(U.uLut,2);
+    gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D,dep[A.key]); gl.uniform1i(U.uDepA,3);
+    gl.activeTexture(gl.TEXTURE4); gl.bindTexture(gl.TEXTURE_2D,dep[B.key]); gl.uniform1i(U.uDepB,4);
 
     gl.uniform4fv(U.uXfA,xform(A,lift)); gl.uniform4fv(U.uXfB,xform(B,lift));
     gl.uniform4f(U.uToneA,A.tone.black,A.tone.white,A.tone.gamma,A.tone.lc);
@@ -333,6 +380,11 @@ function frame(){
     gl.uniform2f(U.uSoftAB,A.tone.soft,B.tone.soft);
     gl.uniform1f(U.uDetail,+ctl.detail.value);
     gl.uniform1f(U.uOpacity,+ctl.opacity.value);
+    gl.uniform1f(U.uPar,reduce?0:+ctl.par.value);
+    gl.uniform1f(U.uFog,+ctl.fog.value);
+    gl.uniform1f(U.uRelief,+ctl.relief.value);
+    gl.uniform2f(U.uSway,sway[0],sway[1]);
+    gl.uniform1f(U.uShowDep,showDep?1:0);
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);

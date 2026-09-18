@@ -2,7 +2,7 @@
 
 Prototype. See CLAUDE.md for architecture, measured layout values and open items.
 
-Serve this folder; `tools/build_single.py <out.html>` writes a self-contained copy.
+Depth prototype: see the Depth section in CLAUDE.md. Serve this folder; `tools/build_single.py <out.html>` writes a self-contained copy.
 
     npx serve .
 

@@ -23,8 +23,10 @@ npx serve .          # or: python3 -m http.server
 index.html            page markup and all CSS, plus the tuning panel
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
+public/img/*-depth.jpg  depth maps (tools/build_depth.py), white near, black far
 public/img/photo/     the original photographs, no longer used
-tools/                build_sources.py (descreen refs), build_single.py (one-file HTML)
+tools/                build_sources.py (descreen refs), build_depth.py (depth maps),
+                      build_single.py (one-file HTML)
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
 ```
 
@@ -88,6 +90,37 @@ detail. The renderer re-screens it on our lattice at 233 dots across.
 - **Softness** (per place) blends in continuous tone. The art is 28 to 47% mid-grey
   pixels; Paris is the most photographic.
 - Tone is neutral: black 0.075 is the `#ECECEC` paper the art was exported on.
+
+## Depth (prototype, branch `depth-prototype`)
+
+The dots never move, but what each dot samples does. `tools/build_depth.py` runs
+Depth Anything V2 Small (~100MB, HF `depth-anything/Depth-Anything-V2-Small-hf`, MPS on
+this Mac) over each source and writes a pixel aligned depth map, normalised per image on
+its 1st/99th percentiles: white near, black far. The maps are committed, so the site never
+touches torch; rerun the script only when a source image changes.
+
+Why this model and not the others considered: diffusion-point-cloud generates 3D shapes
+rather than reading depth from a photograph, and Depth Anything 3 is built around
+multi-view geometry, which is a heavier setup for one still image per place.
+
+Three uses of depth, all per pixel in the fragment shader:
+
+1. **Parallax.** The viewpoint leans toward the cursor (`uSway`, damped, -1..1 on each
+   axis). Each pixel's sample point moves by `sway * parallax * (depth - 0.5)`, converted
+   from pixels to uv per source. Two refinement steps against the depth map, so a near
+   edge can cover what sits behind it rather than smearing through it. The lattice stays
+   fixed in screen space, which is what keeps the halftone reading as print rather than as
+   a texture wrapped on geometry.
+2. **Aerial fade.** `coverage *= mix(1, 0.45 + 0.55 * depth, fog)`. Distance thins the ink.
+3. **Relief.** `radius *= mix(1, 0.72 + 0.56 * depth, relief)`. Near dots grow, far ones
+   shrink, so the screen itself has some depth even when the cursor is still.
+
+Depth is read at `lod + 2`, deliberately blurrier than the art, so dot-scale noise in the
+map cannot jitter the sampling. Panel: "Show depth map" draws depth in place of the art.
+
+Open questions: parallax past about 40px starts to smear the edges of buildings, because a
+single depth map cannot show what is hidden behind them. Relief above ~0.6 changes the
+tone balance, since dot size is carrying two signals at once.
 
 ## Layout, all measured from the mockups, not chosen
 
