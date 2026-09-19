@@ -24,12 +24,15 @@ function rng(seed) {
 export const PART = { BODY: 0, HEAD: 1, BEAK: 2, TAIL: 3, WING_L: 4, WING_R: 5, LEGS: 6 };
 
 // counts are the visual weight of each part, not its area
-const COUNT = { body: 1700, head: 520, beak: 150, tail: 620, wing: 900, legs: 160 };
+const COUNT = { body: 1500, head: 520, beak: 220, tail: 620, wing: 760, prim: 520, legs: 260 };
 
 function buildCloud() {
   const rand = rng(20260919);
-  const P = [], part = [], span = [], chord = [];
-  const push = (x, y, z, p, s = 0, c = 0) => { P.push(x, y, z); part.push(p); span.push(s); chord.push(c); };
+  const P = [], part = [], span = [], chord = [], kind = [];
+  // kind 0 is an ordinary point, 1 marks a primary feather (chord then holds its index)
+  const push = (x, y, z, p, s = 0, c = 0, k = 0) => {
+    P.push(x, y, z); part.push(p); span.push(s); chord.push(c); kind.push(k);
+  };
   const gauss = () => {
     const u = Math.max(rand(), 1e-9), v = rand();
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * v);
@@ -42,57 +45,76 @@ function buildCloud() {
     return [x / l * rx * k, y / l * ry * k, z / l * rz * k];
   };
 
-  // body: a deep chested egg, widest at the breast, narrowing to the tail base. A tenth
-  // of the points sit inside, so the silhouette still reads as solid ink when it is small.
+  // body: long and slim, not a ball. Deepest at the breast, tapering to the tail base,
+  // narrow across. A tenth of the points sit inside so the ink still reads solid when small.
   for (let i = 0; i < COUNT.body; i++) {
-    let [x, y, z] = onEllipsoid(0.56, 0.38, 0.32, 0.06);
+    let [x, y, z] = onEllipsoid(0.62, 0.3, 0.24, 0.06);
     const shrink = rand() < 0.12 ? 0.45 + 0.4 * rand() : 1;
-    const behind = Math.max(0, -x / 0.56);
-    const taper = 1 - 0.5 * behind * behind;                // narrows behind
+    const behind = Math.max(0, -x / 0.62);
+    const taper = 1 - 0.55 * behind * behind;               // narrows behind
     y = y * taper * shrink; z = z * taper * shrink; x *= shrink;
-    y += 0.07 * Math.max(0, x / 0.56) - 0.03 * behind;      // breast down, back up
+    y += 0.05 * Math.max(0, x / 0.62) - 0.04 * behind;
+    y += 0.05 * Math.exp(-Math.pow((x - 0.1) / 0.28, 2));   // shoulder hump
     push(x + 0.02, y, z, PART.BODY);
   }
   // head: big, as crows are. The neck fills in behind it so the two read as one mass.
   for (let i = 0; i < COUNT.head; i++) {
     const t = rand();
-    if (t < 0.27) {                                          // neck
-      const u = rand(), [x, y, z] = onEllipsoid(0.15, 0.15, 0.14, 0.08);
-      push(x * 0.9 + 0.36 + u * 0.16, y * 0.9 + 0.2 + u * 0.13, z * 0.9, PART.HEAD);
+    if (t < 0.33) {                                          // thick neck, hunched forward
+      const u = rand(), [x, y, z] = onEllipsoid(0.16, 0.15, 0.14, 0.08);
+      push(x * 0.85 + 0.36 + u * 0.2, y * 0.85 + 0.16 + u * 0.2, z * 0.85, PART.HEAD);
     } else {
-      const [x, y, z] = onEllipsoid(0.21, 0.19, 0.18, 0.07);
+      const [x, y, z] = onEllipsoid(0.2, 0.18, 0.17, 0.06);
       const shrink = rand() < 0.15 ? 0.5 + 0.4 * rand() : 1;
-      push(x * shrink + 0.56, y * shrink + 0.36, z * shrink, PART.HEAD);
+      // flat crown, fuller nape: the crow's head is a wedge, not a ball
+      push(x * shrink + 0.6 + Math.max(0, -x) * 0.1, y * shrink * (y > 0 ? 0.88 : 1) + 0.39,
+           z * shrink, PART.HEAD);
     }
   }
-  // beak: a straight, heavy cone, angled a touch down, with the crow's deep base
+  // beak: long, heavy and straight, as deep at the base as the head is tall. The upper
+  // mandible curves down to the tip, the lower is straight, so the two meet in a point.
   for (let i = 0; i < COUNT.beak; i++) {
     const t = Math.sqrt(rand()), a = rand() * TAU;
-    const r = (0.085 * (1 - t) + 0.005) * (rand() < 0.2 ? rand() : 1);
-    push(0.73 + t * 0.33, 0.38 - t * 0.075 + Math.sin(a) * r * 0.85, Math.cos(a) * r * 0.7, PART.BEAK);
+    const upper = Math.sin(a) > 0;
+    const r = (0.1 * (1 - t) + 0.004) * (rand() < 0.2 ? rand() : 1);
+    const curve = upper ? -t * t * 0.055 : -t * 0.02;
+    push(0.76 + t * 0.42, 0.38 + curve + Math.sin(a) * r * (upper ? 0.9 : 0.55),
+         Math.cos(a) * r * 0.55, PART.BEAK);
   }
   // tail: a flat fan of long feathers, stored in its own space (s along the feather)
   for (let i = 0; i < COUNT.tail; i++) {
     const s = Math.pow(rand(), 0.7), c = rand() * 2 - 1;
     push(0, 0, 0, PART.TAIL, s, c);
   }
-  // wings: sheets in wing space, s outboard along the span, c across the chord
+  // wings: the inner wing is a sheet (s outboard, c across the chord); the outer wing is
+  // six primaries, splayed like fingers, which is what makes a crow read as a crow
   for (const side of [PART.WING_L, PART.WING_R]) {
     for (let i = 0; i < COUNT.wing; i++) {
-      const s = Math.pow(rand(), 0.62);                     // denser at the tip: primaries
-      const c = rand() * 2 - 1;
-      push(0, 0, 0, side, s, c);
+      const s = Math.pow(rand(), 0.8) * 0.72;
+      push(0, 0, 0, side, s, rand() * 2 - 1, 0);
+    }
+    for (let i = 0; i < COUNT.prim; i++) {
+      const f = Math.floor(rand() * 6);                     // which finger
+      const u = Math.pow(rand(), 0.75);                     // along that finger
+      const v = rand() * 2 - 1;                             // across it
+      push(v, 0, 0, side, u, f, 1);                         // v rides in the base slot
     }
   }
-  // legs: two lines from under the body to the feet, with three toes each
+  // legs: feathered thigh, then a bare tarsus down to the foot, three toes forward and
+  // one back. Crows stand tall, so the tarsus is worth its length.
   for (let i = 0; i < COUNT.legs; i++) {
-    const side = rand() < 0.5 ? -1 : 1, t = rand();
-    const toe = rand();
-    if (toe < 0.4) {                                         // toes splay on the perch
-      const a = (Math.floor(rand() * 3) - 1) * 0.55, l = rand() * 0.2;
-      push(0.2 + Math.cos(a) * l, -0.42, side * 0.09 + Math.sin(a) * l * 0.7, PART.LEGS);
-    } else {
-      push(0.17 + t * 0.05, -0.16 - t * 0.26, side * 0.09, PART.LEGS);
+    const side = rand() < 0.5 ? -1 : 1, t = rand(), what = rand();
+    const r = () => (rand() - 0.5) * 0.022;
+    if (what < 0.3) {                                        // thigh, tucked against the flank
+      push(0.14 + t * 0.06 + r(), -0.1 - t * 0.12 + r(), side * 0.1 + r(), PART.LEGS);
+    } else if (what < 0.72) {                                // tarsus
+      push(0.2 + t * 0.02 + r(), -0.22 - t * 0.2 + r(), side * 0.1 + r(), PART.LEGS);
+    } else {                                                 // foot: three forward, one back
+      const toe = Math.floor(rand() * 4);
+      const a = toe === 3 ? Math.PI : (toe - 1) * 0.6;
+      const l = rand() * (toe === 3 ? 0.1 : 0.15);
+      push(0.22 + Math.cos(a) * l + r(), -0.42 + (toe === 3 ? 0.01 : 0) + r(),
+           side * 0.1 + Math.sin(a) * l * 0.7 + r(), PART.LEGS);
     }
   }
   return {
@@ -101,6 +123,7 @@ function buildCloud() {
     part: new Uint8Array(part),
     span: new Float32Array(span),
     chord: new Float32Array(chord),
+    kind: new Uint8Array(kind),
   };
 }
 
@@ -166,43 +189,73 @@ export function createCrow() {
   const rotY = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c]; };
   const rotZ = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]]; };
 
-  function wingPoint(s, c, side, t) {
-    // the wing bends at the elbow: the outer half carries more of the beat, and lags it
+  // Wing space: s runs outboard along the span, and the chord offset is in body units,
+  // forward positive. The inner wing is one sheet; the outer wing is six primaries, each
+  // its own tapered feather, which fan apart as the wing opens.
+  function wingFrame() {
     const fold = pose.fold;
-    const beat = Math.sin(st.flap - s * 1.15) * pose.flapAmp;
-    // folded, the wing lies back along the flank; open, it reaches out and beats
-    const dihedral = beat * (0.35 + 0.65 * s) + 0.1 - fold * 0.42;
-    const sweep = lerp(0.14, 1.42, fold) + Math.max(0, -beat) * 0.12;
-    const twist = beat * 0.35 * s;
-    const spanLen = lerp(1.08, 0.6, fold);
-    const chordLen = (0.4 - 0.2 * s * s) * lerp(1, 0.42, fold);
+    return {
+      fold,
+      spanLen: lerp(1.25, 0.66, fold),
+      open: 1 - fold,
+      sweep: lerp(0.14, 1.42, fold),
+    };
+  }
 
+  function place(s, chordOffset, side, drop, fr, beat) {
+    const dihedral = beat * (0.35 + 0.65 * s) + 0.1 - fr.fold * 0.42;
+    const sweep = fr.sweep + Math.max(0, -beat) * 0.12;
+    const twist = beat * 0.35 * s;
     let dir = [0, 0, side];                                  // outboard
     dir = rotX(dir, -side * dihedral);
     dir = rotY(dir, side * sweep);
-    let ch = rotZ([1, 0, 0], twist);                          // chord, forward
-    const shoulder = [0.22, 0.16, side * 0.13];
-    const droop = -0.1 * s * s * (1 - pose.flapAmp) - fold * 0.12 * s;
-    const hug = fold * (1 - 0.3 * s);                         // pulled in against the flank
+    const ch = rotZ([1, 0, 0], twist);                        // chord, forward
+    const shoulder = [0.24, 0.15, side * 0.11];
+    const hug = fr.fold * (1 - 0.3 * s);                      // pulled in against the flank
     return [
-      shoulder[0] + dir[0] * s * spanLen + ch[0] * c * chordLen,
-      shoulder[1] + dir[1] * s * spanLen + ch[1] * c * chordLen + droop + 0.05 * Math.sin(c * 3) * s,
-      (shoulder[2] + dir[2] * s * spanLen + ch[2] * c * chordLen) * (1 - 0.45 * hug),
+      shoulder[0] + dir[0] * s * fr.spanLen + ch[0] * chordOffset,
+      shoulder[1] + dir[1] * s * fr.spanLen + ch[1] * chordOffset + drop,
+      (shoulder[2] + dir[2] * s * fr.spanLen + ch[2] * chordOffset) * (1 - 0.45 * hug),
     ];
+  }
+
+  function wingPoint(u, c, side, primary, v) {
+    const fr = wingFrame();
+    if (!primary) {
+      const s = u;
+      const beat = Math.sin(st.flap - s * 1.15) * pose.flapAmp;
+      const chord = c * (0.3 - 0.11 * s * s) * lerp(1, 0.45, fr.fold);
+      const drop = -0.08 * s * s * (1 - pose.flapAmp) - fr.fold * 0.1 * s;
+      return place(s, chord, side, drop, fr, beat);
+    }
+    // f = 0 is the innermost finger and the shortest; the outermost reaches furthest and
+    // fans the furthest back, so the tip reads as spread fingers rather than a paddle
+    const f = c;
+    const root = 0.6 + f * 0.012;
+    const tip = 0.86 + (0.03 + 0.035 * f) * fr.open + 0.02 * f;
+    const s = lerp(root, tip, u);
+    const chordRoot = -0.02 - f * 0.028;
+    const chordTip = chordRoot - (0.1 + 0.05 * f) * fr.open - 0.06 * fr.fold;
+    const width = (0.032 - 0.02 * u) * lerp(1, 0.55, fr.fold);
+    const beat = Math.sin(st.flap - s * 1.15) * pose.flapAmp;
+    const drop = -0.09 * s * s * (1 - pose.flapAmp) - fr.fold * 0.12 * s
+               + (f - 2.5) * 0.012 * fr.open;
+    return place(s, lerp(chordRoot, chordTip, u) + v * width, side, drop, fr, beat);
   }
 
   // the tail is a fan of separate feathers: c picks the feather, so they stay distinct
   // instead of blurring into a sheet
   function tailPoint(s, c) {
-    const len = 0.66, spread = pose.tailSpread;
+    const len = 0.86, spread = pose.tailSpread;
     const feather = Math.round(c * 3) / 3;                   // 7 feathers, kept distinct
     const a = feather * spread * 0.6;
     const droop = pose.tailDrop;
+    const wedge = 1 - 0.12 * Math.abs(feather);              // square ended, slightly rounded
     // the fan opens across the bird, so from the side it is the layering, not the spread,
     // that gives it depth: each feather sits a little lower than the one inboard of it
     return [
-      -0.44 - s * len * Math.cos(a),
-      -0.04 - s * droop - Math.abs(feather) * s * 0.1 + (1 - Math.abs(feather)) * 0.03,
+      -0.46 - s * len * wedge * Math.cos(a),
+      -0.08 - s * droop - Math.abs(feather) * s * 0.07 + (1 - Math.abs(feather)) * 0.02,
       Math.sin(a) * s * len * 0.95,
     ];
   }
@@ -219,13 +272,13 @@ export function createCrow() {
   }
 
   function posed(w, h) {
-    const { base, part, span, chord, n } = cloud;
+    const { base, part, span, chord, kind, n } = cloud;
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     for (let i = 0, j = 0; i < n; i++, j += 3) {
       const p = part[i];
       let q;
-      if (p === PART.WING_L) q = wingPoint(span[i], chord[i], -1);
-      else if (p === PART.WING_R) q = wingPoint(span[i], chord[i], 1);
+      if (p === PART.WING_L) q = wingPoint(span[i], chord[i], -1, kind[i], base[j]);
+      else if (p === PART.WING_R) q = wingPoint(span[i], chord[i], 1, kind[i], base[j]);
       else if (p === PART.TAIL) q = tailPoint(span[i], chord[i]);
       else {
         q = [base[j], base[j + 1], base[j + 2]];
@@ -285,9 +338,9 @@ export function createCrow() {
       const b = st.t;
       pose.x = perchX; pose.y = perchY;
       pose.fold = 1; pose.flapAmp = 0; pose.legs = 1;
-      pose.tailSpread = 0.5; pose.tailDrop = 0.1;
+      pose.tailSpread = 0.34; pose.tailDrop = 0.2;
       pose.roll = 0;
-      pose.pitch = swayPitch - 0.07 + 0.02 * Math.sin(b * 1.7);   // breathing, breast up
+      pose.pitch = swayPitch - 0.16 + 0.02 * Math.sin(b * 1.7);   // breathing, standing tall
       pose.yaw = swayYaw - 0.38;                              // three quarter view
       // it looks around now and then, and never in a hurry
       const look = Math.sin(b * 0.37) + 0.6 * Math.sin(b * 0.91 + 1.3);
