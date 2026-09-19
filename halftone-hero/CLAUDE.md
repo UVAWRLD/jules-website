@@ -156,7 +156,7 @@ Copy config emits that object as JSON.
 2. ~~Cursor drive on one continuous distance axis~~ Resolved: cursor mode now uses nested
    zones around the copy (outside = Cassis, middle ring = Paris, tight ring = New York,
    rounded like a distance field). Zone sizes are a share of the band width (5.3% and 10.5%, so 70px and 140px at a 1330px band) and scale with the picture; hysteresis is 0.9%. Entering a zone starts a fixed-length
-   morph (1s per step, eased), and Cassis to New York passes through Paris. Scroll mode is
+   morph (1.6s per step, eased), and Cassis to New York passes through Paris. Scroll mode is
    still continuous. The "Zones" panel button draws the rings.
 3. **Mobile.** 311 dots across a 390px viewport is a 1.25px cell. Needs a breakpoint dropping
    to roughly 110 to 130, which is a visibly coarser artwork. Decide whether that is

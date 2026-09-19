@@ -255,7 +255,7 @@ const nowEl=document.getElementById("now"), nextEl=document.getElementById("next
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
 const zoneUnit=()=>band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["par","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -279,7 +279,7 @@ function labels(){
   s("vLift",(+ctl.lift.value).toFixed(2));   s("vBlack",(+ctl.black.value).toFixed(2));
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
-  s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vFog",(+ctl.fog.value).toFixed(2));
+  s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vSens",(+ctl.sens.value).toFixed(1)+"x"); s("vFog",(+ctl.fog.value).toFixed(2));
   s("vRelief",(+ctl.relief.value).toFixed(2));
   s("vSoft",(+ctl.soft.value).toFixed(2));   s("vDetail",(+ctl.detail.value).toFixed(2));
   document.getElementById("tuneH").textContent="Tone — "+PLACES[tuning].label;
@@ -295,8 +295,8 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.par.value=26; ctl.fog.value=0.35; ctl.relief.value=0.35;
-  ctl.morph.value=1; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
+  ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
+  ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
 };
 document.getElementById("copyBtn").onclick=e=>{
@@ -305,7 +305,7 @@ document.getElementById("copyBtn").onclick=e=>{
     opacityDepth:+ctl.depth.value, hue:+ctl.tint.value, detail:+ctl.detail.value,
     bandWidthVh:+ctl.inset.value, textKeepOutPx:+ctl.gap.value, keepOutFadePx:+ctl.feather.value, imageLift:+ctl.lift.value,
     morphSeconds:+ctl.morph.value, zoneNyPctOfBand:+ctl.zNy.value, zoneParisPctOfBand:+ctl.zParis.value,
-    inkOpacity:+ctl.opacity.value, parallaxPx:+ctl.par.value, aerialFade:+ctl.fog.value,
+    inkOpacity:+ctl.opacity.value, parallaxPx:+ctl.par.value, tiltSensitivity:+ctl.sens.value, aerialFade:+ctl.fog.value,
     relief:+ctl.relief.value, tone:Object.fromEntries(PLACES.map(p=>[p.key,p.tone]))
   };
   navigator.clipboard?.writeText(JSON.stringify(cfg,null,2));
@@ -354,12 +354,15 @@ function frame(){
 
   // the viewpoint leans toward the cursor; everything else follows from the depth map
   const r=cv.getBoundingClientRect();
+  // sensitivity shrinks the travel needed for a full tilt, so small moves read
+  const k=+ctl.sens.value;
   const want=mouse&&!reduce
-    ? [Math.max(-1,Math.min(1,(mouse.x-(r.left+r.width/2))/(r.width/2))),
-       Math.max(-1,Math.min(1,(mouse.y-(r.top+r.height/2))/(r.height/2)))]
+    ? [Math.max(-1,Math.min(1,(mouse.x-(r.left+r.width/2))/(r.width/2)*k)),
+       Math.max(-1,Math.min(1,(mouse.y-(r.top+r.height/2))/(r.height/2)*k))]
     : [0,0];
-  sway[0]+=(want[0]-sway[0])*0.06;
-  sway[1]+=(want[1]-sway[1])*0.06;
+  const ease=1-Math.pow(1-0.12,dt*60);   // frame rate independent, snappier than before
+  sway[0]+=(want[0]-sway[0])*ease;
+  sway[1]+=(want[1]-sway[1])*ease;
 
   if(ready===NTEX){
     const i=Math.min(Math.floor(current),PLACES.length-2), f0=current-i;
