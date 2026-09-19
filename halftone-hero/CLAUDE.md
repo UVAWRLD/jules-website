@@ -22,11 +22,12 @@ npx serve .          # or: python3 -m http.server
 ```
 index.html            page markup and all CSS, plus the tuning panel
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
+src/crow.js           the crow: point cloud, rig, flight and perch animation
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
 public/img/*-depth.jpg  depth maps (tools/build_depth.py), white near, black far
 public/img/photo/     the original photographs, no longer used
 tools/                build_sources.py (descreen refs), build_depth.py (depth maps),
-                      build_single.py (one-file HTML)
+                      build_single.py (one-file HTML), crow-preview.html (crow poses)
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
 ```
 
@@ -121,6 +122,43 @@ map cannot jitter the sampling. Panel: "Show depth map" draws depth in place of 
 Open questions: parallax past about 40px starts to smear the edges of buildings, because a
 single depth map cannot show what is hidden behind them. Relief above ~0.6 changes the
 tone balance, since dot size is carrying two signals at once.
+
+## The crow (prototype)
+
+A 3D point cloud, about 5,000 points, built in `src/crow.js` from parametric surfaces: no
+model file, no loader, no three.js. Each point carries a part id, and the feathered parts
+carry a span and chord coordinate instead of a position, so wings and tail are generated
+from the pose rather than deformed.
+
+**It is drawn with the same dots as the landscape.** The cloud is posed and projected on
+the CPU, splatted into an offscreen RGBA buffer as coverage (additive, so overlapping
+splats build to solid ink), and the halftone pass reads that buffer at each cell centre and
+takes `max(sceneCoverage, crowCoverage)`. So the bird lands on the same lattice as
+everything else. It is read after the text keep-out, because it perches on the copy.
+
+**Life cycle:** waits 1.1s, flies in from off the left, lands on the top right of the copy,
+idles there (breathing, slow looks around), and on a click crouches, jumps, beats hard and
+leaves past the right edge. `crowHit` is a small transparent div tracking its bounding box,
+so the cursor turns to a pointer and the click target is real; everything else on the band
+stays `pointer-events: none`.
+
+**Why it is posed on the CPU:** the rig is a handful of angles, so skinning 5,000 points in
+JavaScript is cheaper than the plumbing for doing it on the GPU, and the projection has to
+happen here anyway to give the page a bounding box to hit test.
+
+Two things learned the hard way, both visible in `tools/crow-preview.html`, which draws six
+poses flat without the halftone in the way:
+
+- **The bird cannot be seen from the side.** Wings spread across its z axis, so a pure side
+  view foreshortens them to nothing. Flight is posed three quarters on (yaw -0.85 easing to
+  -0.38), which is also why the perch pose keeps a yaw of -0.38.
+- **The tail needs layering, not spread.** Its fan opens across the same axis, so from the
+  side it is the per feather drop that reads, not the angle.
+
+The canvas now spans the whole window rather than just the band, so the crow can fly the
+full width; the picture still occupies the centred band, which `bandW()` derives from
+`--band-k`, and the dot pitch is still band width over dots across, so the landscape is
+unchanged.
 
 ## Layout, all measured from the mockups, not chosen
 

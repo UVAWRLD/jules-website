@@ -1,3 +1,5 @@
+import {createCrow} from "./crow.js";
+
 // paths are relative to index.html, so the folder runs from any static server.
 // moving to Astro means public/img/x.jpg becomes /img/x.jpg.
 const SRC = { cassis:"public/img/cassis.jpg", paris:"public/img/paris.jpg", nyc:"public/img/nyc.jpg" };
@@ -28,13 +30,14 @@ void main(){ vec2 p=vec2((gl_VertexID<<1)&2, gl_VertexID&2); gl_Position=vec4(p*
 const FS=`#version 300 es
 precision highp float;
 out vec4 outColor;
-uniform sampler2D uSrcA,uSrcB,uLut,uDepA,uDepB;
+uniform sampler2D uSrcA,uSrcB,uLut,uDepA,uDepB,uCrow;
 uniform vec4  uXfA,uXfB,uToneA,uToneB;
 uniform vec2  uBlueAB,uSoftAB;
 uniform vec3  uHueA,uHueB,uInk;
 uniform float uDpr,uCell,uMix,uStagger,uDrift,uTint,uDepth,uDetail,uOpacity;
 uniform float uPar,uFog,uRelief,uShowDep;
-uniform vec2  uSway;
+uniform vec2  uSway,uRes;
+uniform float uCrowOn;
 uniform vec2 uTexW;
 uniform vec4 uTextRect;
 uniform vec2 uTextPad;
@@ -101,13 +104,24 @@ void main(){
   float cov=mix(covA,covB,tl);
   float near=mix(nearA,nearB,tl);
   if(uShowDep>0.5) cov=near;                 // debug: draw the depth map itself
-  if(cov<0.004){ outColor=vec4(0.0); return; }
 
   // keep clear of the text block: whole dots are dropped, judged at the cell centre
   vec2 q = max(uTextRect.xy - c, c - uTextRect.zw);
   float dText = length(max(q,0.0)) + min(max(q.x,q.y),0.0);
   float clear = smoothstep(uTextPad.x, uTextPad.x + max(uTextPad.y,0.5), dText);
-  if(clear <= 0.001){ outColor=vec4(0.0); return; }
+
+  // the crow is screened through the same lattice, but it perches on the copy, so it is
+  // read after the keep-out and sits in front of everything
+  if(uCrowOn>0.5){
+    vec4 cr=texture(uCrow, c/uRes);          // sampled at the cell centre, like the art
+    float crowCov=clamp(cr.r,0.0,1.0);
+    cov=max(cov*clear,crowCov);
+    near=mix(near, clamp(cr.g/max(cr.a,0.001),0.0,1.0), step(0.02,crowCov));
+    clear=1.0;
+  } else {
+    cov*=clear; clear=1.0;
+  }
+  if(cov<0.004){ outColor=vec4(0.0); return; }
 
   float rho=texture(uLut,vec2(cov,0.5)).r*0.75;
   // relief: near dots grow, far ones shrink, as if the lattice sat on the surface
@@ -135,9 +149,79 @@ gl.linkProgram(prog); gl.useProgram(prog);
 if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
 const U={}; ["uSrcA","uSrcB","uLut","uXfA","uXfB","uToneA","uToneB","uBlueAB","uHueA","uHueB",
   "uInk","uDpr","uCell","uMix","uStagger","uDrift","uTint","uDepth","uTexW","uTextRect","uTextPad",
-  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep"]
+  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn"]
   .forEach(n=>U[n]=gl.getUniformLocation(prog,n));
-gl.bindVertexArray(gl.createVertexArray());
+const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
+
+// ---- crow pass ------------------------------------------------------------------------
+// The point cloud is posed and projected on the CPU (src/crow.js) and splatted into an
+// offscreen buffer as coverage. The halftone pass above reads that buffer, so the bird is
+// drawn with the same dots as the landscape rather than pasted over it.
+const crow=createCrow();
+const crowVS=`#version 300 es
+in vec3 aPos;                       // x px, y px, depth 0..1 (1 near)
+uniform vec2 uRes; uniform float uDpr, uSize;
+out float vDepth;
+void main(){
+  vDepth=aPos.z;
+  vec2 p=aPos.xy*uDpr;
+  gl_Position=vec4(p.x/uRes.x*2.0-1.0, 1.0-p.y/uRes.y*2.0, 0.0, 1.0);
+  gl_PointSize=uSize*uDpr*(0.75+0.5*aPos.z);
+}`;
+const crowFS=`#version 300 es
+precision highp float;
+in float vDepth;
+out vec4 outColor;
+void main(){
+  vec2 d=gl_PointCoord*2.0-1.0;
+  float a=1.0-smoothstep(0.35,1.0,dot(d,d));
+  if(a<=0.002) discard;
+  outColor=vec4(a, vDepth*a, 0.0, a);     // coverage, depth weighted by it, and the weight
+}`;
+const crowProg=gl.createProgram();
+gl.attachShader(crowProg,sh(gl.VERTEX_SHADER,crowVS));
+gl.attachShader(crowProg,sh(gl.FRAGMENT_SHADER,crowFS));
+gl.linkProgram(crowProg);
+if(!gl.getProgramParameter(crowProg,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(crowProg));
+const CU={}; ["uRes","uDpr","uSize"].forEach(n=>CU[n]=gl.getUniformLocation(crowProg,n));
+const crowVAO=gl.createVertexArray(), crowBuf=gl.createBuffer();
+gl.bindVertexArray(crowVAO);
+gl.bindBuffer(gl.ARRAY_BUFFER,crowBuf);
+gl.bufferData(gl.ARRAY_BUFFER,crow.positions.byteLength,gl.DYNAMIC_DRAW);
+const aPosLoc=gl.getAttribLocation(crowProg,"aPos");
+gl.enableVertexAttribArray(aPosLoc);
+gl.vertexAttribPointer(aPosLoc,3,gl.FLOAT,false,0,0);
+gl.bindVertexArray(null);
+
+const crowFB=gl.createFramebuffer(), crowTex=gl.createTexture();
+function crowTarget(w,h){
+  gl.bindTexture(gl.TEXTURE_2D,crowTex);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,crowFB);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,crowTex,0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+}
+function drawCrow(){
+  gl.bindFramebuffer(gl.FRAMEBUFFER,crowFB);
+  gl.viewport(0,0,cv.width,cv.height);
+  gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(crowProg); gl.bindVertexArray(crowVAO);
+  gl.bindBuffer(gl.ARRAY_BUFFER,crowBuf);
+  gl.bufferSubData(gl.ARRAY_BUFFER,0,crow.positions);
+  gl.blendFunc(gl.ONE,gl.ONE);                 // splats pile up into solid ink
+  gl.uniform2f(CU.uRes,cv.width,cv.height);
+  gl.uniform1f(CU.uDpr,dpr);
+  gl.uniform1f(CU.uSize,+ctl.crowDot.value);
+  gl.drawArrays(gl.POINTS,0,crow.count);
+  gl.bindVertexArray(null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+  gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(prog); gl.bindVertexArray(vao);
+}
 
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
 const tex={}, dep={}; let lutTex=null, ready=0;
@@ -185,6 +269,7 @@ function resize(){
   const r=cv.getBoundingClientRect(); W=r.width; H=r.height;
   cv.width=Math.max(1,Math.round(W*dpr)); cv.height=Math.max(1,Math.round(H*dpr));
   gl.viewport(0,0,cv.width,cv.height);
+  crowTarget(cv.width,cv.height);
   const t=copy.getBoundingClientRect();
   // canvas space: x from the band's left edge, y up from the band's bottom edge
   textRect=[t.left-r.left, r.bottom-t.bottom, t.right-r.left, r.bottom-t.top];
@@ -193,9 +278,11 @@ addEventListener("resize",()=>{resize();labels();});   // zone sizes are relativ
 
 // every image is drawn at the full matrix width and sits on the bottom edge.
 // overflow is clipped at the top, which for all three is sky.
+// the picture keeps its own centred band inside the full width canvas
+function bandW(){ return Math.min(+ctl.inset.value*H, W); }
 function xform(p,lift){
-  const dw=W, dh=W/p.aspect;
-  return [0, -p.bleed*innerHeight + lift*dh, dw, dh];
+  const dw=bandW(), dh=dw/p.aspect;
+  return [(W-dw)/2, -p.bleed*innerHeight + lift*dh, dw, dh];
 }
 
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -253,9 +340,9 @@ function readTarget(){
 const nowEl=document.getElementById("now"), nextEl=document.getElementById("next"), barEl=document.getElementById("bar");
 // zone sizes are a share of the band width, so they scale with the picture
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
-const zoneUnit=()=>band.getBoundingClientRect().width;
+const zoneUnit=()=>bandW()||band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["crowSize","crowDot","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -279,6 +366,7 @@ function labels(){
   s("vLift",(+ctl.lift.value).toFixed(2));   s("vBlack",(+ctl.black.value).toFixed(2));
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
+  s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
   s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vSens",(+ctl.sens.value).toFixed(1)+"x"); s("vFog",(+ctl.fog.value).toFixed(2));
   s("vRelief",(+ctl.relief.value).toFixed(2));
   s("vSoft",(+ctl.soft.value).toFixed(2));   s("vDetail",(+ctl.detail.value).toFixed(2));
@@ -295,6 +383,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
+  ctl.crowSize.value=0.055; ctl.crowDot.value=2.2;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
@@ -313,6 +402,10 @@ document.getElementById("copyBtn").onclick=e=>{
 };
 pullTone(); labels(); resize(); setMode(mode);
 addEventListener("load",()=>resize());
+
+const crowHit=document.getElementById("crowHit");
+crowHit.onclick=()=>crow.click(cv.getBoundingClientRect().width);
+document.getElementById("crowBtn").onclick=()=>crow.replay();
 
 const sway=[0,0];
 let showDep=false;
@@ -364,6 +457,23 @@ function frame(){
   sway[0]+=(want[0]-sway[0])*ease;
   sway[1]+=(want[1]-sway[1])*ease;
 
+  // the crow perches near the right end of the copy, facing into the page
+  const cr=copy.getBoundingClientRect(), cvr=cv.getBoundingClientRect();
+  const crowScale=bandW()*(+ctl.crowSize.value);
+  const alive=crow.update(reduce?0.016:dt,{
+    w:cvr.width, h:cvr.height,
+    perchX:cr.right-cvr.left-crowScale*0.55,
+    perchY:cr.top-cvr.top+2,
+    sway, scale:crowScale, reduce
+  });
+  if(alive) drawCrow();
+  crowHit.hidden=crow.phase!=="perched";
+  if(!crowHit.hidden){
+    const [x0,y0,x1,y1]=crow.bbox;
+    crowHit.style.left=(cvr.left+x0-6)+"px"; crowHit.style.top=(cvr.top+y0-6)+"px";
+    crowHit.style.width=(x1-x0+12)+"px"; crowHit.style.height=(y1-y0+12)+"px";
+  }
+
   if(ready===NTEX){
     const i=Math.min(Math.floor(current),PLACES.length-2), f0=current-i;
     const f=mode==="cursor" ? f0*f0*(3-2*f0) : f0;   // ease each timed step in and out
@@ -388,10 +498,13 @@ function frame(){
     gl.uniform1f(U.uRelief,+ctl.relief.value);
     gl.uniform2f(U.uSway,sway[0],sway[1]);
     gl.uniform1f(U.uShowDep,showDep?1:0);
+    gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D,crowTex); gl.uniform1i(U.uCrow,5);
+    gl.uniform2f(U.uRes,cv.width/dpr,cv.height/dpr);
+    gl.uniform1f(U.uCrowOn,alive?1:0);
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);
-    gl.uniform1f(U.uCell,W/+ctl.cells.value);
+    gl.uniform1f(U.uCell,bandW()/+ctl.cells.value);
     gl.uniform1f(U.uMix,f);
     gl.uniform1f(U.uStagger,+ctl.stag.value);
     gl.uniform1f(U.uDrift,reduce?0:+ctl.drift.value);
