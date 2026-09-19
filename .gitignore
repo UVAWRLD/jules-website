@@ -2,3 +2,6 @@
 exec-*.png
 # the three references, already kept with readable names in refs/
 image *.png
+
+# the source model: big, and we commit the baked point cloud instead
+halftone-hero/public/models/*.glb

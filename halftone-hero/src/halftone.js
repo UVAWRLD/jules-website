@@ -185,14 +185,15 @@ gl.linkProgram(crowProg);
 if(!gl.getProgramParameter(crowProg,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(crowProg));
 const CU={}; ["uRes","uDpr","uSize"].forEach(n=>CU[n]=gl.getUniformLocation(crowProg,n));
 const crowVAO=gl.createVertexArray(), crowBuf=gl.createBuffer();
+let crowBufBytes=0;
 gl.bindVertexArray(crowVAO);
 gl.bindBuffer(gl.ARRAY_BUFFER,crowBuf);
-gl.bufferData(gl.ARRAY_BUFFER,crow.positions.byteLength,gl.DYNAMIC_DRAW);
 const aPosLoc=gl.getAttribLocation(crowProg,"aPos");
 gl.enableVertexAttribArray(aPosLoc);
 gl.vertexAttribPointer(aPosLoc,3,gl.FLOAT,false,0,0);
 gl.bindVertexArray(null);
 
+let crowScreenScale=110;
 const crowFB=gl.createFramebuffer(), crowTex=gl.createTexture();
 function crowTarget(w,h){
   gl.bindTexture(gl.TEXTURE_2D,crowTex);
@@ -211,11 +212,16 @@ function drawCrow(){
   gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.useProgram(crowProg); gl.bindVertexArray(crowVAO);
   gl.bindBuffer(gl.ARRAY_BUFFER,crowBuf);
+  if(crowBufBytes!==crow.positions.byteLength){
+    crowBufBytes=crow.positions.byteLength;
+    gl.bufferData(gl.ARRAY_BUFFER,crowBufBytes,gl.DYNAMIC_DRAW);
+  }
   gl.bufferSubData(gl.ARRAY_BUFFER,0,crow.positions);
   gl.blendFunc(gl.ONE,gl.ONE);                 // splats pile up into solid ink
   gl.uniform2f(CU.uRes,cv.width,cv.height);
   gl.uniform1f(CU.uDpr,dpr);
-  gl.uniform1f(CU.uSize,+ctl.crowDot.value);
+  // splat size follows the bird's size on screen, so its coverage stays solid at any scale
+  gl.uniform1f(CU.uSize,+ctl.crowDot.value*crowScreenScale/110);
   gl.drawArrays(gl.POINTS,0,crow.count);
   gl.bindVertexArray(null);
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);
@@ -383,7 +389,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.crowSize.value=0.055; ctl.crowDot.value=2.2;
+  ctl.crowSize.value=0.105; ctl.crowDot.value=2.2;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
@@ -460,13 +466,14 @@ function frame(){
   // the crow perches near the right end of the copy, facing into the page
   const cr=copy.getBoundingClientRect(), cvr=cv.getBoundingClientRect();
   const crowScale=bandW()*(+ctl.crowSize.value);
+  crowScreenScale=crowScale;
   const alive=crow.update(reduce?0.016:dt,{
     w:cvr.width, h:cvr.height,
     perchX:cr.right-cvr.left-crowScale*0.55,
     perchY:cr.top-cvr.top+2,
     sway, scale:crowScale, reduce
   });
-  if(alive) drawCrow();
+  if(alive&&crow.count) drawCrow();
   crowHit.hidden=crow.phase!=="perched";
   if(!crowHit.hidden){
     const [x0,y0,x1,y1]=crow.bbox;
@@ -500,7 +507,7 @@ function frame(){
     gl.uniform1f(U.uShowDep,showDep?1:0);
     gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D,crowTex); gl.uniform1i(U.uCrow,5);
     gl.uniform2f(U.uRes,cv.width/dpr,cv.height/dpr);
-    gl.uniform1f(U.uCrowOn,alive?1:0);
+    gl.uniform1f(U.uCrowOn,alive&&crow.count?1:0);
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);

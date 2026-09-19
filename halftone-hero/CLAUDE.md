@@ -22,12 +22,15 @@ npx serve .          # or: python3 -m http.server
 ```
 index.html            page markup and all CSS, plus the tuning panel
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
-src/crow.js           the crow: point cloud, rig, flight and perch animation
+src/crow.js           the crow: loads the baked cloud, skins it, runs the state machine
+public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
+                      plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
 public/img/*-depth.jpg  depth maps (tools/build_depth.py), white near, black far
 public/img/photo/     the original photographs, no longer used
 tools/                build_sources.py (descreen refs), build_depth.py (depth maps),
-                      build_single.py (one-file HTML), crow-preview.html (crow poses)
+                      build_single.py (one-file HTML), bake_crow.py (glTF to point
+                      cloud), crow-preview.html (crow poses)
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
 ```
 
@@ -125,40 +128,51 @@ tone balance, since dot size is carrying two signals at once.
 
 ## The crow (prototype)
 
-A 3D point cloud, about 5,000 points, built in `src/crow.js` from parametric surfaces: no
-model file, no loader, no three.js. Each point carries a part id, and the feathered parts
-carry a span and chord coordinate instead of a position, so wings and tail are generated
-from the pose rather than deformed.
+A rigged model, baked to a point cloud, posed by our own state machine.
 
-**It is drawn with the same dots as the landscape.** The cloud is posed and projected on
-the CPU, splatted into an offscreen RGBA buffer as coverage (additive, so overlapping
-splats build to solid ink), and the halftone pass reads that buffer at each cell centre and
-takes `max(sceneCoverage, crowCoverage)`. So the bird lands on the same lattice as
-everything else. It is read after the text keep-out, because it perches on the copy.
+**Model.** "Crow" by Alexei Ostapenko, from Sketchfab, CC-BY-4.0 (commercial use allowed,
+credit required, and the credit line is in the copy block; `public/models/crow-license.txt`
+has the exact wording). 2.2k triangles, 92 bones, one 10.5s animation, `root|TakeOff`.
 
-**Life cycle:** waits 1.1s, flies in from off the left, lands on the top right of the copy,
-idles there (breathing, slow looks around), and on a click crouches, jumps, beats hard and
-leaves past the right edge. `crowHit` is a small transparent div tracking its bounding box,
-so the cursor turns to a pointer and the click target is real; everything else on the band
-stays `pointer-events: none`.
+**Bake.** `tools/bake_crow.py` reads the glTF itself, with no loader library, and writes:
 
-**Why it is posed on the CPU:** the rig is a handful of angles, so skinning 5,000 points in
-JavaScript is cheaper than the plumbing for doing it on the GPU, and the projection has to
-happen here anyway to give the page a bounding box to hit test.
+```
+crow-cloud.bin   6000 points sampled over the surface by triangle area, in bind space,
+                 each with its four bone indices and weights          (117KB)
+crow-anim.bin    per frame skinning matrices, 317 frames x 92 joints, 3x4 each,
+                 int16 at 1e-4 of a body length                       (683KB)
+crow.json        fps, the three segment ranges, and the credit line
+```
 
-Two things learned the hard way, both visible in `tools/crow-preview.html`, which draws six
-poses flat without the halftone in the way:
+It also normalises the model: +x forward, +y up, one unit from beak to tail tip, centred.
+Rerun it only if the model changes; the site never sees the glTF, and there is no three.js.
 
-- **The bird cannot be seen from the side.** Wings spread across its z axis, so a pure side
-  view foreshortens them to nothing. Flight is posed three quarters on (yaw -0.85 easing to
-  -0.38), which is also why the perch pose keeps a yaw of -0.38.
-- **The tail needs layering, not spread.** Its fan opens across the same axis, so from the
-  side it is the per feather drop that reads, not the angle.
+**The animation is one continuous take**, performed in place, which the bake splits by how
+much the wings are moving:
 
-The canvas now spans the whole window rather than just the band, so the crow can fly the
-full width; the picture still occupies the centred band, which `bandW()` derives from
-`--band-k`, and the dot pitch is still band width over dots across, so the landscape is
-unchanged.
+| range | frames | what it is |
+|---|---|---|
+| idle | 0–196 | sitting, looking about, **pecking** |
+| takeoff | 196–256 | the crouch, the leap, the first beats |
+| flight | 256–317 | the wingbeat cycle, looped |
+
+**We supply the performance**: where it is on the page, which way it faces, when it lands
+and when it leaves. `src/crow.js` skins the cloud on the CPU (6000 points x 4 bones, about
+290k multiplies a frame), projects it, and hands the renderer screen space points. Phase
+changes crossfade the pose over about a sixth of a second, so nothing pops.
+
+**Drawing** is unchanged from the procedural version: the points are splatted into an
+offscreen coverage buffer and the halftone pass takes `max(scene, crow)` at each cell
+centre, so the bird is made of the same dots as the landscape. Splat size follows the
+bird's size on screen, which is what keeps its coverage solid at any scale.
+
+The canvas spans the whole window rather than just the band, so the crow can fly the full
+width; the picture still occupies the centred band, which `bandW()` derives from
+`--band-k`, and the dot pitch is still band width over dots across.
+
+Open items: the takeoff animation ends the moment the bird leaves, so a long flight loops
+the wingbeat with no glide. There is no landing in the take, so the fly in uses the flight
+loop and our own descent, which reads as a fast approach rather than a flare.
 
 ## Layout, all measured from the mockups, not chosen
 

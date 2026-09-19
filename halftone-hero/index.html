@@ -58,6 +58,8 @@
   .copy .dim{color:var(--muted)}
   .copy .gap{margin-top:50px}
   .copy b.k{font-weight:500;color:var(--ink)}
+  .copy .credit{margin-top:34px;font-size:11px;color:var(--muted);opacity:.75}
+  .copy .credit a{color:inherit}
   .copy a.msg{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
   .caption{position:absolute;right:4.86%;top:5.18vh;height:27px;z-index:4;
@@ -114,6 +116,8 @@
       <p class="dim gap">I'm based in San Francisco and enjoy finding unexpected sounds for artists, films, and culture.</p>
       <p class="dim"><b class="k">Clients include:</b> Kendrick Lamar, Nike, A24, Apple, The Weeknd, NBA, Figma, Arc'teryx, Spotify, and Cash App.</p>
       <p class="dim">For collaborations, or just to say hello, <a class="msg" href="#">Message me.</a></p>
+      <p class="credit">Crow model by <a href="https://sketchfab.com/alexanders823">Alexei Ostapenko</a>,
+        <a href="http://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>.</p>
     </div>
     <div class="caption">
       <span class="now" id="now">Cassis</span>
@@ -145,8 +149,8 @@
 
   <h4>Crow</h4>
   <div class="btns"><button id="crowBtn">Fly in again</button></div>
-  <label><span class="row"><span>Size</span><span id="vCrowSize">0.055</span></span>
-    <input id="crowSize" type="range" min="0.02" max="0.14" step="0.001" value="0.055"></label>
+  <label><span class="row"><span>Size</span><span id="vCrowSize">0.105</span></span>
+    <input id="crowSize" type="range" min="0.03" max="0.26" step="0.001" value="0.105"></label>
   <label><span class="row"><span>Point size</span><span id="vCrowDot">2.2</span></span>
     <input id="crowDot" type="range" min="1" max="6" step="0.1" value="2.2"></label>
 

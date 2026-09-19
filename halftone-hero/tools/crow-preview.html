@@ -14,49 +14,44 @@
 <body>
 <div class="grid" id="grid"></div>
 <script type="module">
+// Draws the baked cloud flat, without the halftone pass, so poses can be judged directly.
 const {createCrow} = await import("../src/crow.js?v=" + Date.now());   // dodge the module cache
-
-// Poses the bird at a few moments of its life and draws the cloud flat, so the anatomy can
-// be judged without the halftone pass in the way. Parts are coloured in the last panel.
-const COLORS=["#111","#c1121f","#f3722c","#277da1","#43aa8b","#8e7dbe","#b5179e"];
 const W=520,H=380;
 
-function panel(title, drive, colour){
-  const crow=createCrow();
+const crow=createCrow("../public/models/");
+await new Promise(r=>{ const w=()=>crow.ready?r():setTimeout(w,40); w(); });
+
+function panel(title, drive){
   const fig=document.createElement("figure");
   const cv=document.createElement("canvas");
   cv.width=W*2; cv.height=H*2;
-  const cap=document.createElement("figcaption"); cap.textContent=title;
+  const cap=document.createElement("figcaption");
   fig.append(cv,cap); document.getElementById("grid").append(fig);
   const ctx=cv.getContext("2d"); ctx.scale(2,2);
-  drive(crow);
-  const ctxArgs={w:W,h:H,perchX:W*0.5,perchY:H*0.66,sway:[0,0],scale:105,reduce:false};
-  crow.update(0.016,ctxArgs);
+  const c={w:W,h:H,perchX:W*0.5,perchY:H*0.66,sway:[0,0],scale:150,reduce:false};
+  crow.replay();
+  drive(c);
   ctx.clearRect(0,0,W,H);
   ctx.strokeStyle="rgba(0,0,0,.25)";
-  ctx.beginPath(); ctx.moveTo(40,ctxArgs.perchY); ctx.lineTo(W-40,ctxArgs.perchY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40,c.perchY); ctx.lineTo(W-40,c.perchY); ctx.stroke();
   const p=crow.positions;
   for(let i=0;i<crow.count;i++){
     const x=p[i*3],y=p[i*3+1],z=p[i*3+2];
-    ctx.fillStyle=colour?COLORS[crow.parts[i]]:`rgba(10,10,10,${0.25+0.75*z})`;
-    ctx.fillRect(x,y,1.6,1.6);
+    ctx.fillStyle=`rgba(10,10,10,${0.3+0.7*z})`;
+    ctx.fillRect(x,y,1.5,1.5);
   }
   const [x0,y0,x1,y1]=crow.bbox;
   ctx.strokeStyle="rgba(0,0,0,.3)"; ctx.strokeRect(x0,y0,x1-x0,y1-y0);
-  cap.textContent=`${title} — ${Math.round(x1-x0)}x${Math.round(y1-y0)}px, ${crow.count} points`;
+  cap.textContent=`${title} — ${Math.round(x1-x0)}x${Math.round(y1-y0)}px, ${crow.count} points, ${crow.phase}`;
 }
+const run=(c,secs,dt=1/60)=>{ for(let t=0;t<secs;t+=dt) crow.update(dt,c); };
 
-const run=(crow,secs,dt=1/60)=>{
-  const c={w:W,h:H,perchX:W*0.5,perchY:H*0.66,sway:[0,0],scale:105,reduce:false};
-  for(let t=0;t<secs;t+=dt) crow.update(dt,c);
-};
-
-panel("perched", c=>{ c.replay(); run(c,4.0); });
-panel("perched, colour coded", c=>{ c.replay(); run(c,4.0); }, true);
-panel("fly in, early (wings down)", c=>{ c.replay(); run(c,0.55); });
-panel("fly in, mid (wings up)", c=>{ c.replay(); run(c,0.72); });
-panel("fly in, flare", c=>{ c.replay(); run(c,2.6); });
-panel("takeoff, climbing", c=>{ c.replay(); run(c,4.0); c.click(W); run(c,0.55); });
+panel("perched, early", c=>run(c,4.2));
+panel("perched, a peck later", c=>run(c,7.5));
+panel("perched, later still", c=>run(c,9.5));
+panel("fly in, mid", c=>run(c,1.9));
+panel("takeoff, the leap", c=>{ run(c,4.2); crow.click(W); run(c,0.35); });
+panel("takeoff, climbing", c=>{ run(c,4.2); crow.click(W); run(c,0.9); });
 </script>
 </body>
 </html>

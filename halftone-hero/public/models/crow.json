@@ -1,0 +1,18 @@
+{
+  "fps": 30.0,
+  "frames": 317,
+  "points": 6000,
+  "idle": [
+    0,
+    196
+  ],
+  "takeoff": [
+    196,
+    256
+  ],
+  "flight": [
+    256,
+    317
+  ],
+  "credit": "Crow by Alexei Ostapenko, CC-BY-4.0, sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2"
+}
