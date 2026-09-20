@@ -3,8 +3,8 @@
 Input is the Sketchfab glTF ("Crow" by Alexei Ostapenko, CC-BY-4.0). We do not ship the
 model or use a runtime loader: this reads the glTF here and writes two small files.
 
-    crow-cloud.bin    points sampled evenly over the mesh surface, in bind space,
-                      each with up to four joints and weights
+    crow-cloud.bin    points sampled evenly over the mesh surface, in bind space, each
+                      with its normal and up to four joints and weights
     crow-anim.bin     per frame skinning matrices (3x4 each), for the frames we keep
 
 The renderer then skins the cloud on the CPU, the same way it already poses the
@@ -96,6 +96,7 @@ def main():
     # ---- mesh in bind space -------------------------------------------------------------
     prim = g["meshes"][0]["primitives"][0]
     pos = gl.accessor(prim["attributes"]["POSITION"]).astype(np.float64)
+    nrm = gl.accessor(prim["attributes"]["NORMAL"]).astype(np.float64)
     joints = gl.accessor(prim["attributes"]["JOINTS_0"]).astype(np.int32)
     weights = gl.accessor(prim["attributes"]["WEIGHTS_0"]).astype(np.float64)
     if weights.dtype != np.float64:
@@ -114,6 +115,36 @@ def main():
     bary = np.stack([1 - u - v, u, v], 1)                       # per sampled point
     verts = idx[pick]
     p_pos = (bary[:, :, None] * pos[verts]).sum(1)
+    # the normal is what lets the renderer shade the bird, which is what turns a flat
+    # silhouette into a halftone with dot sizes that follow the form
+    p_nrm = (bary[:, :, None] * nrm[verts]).sum(1)
+    p_nrm /= np.maximum(np.linalg.norm(p_nrm, axis=1, keepdims=True), 1e-9)
+    # the model is low poly, so its normals are faceted and the shading comes out mottled.
+    # Average each point with its neighbours on the surface: the form survives, the facets
+    # do not.
+    from scipy.spatial import cKDTree
+    tree = cKDTree(p_pos)
+    _, near_idx = tree.query(p_pos, k=18)
+    p_nrm = p_nrm[near_idx].mean(1)
+    p_nrm /= np.maximum(np.linalg.norm(p_nrm, axis=1, keepdims=True), 1e-9)
+
+    # ambient occlusion, baked in the rest pose: how much of the neighbourhood sits in
+    # front of each point. Creases (wing against flank, under the tail, between the legs)
+    # come out dark, which is what gives the halftone its form rather than a flat mass.
+    span_all = float(np.ptp(p_pos, axis=0).max())
+    r_ao = 0.13 * span_all
+    counts = tree.query_ball_point(p_pos, r_ao, return_length=True)
+    occ = np.zeros(len(p_pos))
+    for i, nb in enumerate(tree.query_ball_point(p_pos, r_ao)):
+        if not nb:
+            continue
+        d = p_pos[nb] - p_pos[i]
+        dist = np.linalg.norm(d, axis=1) + 1e-9
+        front = np.clip((d / dist[:, None]) @ p_nrm[i], 0, None)   # above the tangent plane
+        occ[i] = (front * (1 - dist / r_ao)).sum()
+    p_ao = 1 - np.clip(occ / max(np.percentile(occ, 97), 1e-9), 0, 1)
+    print(f"ao: radius {r_ao:.3f}, mean {p_ao.mean():.2f}, "
+          f"range {p_ao.min():.2f}-{p_ao.max():.2f}, neighbours {counts.mean():.0f}")
 
     # each sample inherits the joints and weights of its triangle's nearest corner, which
     # keeps the four-bone limit without blending across unrelated bones
@@ -204,8 +235,27 @@ def main():
 
     scale = 1.0 / span[long_axis]
     perm = [long_axis, up_axis, 3 - long_axis - up_axis]
+    p_nrm = p_nrm[:, perm]
     for fi in range(frames):
         mats[fi] = mats[fi][:, perm, :]                          # reorder rows to x,y,z
+
+    # which end is the head? The longest axis does not say, and getting it wrong makes the
+    # bird fly backwards. Ask the skeleton: find the head joint and see which way it sits.
+    head_j = next((j for j, nd in enumerate(joint_nodes)
+                   if "head" in (g["nodes"][nd].get("name") or "").lower()), None)
+    if head_j is None:
+        print("no head joint found; leaving the facing as it is")
+    else:
+        head_x = float(mats[0, head_j, 0, 3])
+        body_x = float(np.median(skin_frame(0)[:, 0]))
+        if head_x < body_x:                                      # turn it around, not mirror
+            mats[:, :, 0, :] *= -1
+            mats[:, :, 2, :] *= -1
+            p_nrm[:, 0] *= -1
+            p_nrm[:, 2] *= -1
+            print("head was facing -x: rotated 180 degrees about up")
+        else:
+            print("head already faces +x")
     mats *= scale
     centre = (skin_frame(0).min(0) + skin_frame(0).max(0)) / 2
     mats[:, :, :, 3] -= centre[None, None, :]
@@ -213,8 +263,10 @@ def main():
     # ---- write ---------------------------------------------------------------------------
     cloud = out_dir / "crow-cloud.bin"
     with cloud.open("wb") as f:
-        f.write(struct.pack("<4sIII", b"CRWC", 1, len(p_pos), 0))
+        f.write(struct.pack("<4sIII", b"CRWC", 3, len(p_pos), 0))
         f.write(p_pos.astype("<f4").tobytes())
+        f.write(np.clip(np.round(p_nrm * 127), -127, 127).astype("<i1").tobytes())
+        f.write((p_ao * 255).round().clip(0, 255).astype("<u1").tobytes())
         f.write(p_joint.astype("<u1").tobytes())
         f.write((p_weight * 255).round().clip(0, 255).astype("<u1").tobytes())
     # int16 with one scale for the file: the matrices sit well inside +-3, and 1e-4 of a

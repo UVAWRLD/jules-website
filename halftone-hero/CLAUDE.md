@@ -130,22 +130,27 @@ tone balance, since dot size is carrying two signals at once.
 
 A rigged model, baked to a point cloud, posed by our own state machine.
 
-**Model.** "Crow" by Alexei Ostapenko, from Sketchfab, CC-BY-4.0 (commercial use allowed,
-credit required, and the credit line is in the copy block; `public/models/crow-license.txt`
-has the exact wording). 2.2k triangles, 92 bones, one 10.5s animation, `root|TakeOff`.
+**Model.** "Crow" by Alexei Ostapenko, from Sketchfab, CC-BY-4.0. The author confirmed
+to Jules directly that no visible credit is needed, so there is no credit line on the page;
+`public/models/crow-license.txt` is kept as the record of where it came from. 2.2k
+triangles, 92 bones, one 10.5s animation, `root|TakeOff`.
 
 **Bake.** `tools/bake_crow.py` reads the glTF itself, with no loader library, and writes:
 
 ```
 crow-cloud.bin   6000 points sampled over the surface by triangle area, in bind space,
-                 each with its four bone indices and weights          (117KB)
+                 each with a smoothed normal, baked ambient occlusion, and its four
+                 bone indices and weights                             (140KB)
 crow-anim.bin    per frame skinning matrices, 317 frames x 92 joints, 3x4 each,
                  int16 at 1e-4 of a body length                       (683KB)
 crow.json        fps, the three segment ranges, and the credit line
 ```
 
 It also normalises the model: +x forward, +y up, one unit from beak to tail tip, centred.
-Rerun it only if the model changes; the site never sees the glTF, and there is no three.js.
+Which end is forward comes from the head joint, not from the longest axis, or the bird
+flies backwards. Rerun it only if the model changes; the site never sees the glTF, and
+there is no three.js. `BAKE` in `src/crow.js` is the file layout version and is used as a
+cache buster: bump it whenever the bake's layout changes.
 
 **The animation is one continuous take**, performed in place, which the bake splits by how
 much the wings are moving:
@@ -157,22 +162,45 @@ much the wings are moving:
 | flight | 256–317 | the wingbeat cycle, looped |
 
 **We supply the performance**: where it is on the page, which way it faces, when it lands
-and when it leaves. `src/crow.js` skins the cloud on the CPU (6000 points x 4 bones, about
+and when it leaves. It waits 1.1s, flies in over 2.9s, perches on the name (feet on the top
+of the type), plays the idle at 0.72 speed, and on a click leaves over 2.5s. Ten seconds
+after it is gone it comes back and the whole thing runs again. `src/crow.js` skins the cloud on the CPU (6000 points x 4 bones, about
 290k multiplies a frame), projects it, and hands the renderer screen space points. Phase
 changes crossfade the pose over about a sixth of a second, so nothing pops.
 
-**Drawing** is unchanged from the procedural version: the points are splatted into an
-offscreen coverage buffer and the halftone pass takes `max(scene, crow)` at each cell
-centre, so the bird is made of the same dots as the landscape. Splat size follows the
-bird's size on screen, which is what keeps its coverage solid at any scale.
+**Drawing, and why the bird is shaded.** A flat silhouette screens into a solid mass of
+identical dots. What makes the reference art read is that the dot sizes follow the form, so
+the bird is lit and the screen turns that into a tonal range:
+
+- the points carry **smoothed normals** (averaged over 18 neighbours at bake time, or the
+  low poly model's facets come out as mottling) and **baked ambient occlusion** (how much
+  of the neighbourhood sits in front of each point, so creases go dark)
+- `src/crow.js` turns those into ink per point: a key light from the upper left front, the
+  occlusion, and the turn of the form away from the viewer
+- the crow pass writes that ink premultiplied into an offscreen buffer **with a depth test**,
+  so only the near surface is screened, not the far side of the body
+- the halftone pass averages a 3x3 tap at one cell spacing, adds a dark edge where the
+  buffer's coverage falls off, and takes `max(scene, crow)` at the cell centre
+
+Splat size follows the bird's size on screen, which keeps its coverage solid at any scale.
+It is perched three quarters on (yaw -0.62): side on, the tail fans across the view axis
+and collapses to a line.
 
 The canvas spans the whole window rather than just the band, so the crow can fly the full
 width; the picture still occupies the centred band, which `bandW()` derives from
 `--band-k`, and the dot pitch is still band width over dots across.
 
+**Frame grabs.** `tools/devserver.py` serves the folder and accepts `POST /_grab?name`
+with a data URL, writing `tools/grabs/<name>.png`. With `?grab` in the page URL the drawing
+buffer is preserved so a frame can be read back. This is the only reliable way to judge the
+screen: a screenshot of the preview pane is downsampled, which destroys the dots.
+
 Open items: the takeoff animation ends the moment the bird leaves, so a long flight loops
 the wingbeat with no glide. There is no landing in the take, so the fly in uses the flight
-loop and our own descent, which reads as a fast approach rather than a flare.
+loop and our own descent, which reads as a fast approach rather than a flare. The idle
+alternates standing and pecking, and the pecking frames are hunched, so the bird spends a
+fair amount of its time low; a tighter idle range would keep it upright if that reads
+better on the page.
 
 ## Layout, all measured from the mockups, not chosen
 

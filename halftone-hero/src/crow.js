@@ -12,6 +12,8 @@
 //
 // Model space after the bake: +x forward, +y up, one unit from beak to tail tip.
 
+const IDLE_RATE = 0.72;      // the sitting and pecking plays a little under speed
+const AWAY = 10;             // seconds off screen before it comes back
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = t => t * t * (3 - 2 * t);
@@ -19,17 +21,28 @@ const easeOut = t => 1 - Math.pow(1 - t, 3);
 const easeIn = t => t * t * t;
 
 const BASE = "public/models/";
+const BAKE = 5;                // cloud layout version: positions, normals, joints, weights
+const LIGHT = (() => { const v = [-0.45, 0.78, 0.44]; const l = Math.hypot(...v); return v.map(x => x / l); })();
 
 async function load(base) {
+  // BAKE is bumped whenever tools/bake_crow.py changes the file layout, so a stale copy
+  // in the browser cache cannot be read with the wrong offsets
+  const v = "?v=" + BAKE;
   const [cloudBuf, animBuf, meta] = await Promise.all([
-    fetch(base + "crow-cloud.bin").then(r => r.arrayBuffer()),
-    fetch(base + "crow-anim.bin").then(r => r.arrayBuffer()),
-    fetch(base + "crow.json").then(r => r.json()),
+    fetch(base + "crow-cloud.bin" + v).then(r => r.arrayBuffer()),
+    fetch(base + "crow-anim.bin" + v).then(r => r.arrayBuffer()),
+    fetch(base + "crow.json" + v).then(r => r.json()),
   ]);
 
   const n = new DataView(cloudBuf).getUint32(8, true);
   let off = 16;
   const pos = new Float32Array(cloudBuf, off, n * 3); off += n * 12;
+  const nrm8 = new Int8Array(cloudBuf, off, n * 3); off += n * 3;
+  const nrm = new Float32Array(n * 3);
+  for (let i = 0; i < n * 3; i++) nrm[i] = nrm8[i] / 127;
+  const ao8 = new Uint8Array(cloudBuf, off, n); off += n;
+  const ao = new Float32Array(n);
+  for (let i = 0; i < n; i++) ao[i] = ao8[i] / 255;
   const joint = new Uint8Array(cloudBuf, off, n * 4); off += n * 4;
   const raw = new Uint8Array(cloudBuf, off, n * 4);
   const weight = new Float32Array(n * 4);
@@ -42,7 +55,7 @@ async function load(base) {
   const mats = new Float32Array(qm.length);
   for (let i = 0; i < qm.length; i++) mats[i] = qm[i] * q;
 
-  return { n, pos, joint, weight, frames, joints, fps, mats, meta };
+  return { n, pos, nrm, ao, joint, weight, frames, joints, fps, mats, meta };
 }
 
 export function createCrow(base = BASE) {
@@ -55,15 +68,16 @@ export function createCrow(base = BASE) {
     ready: false,
   };
   const pose = { x: 0, y: 0, yaw: 0, pitch: 0, roll: 0, scale: 70 };
-  let M = null, out = new Float32Array(0), skinned = null;
+  let M = null, out = new Float32Array(0), skinned = null, skinnedN = null;
   let frameMats = null, blendFrom = null, blendT = 0;
   let foot = 0;                        // model y of the feet, so it stands on the perch
   let perch = [0, 0], path = null;
 
   load(base).then(m => {
     M = m;
-    out = new Float32Array(m.n * 3);
+    out = new Float32Array(m.n * 4);               // x px, y px, depth, shade
     skinned = new Float32Array(m.n * 3);
+    skinnedN = new Float32Array(m.n * 3);
     frameMats = new Float32Array(m.joints * 12);
     blendFrom = new Float32Array(m.joints * 12);
     poseFrame(m.meta.idle[0], 0);
@@ -89,10 +103,11 @@ export function createCrow(base = BASE) {
 
   function poseFrame(fi, fract) {
     gather(fi, fract);
-    const { n, pos, joint, weight } = M;
+    const { n, pos, nrm, joint, weight } = M;
     for (let i = 0, p = 0, k = 0; i < n; i++, p += 3, k += 4) {
       const x = pos[p], y = pos[p + 1], z = pos[p + 2];
-      let ox = 0, oy = 0, oz = 0;
+      const nx = nrm[p], ny = nrm[p + 1], nz = nrm[p + 2];
+      let ox = 0, oy = 0, oz = 0, mx = 0, my = 0, mz = 0;
       for (let b = 0; b < 4; b++) {
         const w = weight[k + b];
         if (w <= 0) continue;
@@ -100,8 +115,14 @@ export function createCrow(base = BASE) {
         ox += w * (frameMats[m] * x + frameMats[m + 1] * y + frameMats[m + 2] * z + frameMats[m + 3]);
         oy += w * (frameMats[m + 4] * x + frameMats[m + 5] * y + frameMats[m + 6] * z + frameMats[m + 7]);
         oz += w * (frameMats[m + 8] * x + frameMats[m + 9] * y + frameMats[m + 10] * z + frameMats[m + 11]);
+        // normals take the rotation only, which is close enough here: the rig does not scale
+        mx += w * (frameMats[m] * nx + frameMats[m + 1] * ny + frameMats[m + 2] * nz);
+        my += w * (frameMats[m + 4] * nx + frameMats[m + 5] * ny + frameMats[m + 6] * nz);
+        mz += w * (frameMats[m + 8] * nx + frameMats[m + 9] * ny + frameMats[m + 10] * nz);
       }
       skinned[p] = ox; skinned[p + 1] = oy; skinned[p + 2] = oz;
+      const l = Math.hypot(mx, my, mz) || 1;
+      skinnedN[p] = mx / l; skinnedN[p + 1] = my / l; skinnedN[p + 2] = mz / l;
     }
   }
 
@@ -138,14 +159,26 @@ export function createCrow(base = BASE) {
     const cp = Math.cos(pose.pitch), sp = Math.sin(pose.pitch);
     const cr = Math.cos(pose.roll), sr = Math.sin(pose.roll);
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
-    for (let i = 0, p = 0; i < n; i++, p += 3) {
-      const x = skinned[p], y = skinned[p + 1] - foot, z = skinned[p + 2];
-      const rx = x * cr - y * sr, ry = x * sr + y * cr;        // roll
-      const ty = ry * cp - z * sp, tz = ry * sp + z * cp;      // pitch
-      const fx = rx * cy + tz * sy, fz = -rx * sy + tz * cy;   // yaw
+    const rot = (x, y, z) => {                                 // roll, pitch, then yaw
+      const rx = x * cr - y * sr, ry = x * sr + y * cr;
+      const ty = ry * cp - z * sp, tz = ry * sp + z * cp;
+      return [rx * cy + tz * sy, ty, -rx * sy + tz * cy];
+    };
+    for (let i = 0, p = 0, q = 0; i < n; i++, p += 3, q += 4) {
+      const [fx, ty, fz] = rot(skinned[p], skinned[p + 1] - foot, skinned[p + 2]);
       const k = pose.scale * CAM / (CAM - fz);
       const sx = pose.x + fx * k, syy = pose.y - ty * k;
-      out[p] = sx; out[p + 1] = syy; out[p + 2] = clamp(0.5 + fz * 0.5, 0, 1);
+      const [nx, ny, nz] = rot(skinnedN[p], skinnedN[p + 1], skinnedN[p + 2]);
+      // one key light from the upper left front: the shading is what the screen turns
+      // into dots of different sizes, so the bird reads as a form rather than a cut-out
+      const lam = Math.max(0, nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]);
+      out[q] = sx; out[q + 1] = syy; out[q + 2] = clamp(0.5 + fz * 0.5, 0, 1);
+      // Ink, not light, and the range matters more than the average: a screen only shows
+      // form if the dots run from small to merged. Three terms: the key light, the baked
+      // occlusion in the creases, and the turn of the form away from the viewer.
+      const rim = 1 - Math.abs(nz);
+      const shade = 0.55 * (1 - lam) + 0.45 * (1 - M.ao[i]);
+      out[q + 3] = clamp(0.1 + 0.78 * shade + 0.26 * rim * rim, 0, 1);
       if (sx < x0) x0 = sx; if (sx > x1) x1 = sx;
       if (syy < y0) y0 = syy; if (syy > y1) y1 = syy;
     }
@@ -171,7 +204,7 @@ export function createCrow(base = BASE) {
     }
 
     if (st.phase === "flyIn") {
-      const T = 2.1, t = clamp(st.t / T, 0, 1), e = easeOut(t);
+      const T = 2.9, t = clamp(st.t / T, 0, 1), e = easeOut(t);
       const [x, y] = bez(path, e), [x2, y2] = bez(path, Math.min(e + 0.02, 1));
       pose.x = x; pose.y = y;
       pose.yaw = swayYaw + lerp(-0.85, -0.38, ease(clamp((t - 0.5) / 0.5, 0, 1)));
@@ -181,13 +214,13 @@ export function createCrow(base = BASE) {
       if (t >= 1) startPhase("perched");
     } else if (st.phase === "perched") {
       pose.x = perchX; pose.y = perchY;
-      pose.yaw = swayYaw - 0.38;
+      pose.yaw = swayYaw - 0.62;      // turned toward the viewer: side on, the tail is edge on
       pose.pitch = swayPitch;
       pose.roll = 0;
       // the idle take is the bird sitting, looking about and pecking: just let it run
-      st.frame = reduce ? idle[0] : loop(idle[0], idle[1], st.t);
+      st.frame = reduce ? idle[0] : loop(idle[0], idle[1], st.t * IDLE_RATE);
     } else if (st.phase === "takeoff") {
-      const T = 1.9, t = clamp(st.t / T, 0, 1);
+      const T = 2.5, t = clamp(st.t / T, 0, 1);
       const lead = 0.22;                              // it crouches and leaps before moving
       if (st.t < lead) {
         pose.x = perchX; pose.y = perchY;
@@ -202,7 +235,10 @@ export function createCrow(base = BASE) {
       }
       const tf = to[0] + st.t * M.fps;
       st.frame = tf < to[1] ? tf : loop(flight[0], flight[1], st.t - (to[1] - to[0]) / M.fps);
-      if (t >= 1) { st.phase = "gone"; return false; }
+      if (t >= 1) { st.phase = "gone"; st.t = 0; return false; }
+    } else if (st.phase === "gone") {
+      if (st.t > AWAY) { st.delay = 0; startPhase("waiting"); }   // round it goes again
+      return false;
     } else {
       return false;
     }
