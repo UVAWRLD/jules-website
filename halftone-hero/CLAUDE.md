@@ -221,7 +221,7 @@ Reference frame is 1440 x 1024.
 |---|---|
 | Band | centred, width `min(0.96 × viewport height, viewport width)`. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
 | Text column | left edge 29.8% into the band (35.42% of a 1440 frame), 420px wide, 14 / 21px |
-| Logo | 27px at 4.86% / 5.18vh |
+| Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink |
 | Cassis | aspect 2.530 (reference art), bottom on the fold |
 | Paris | aspect 1.830 (reference art), bottom on the fold |
