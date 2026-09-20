@@ -159,11 +159,14 @@ much the wings are moving:
 |---|---|---|
 | idle | 0–196 | sitting, looking about, **pecking** |
 | takeoff | 196–256 | the crouch, the leap, the first beats |
-| flight | 256–317 | the wingbeat cycle, looped |
+| flight | 256–296 | the wingbeat cycle, looped. The end is found by matching poses
+  against the first frame: the take runs to 317, but the beat comes back round at 296, and
+  looping on 317 snapped the bird mid air |
 
 **We supply the performance**: where it is on the page, which way it faces, when it lands
-and when it leaves. It waits 1.1s, flies in over 2.9s, perches on the name (feet on the top
-of the type), plays the idle at 0.72 speed, and on a click leaves over 2.5s. Ten seconds
+and when it leaves. It waits 1.1s, flies in over 2.1s, perches on the name (feet on the top
+of the type), plays the idle at 0.72 speed, and on a click leaves over 2.5s. The arrival
+ends on `PERCH_YAW`, the same angle it perches at, or it turns with a jolt as it lands. Ten seconds
 after it is gone it comes back and the whole thing runs again. `src/crow.js` skins the cloud on the CPU (6000 points x 4 bones, about
 290k multiplies a frame), projects it, and hands the renderer screen space points. Phase
 changes crossfade the pose over about a sixth of a second, so nothing pops.
@@ -180,7 +183,8 @@ the bird is lit and the screen turns that into a tonal range:
 - the crow pass writes that ink premultiplied into an offscreen buffer **with a depth test**,
   so only the near surface is screened, not the far side of the body
 - the halftone pass averages a 3x3 tap at one cell spacing, adds a dark edge where the
-  buffer's coverage falls off, and takes `max(scene, crow)` at the cell centre
+  buffer's coverage falls off, thins the ink on the bird's own far side (its depth, the
+  same idea as the landscape's aerial fade), and takes `max(scene, crow)` at the cell centre
 
 Splat size follows the bird's size on screen, which keeps its coverage solid at any scale.
 It is perched three quarters on (yaw -0.62): side on, the tail fans across the view axis

@@ -14,6 +14,8 @@
 
 const IDLE_RATE = 0.72;      // the sitting and pecking plays a little under speed
 const AWAY = 10;             // seconds off screen before it comes back
+const PERCH_YAW = -0.62;     // turned toward the viewer: side on, the tail is edge on.
+                             // The arrival has to end here too, or it snaps as it lands.
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = t => t * t * (3 - 2 * t);
@@ -21,7 +23,7 @@ const easeOut = t => 1 - Math.pow(1 - t, 3);
 const easeIn = t => t * t * t;
 
 const BASE = "public/models/";
-const BAKE = 5;                // cloud layout version: positions, normals, joints, weights
+const BAKE = 6;                // cloud layout version: positions, normals, joints, weights
 const LIGHT = (() => { const v = [-0.45, 0.78, 0.44]; const l = Math.hypot(...v); return v.map(x => x / l); })();
 
 async function load(base) {
@@ -204,17 +206,17 @@ export function createCrow(base = BASE) {
     }
 
     if (st.phase === "flyIn") {
-      const T = 2.9, t = clamp(st.t / T, 0, 1), e = easeOut(t);
+      const T = 2.1, t = clamp(st.t / T, 0, 1), e = easeOut(t);
       const [x, y] = bez(path, e), [x2, y2] = bez(path, Math.min(e + 0.02, 1));
       pose.x = x; pose.y = y;
-      pose.yaw = swayYaw + lerp(-0.85, -0.38, ease(clamp((t - 0.5) / 0.5, 0, 1)));
+      pose.yaw = swayYaw + lerp(-0.85, PERCH_YAW, ease(clamp((t - 0.5) / 0.5, 0, 1)));
       pose.pitch = clamp(-(y2 - y) * 0.02, -0.5, 0.6) + swayPitch;
       pose.roll = clamp((y2 - y) * 0.004, -0.35, 0.35);
       st.frame = loop(flight[0], flight[1], st.t);
       if (t >= 1) startPhase("perched");
     } else if (st.phase === "perched") {
       pose.x = perchX; pose.y = perchY;
-      pose.yaw = swayYaw - 0.62;      // turned toward the viewer: side on, the tail is edge on
+      pose.yaw = swayYaw + PERCH_YAW;
       pose.pitch = swayPitch;
       pose.roll = 0;
       // the idle take is the bird sitting, looking about and pecking: just let it run
@@ -224,7 +226,7 @@ export function createCrow(base = BASE) {
       const lead = 0.22;                              // it crouches and leaps before moving
       if (st.t < lead) {
         pose.x = perchX; pose.y = perchY;
-        pose.pitch = swayPitch; pose.yaw = swayYaw - 0.38;
+        pose.pitch = swayPitch; pose.yaw = swayYaw + PERCH_YAW;
       } else {
         const f = clamp((st.t - lead) / (T - lead), 0, 1);
         const [x, y] = bez(path, easeIn(f) * 0.35 + easeOut(f) * 0.65);

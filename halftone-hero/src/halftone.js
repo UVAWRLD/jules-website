@@ -41,7 +41,7 @@ uniform vec3  uHueA,uHueB,uInk;
 uniform float uDpr,uCell,uMix,uStagger,uDrift,uTint,uDepth,uDetail,uOpacity;
 uniform float uPar,uFog,uRelief,uShowDep;
 uniform vec2  uSway,uRes;
-uniform float uCrowOn,uCrowInk;
+uniform float uCrowOn,uCrowInk,uCrowFog;
 uniform vec2 uTexW;
 uniform vec4 uTextRect;
 uniform vec2 uTextPad;
@@ -129,9 +129,13 @@ void main(){
     float ink=cr.r/max(cr.a,0.001);          // undo the premultiply
     float edge=1.0-smoothstep(0.25,0.95,cr.a);   // the silhouette reads as a dark outline
     ink=clamp(ink+0.3*edge,0.0,1.0);
+    // the bird has its own depth: the far side of it thins out, as distance does in the
+    // landscape, so the body turns away from the viewer instead of reading flat
+    float crowNear=clamp(cr.g/max(cr.a,0.001),0.0,1.0);
+    ink*=mix(1.0, 0.45+0.55*crowNear, uCrowFog);
     float crowCov=ink*smoothstep(0.1,0.5,cr.a)*uCrowInk;
     cov=max(cov*clear,crowCov);
-    near=mix(near, clamp(cr.g/max(cr.a,0.001),0.0,1.0), step(0.12,cr.a));
+    near=mix(near, crowNear, step(0.12,cr.a));
     clear=1.0;
   } else {
     cov*=clear; clear=1.0;
@@ -164,7 +168,7 @@ gl.linkProgram(prog); gl.useProgram(prog);
 if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
 const U={}; ["uSrcA","uSrcB","uLut","uXfA","uXfB","uToneA","uToneB","uBlueAB","uHueA","uHueB",
   "uInk","uDpr","uCell","uMix","uStagger","uDrift","uTint","uDepth","uTexW","uTextRect","uTextPad",
-  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk"]
+  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk","uCrowFog"]
   .forEach(n=>U[n]=gl.getUniformLocation(prog,n));
 const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
 
@@ -368,7 +372,7 @@ const nowEl=document.getElementById("now"), nextEl=document.getElementById("next
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
 const zoneUnit=()=>bandW()||band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["crowSize","crowDot","crowInk","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["crowSize","crowDot","crowInk","crowFog","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -393,7 +397,7 @@ function labels(){
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
   s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
-  s("vCrowInk",(+ctl.crowInk.value).toFixed(2));
+  s("vCrowInk",(+ctl.crowInk.value).toFixed(2)); s("vCrowFog",(+ctl.crowFog.value).toFixed(2));
   s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vSens",(+ctl.sens.value).toFixed(1)+"x"); s("vFog",(+ctl.fog.value).toFixed(2));
   s("vRelief",(+ctl.relief.value).toFixed(2));
   s("vSoft",(+ctl.soft.value).toFixed(2));   s("vDetail",(+ctl.detail.value).toFixed(2));
@@ -410,7 +414,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.crowSize.value=0.19; ctl.crowDot.value=2.2; ctl.crowInk.value=0.95;
+  ctl.crowSize.value=0.064; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
@@ -531,6 +535,7 @@ function frame(){
     gl.uniform2f(U.uRes,cv.width/dpr,cv.height/dpr);
     gl.uniform1f(U.uCrowOn,alive&&crow.count?1:0);
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
+    gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);

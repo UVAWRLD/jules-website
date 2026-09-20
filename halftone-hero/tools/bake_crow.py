@@ -282,11 +282,24 @@ def main():
     span_y = np.array([float(np.ptp(skin_frame(fi)[:, 1])) for fi in range(frames)])
     moving = span_y > span_y[:120].mean() * 1.25
     first = int(np.argmax(moving)) if moving.any() else frames
+    # the flight range is looped, so it has to end where the wingbeat comes back round to
+    # its start. Taking the last frame instead makes the bird snap mid air.
+    def loop_end(lo, hi):
+        if hi - lo < 24:
+            return hi
+        cost = [(float(np.abs(mats[f] - mats[lo]).mean()), f) for f in range(lo + 12, hi)]
+        best, at = min(cost)
+        print(f"loop {lo}-{hi}: ends at {at} (cost {best:.4f}, was "
+              f"{float(np.abs(mats[hi - 1] - mats[lo]).mean()):.4f})")
+        return at
+
+    flight = [min(first + 50, frames - 1), frames]
+    flight[1] = loop_end(flight[0], flight[1])
     meta = {
         "fps": args.fps, "frames": frames, "points": len(p_pos),
         "idle": [0, max(first - 10, 1)],          # perched, with the pecks
         "takeoff": [max(first - 10, 1), min(first + 50, frames)],
-        "flight": [min(first + 50, frames - 1), frames],
+        "flight": flight,
         "credit": "Crow by Alexei Ostapenko, CC-BY-4.0, sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2",
     }
     (out_dir / "crow.json").write_text(json.dumps(meta, indent=2) + "\n")
