@@ -409,6 +409,7 @@ document.getElementById("copyBtn").onclick=e=>{
 pullTone(); labels(); resize(); setMode(mode);
 addEventListener("load",()=>resize());
 
+const nameEl=document.getElementById("name");
 const crowHit=document.getElementById("crowHit");
 crowHit.onclick=()=>crow.click(cv.getBoundingClientRect().width);
 document.getElementById("crowBtn").onclick=()=>crow.replay();
@@ -463,14 +464,14 @@ function frame(){
   sway[0]+=(want[0]-sway[0])*ease;
   sway[1]+=(want[1]-sway[1])*ease;
 
-  // the crow perches near the right end of the copy, facing into the page
-  const cr=copy.getBoundingClientRect(), cvr=cv.getBoundingClientRect();
+  // the crow stands on the name, feet just above the type
+  const nameR=nameEl.getBoundingClientRect(), cvr=cv.getBoundingClientRect();
   const crowScale=bandW()*(+ctl.crowSize.value);
   crowScreenScale=crowScale;
   const alive=crow.update(reduce?0.016:dt,{
     w:cvr.width, h:cvr.height,
-    perchX:cr.right-cvr.left-crowScale*0.55,
-    perchY:cr.top-cvr.top+2,
+    perchX:nameR.left+nameR.width*0.62-cvr.left,
+    perchY:nameR.top-cvr.top-1,
     sway, scale:crowScale, reduce
   });
   if(alive&&crow.count) drawCrow();

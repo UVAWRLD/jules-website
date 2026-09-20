@@ -1,7 +1,8 @@
 // The crow: a rigged model, baked to a point cloud, posed by our own state machine.
 //
-// The shape and the wingbeat come from the Sketchfab model ("Crow" by Alexei Ostapenko,
-// CC-BY-4.0), baked by tools/bake_crow.py into two files: points sampled over its surface
+// The shape and the wingbeat come from the Sketchfab model ("Crow" by Alexei Ostapenko;
+// the author confirmed to Jules that no visible credit is needed), baked by
+// tools/bake_crow.py into two files: points sampled over its surface
 // with their bone weights, and the animation as per frame skinning matrices. Nothing is
 // loaded at runtime beyond those two files: no glTF loader, no three.js.
 //
@@ -170,7 +171,7 @@ export function createCrow(base = BASE) {
     }
 
     if (st.phase === "flyIn") {
-      const T = 2.6, t = clamp(st.t / T, 0, 1), e = easeOut(t);
+      const T = 2.1, t = clamp(st.t / T, 0, 1), e = easeOut(t);
       const [x, y] = bez(path, e), [x2, y2] = bez(path, Math.min(e + 0.02, 1));
       pose.x = x; pose.y = y;
       pose.yaw = swayYaw + lerp(-0.85, -0.38, ease(clamp((t - 0.5) / 0.5, 0, 1)));
@@ -186,7 +187,7 @@ export function createCrow(base = BASE) {
       // the idle take is the bird sitting, looking about and pecking: just let it run
       st.frame = reduce ? idle[0] : loop(idle[0], idle[1], st.t);
     } else if (st.phase === "takeoff") {
-      const T = 2.3, t = clamp(st.t / T, 0, 1);
+      const T = 1.9, t = clamp(st.t / T, 0, 1);
       const lead = 0.22;                              // it crouches and leaps before moving
       if (st.t < lead) {
         pose.x = perchX; pose.y = perchY;
