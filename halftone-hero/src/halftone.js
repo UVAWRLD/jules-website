@@ -41,7 +41,7 @@ uniform vec3  uHueA,uHueB,uInk;
 uniform float uDpr,uCell,uMix,uStagger,uDrift,uTint,uDepth,uDetail,uOpacity;
 uniform float uPar,uFog,uRelief,uShowDep;
 uniform vec2  uSway,uRes;
-uniform float uCrowOn,uCrowInk,uCrowFog;
+uniform float uCrowOn,uCrowInk,uCrowFog,uCellCrow;
 uniform vec2 uTexW;
 uniform vec4 uTextRect;
 uniform vec2 uTextPad;
@@ -114,19 +114,39 @@ void main(){
   float dText = length(max(q,0.0)) + min(max(q.x,q.y),0.0);
   float clear = smoothstep(uTextPad.x, uTextPad.x + max(uTextPad.y,0.5), dText);
 
-  // the crow is screened through the same lattice, but it perches on the copy, so it is
-  // read after the keep-out and sits in front of everything
+  cov*=clear;                               // the picture respects the text keep-out
+
+  // ---- the picture's dots, on the shared lattice ----
+  float aScene=0.0, covOut=cov;
+  if(cov>=0.004){
+    float rho=texture(uLut,vec2(cov,0.5)).r*0.75;
+    // relief: near dots grow, far ones shrink, as if the lattice sat on the surface
+    float r=rho*uCell*mix(1.0, 0.72+0.56*near, uRelief);
+    float aa=min(0.75,r*0.9);
+    aScene=1.0-smoothstep(r-aa,r+aa,length(px-c));
+    // the reference art is not pure dots: part of its ink is continuous tone
+    aScene=mix(aScene,cov,mix(uSoftAB.x,uSoftAB.y,tl));
+    // opacity carries the same signal as size, so light dots sit further back
+    aScene*=mix(1.0, 0.18+0.82*cov, uDepth);
+  }
+
+  // ---- the crow's dots, on its own finer lattice ----
+  // The bird is small on the page, so at the picture's pitch there are too few dots across
+  // it to show its form. It gets its own screen, and perches on the copy, so it is read
+  // after the keep-out and sits in front of everything.
+  float aCrow=0.0;
   if(uCrowOn>0.5){
-    // the bird is averaged over a cell, as the picture is by its mip level: a 3x3 tap at
-    // one cell spacing, which also takes the facets out of a low poly model's shading
-    vec2 st=c/uRes, e=vec2(uCell)/uRes;
+    vec2 cc=(floor(px/uCellCrow)+0.5)*uCellCrow;
+    // averaged over its own cell, a 3x3 tap at one cell spacing, which also takes the
+    // facets out of a low poly model's shading
+    vec2 st=cc/uRes, e=vec2(uCellCrow)/uRes;
     vec4 cr=vec4(0.0);
     for(int j=-1;j<=1;j++) for(int i=-1;i<=1;i++){
       float wgt=(i==0?2.0:1.0)*(j==0?2.0:1.0);
       cr+=texture(uCrow, st+vec2(float(i)*e.x, float(j)*e.y))*wgt;
     }
     cr/=16.0;
-    float ink=cr.r/max(cr.a,0.001);          // undo the premultiply
+    float ink=cr.r/max(cr.a,0.001);              // undo the premultiply
     float edge=1.0-smoothstep(0.25,0.95,cr.a);   // the silhouette reads as a dark outline
     ink=clamp(ink+0.3*edge,0.0,1.0);
     // the bird has its own depth: the far side of it thins out, as distance does in the
@@ -134,28 +154,21 @@ void main(){
     float crowNear=clamp(cr.g/max(cr.a,0.001),0.0,1.0);
     ink*=mix(1.0, 0.45+0.55*crowNear, uCrowFog);
     float crowCov=ink*smoothstep(0.1,0.5,cr.a)*uCrowInk;
-    cov=max(cov*clear,crowCov);
-    near=mix(near, crowNear, step(0.12,cr.a));
-    clear=1.0;
-  } else {
-    cov*=clear; clear=1.0;
+    if(crowCov>=0.004){
+      float rhoC=texture(uLut,vec2(crowCov,0.5)).r*0.75;
+      float rC=rhoC*uCellCrow*mix(1.0, 0.72+0.56*crowNear, uRelief);
+      float aaC=min(0.75,rC*0.9);
+      aCrow=1.0-smoothstep(rC-aaC,rC+aaC,length(px-cc));
+      aCrow*=mix(1.0, 0.18+0.82*crowCov, uDepth);
+      covOut=max(covOut,crowCov);
+    }
   }
-  if(cov<0.004){ outColor=vec4(0.0); return; }
 
-  float rho=texture(uLut,vec2(cov,0.5)).r*0.75;
-  // relief: near dots grow, far ones shrink, as if the lattice sat on the surface
-  float r=rho*uCell*mix(1.0, 0.72+0.56*near, uRelief);
-  float aa=min(0.75,r*0.9);
-  float a=1.0-smoothstep(r-aa,r+aa,length(px-c));
-
-  // the reference art is not pure dots: part of its ink is continuous tone
-  a=mix(a,cov,mix(uSoftAB.x,uSoftAB.y,tl));
-
-  // opacity carries the same signal as size, so light dots sit further back
-  a *= mix(1.0, 0.18+0.82*cov, uDepth) * clear * uOpacity;
+  float a=max(aScene,aCrow)*uOpacity;
+  if(a<=0.002){ outColor=vec4(0.0); return; }
 
   vec3 placeInk=mix(uHueA,uHueB,tl);
-  vec3 dotInk=mix(placeInk,uInk,smoothstep(0.22,0.88,cov));
+  vec3 dotInk=mix(placeInk,uInk,smoothstep(0.22,0.88,covOut));
   outColor=vec4(mix(uInk,dotInk,uTint)*a, a);
 }`;
 
@@ -168,7 +181,7 @@ gl.linkProgram(prog); gl.useProgram(prog);
 if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
 const U={}; ["uSrcA","uSrcB","uLut","uXfA","uXfB","uToneA","uToneB","uBlueAB","uHueA","uHueB",
   "uInk","uDpr","uCell","uMix","uStagger","uDrift","uTint","uDepth","uTexW","uTextRect","uTextPad",
-  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk","uCrowFog"]
+  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk","uCrowFog","uCellCrow"]
   .forEach(n=>U[n]=gl.getUniformLocation(prog,n));
 const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
 
@@ -372,7 +385,7 @@ const nowEl=document.getElementById("now"), nextEl=document.getElementById("next
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
 const zoneUnit=()=>bandW()||band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["crowSize","crowDot","crowInk","crowFog","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["crowSize","crowCells","crowDot","crowInk","crowFog","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -396,7 +409,7 @@ function labels(){
   s("vLift",(+ctl.lift.value).toFixed(2));   s("vBlack",(+ctl.black.value).toFixed(2));
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
-  s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
+  s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowCells",ctl.crowCells.value); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
   s("vCrowInk",(+ctl.crowInk.value).toFixed(2)); s("vCrowFog",(+ctl.crowFog.value).toFixed(2));
   s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vSens",(+ctl.sens.value).toFixed(1)+"x"); s("vFog",(+ctl.fog.value).toFixed(2));
   s("vRelief",(+ctl.relief.value).toFixed(2));
@@ -414,7 +427,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.crowSize.value=0.064; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
+  ctl.crowSize.value=0.064; ctl.crowCells.value=445; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
@@ -536,6 +549,7 @@ function frame(){
     gl.uniform1f(U.uCrowOn,alive&&crow.count?1:0);
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
     gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
+    gl.uniform1f(U.uCellCrow,bandW()/+ctl.crowCells.value);
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);

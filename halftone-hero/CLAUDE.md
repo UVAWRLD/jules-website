@@ -183,8 +183,15 @@ the bird is lit and the screen turns that into a tonal range:
 - the crow pass writes that ink premultiplied into an offscreen buffer **with a depth test**,
   so only the near surface is screened, not the far side of the body
 - the halftone pass averages a 3x3 tap at one cell spacing, adds a dark edge where the
-  buffer's coverage falls off, thins the ink on the bird's own far side (its depth, the
-  same idea as the landscape's aerial fade), and takes `max(scene, crow)` at the cell centre
+  buffer's coverage falls off, and thins the ink on the bird's own far side (its depth, the
+  same idea as the landscape's aerial fade)
+
+**The crow has its own lattice**, 445 dots across the band against the picture's 311. It is
+small on the page, so at the picture's pitch there were only about 13 dots across it, too
+few to show any form; at 445 there are about 19. The two screens are computed separately,
+each with its own cell, radius from the same ink curve, and relief, and composited by
+taking whichever dot is more opaque. Since the bird is drawn on a different grid it no
+longer has to share phase with the landscape, which is what lets its pitch differ at all.
 
 Splat size follows the bird's size on screen, which keeps its coverage solid at any scale.
 It is perched three quarters on (yaw -0.62): side on, the tail fans across the view axis
