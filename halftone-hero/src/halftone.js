@@ -355,7 +355,21 @@ themes.forEach(([id,v])=>document.getElementById(id).onclick=()=>{
   themes.forEach(([j,w])=>document.getElementById(j).setAttribute("aria-pressed",w===v));
 });
 
-addEventListener("pointermove",e=>{if(e.pointerType==="mouse")mouse={x:e.clientX,y:e.clientY};},{passive:true});
+// A dot instead of a pointer. Drawn as an element rather than a cursor image so it stays
+// crisp on a retina screen; it is moved in the pointer handler itself, not in the frame
+// loop, so it does not lag behind the hand.
+const dot=document.getElementById("dot");
+if(fine){
+  document.body.classList.add("dotted");
+  addEventListener("pointerdown",()=>dot.classList.add("down"));
+  addEventListener("pointerup",()=>dot.classList.remove("down"));
+  addEventListener("pointerleave",()=>dot.classList.remove("on"));
+}
+addEventListener("pointermove",e=>{
+  if(e.pointerType!=="mouse") return;
+  mouse={x:e.clientX,y:e.clientY};
+  if(fine){ dot.style.transform="translate3d("+e.clientX+"px,"+e.clientY+"px,0)"; dot.classList.add("on"); }
+},{passive:true});
 addEventListener("pointerleave",()=>{mouse=null;});
 addEventListener("scroll",()=>readTarget(),{passive:true});
 
@@ -385,7 +399,7 @@ const nowEl=document.getElementById("now"), nextEl=document.getElementById("next
 const ZONE_HYST=0.9;                                   // % of the band, about 12px at 1330
 const zoneUnit=()=>bandW()||band.getBoundingClientRect().width;
 const zonePx=c=>+c.value/100*zoneUnit();
-const ids=["crowSize","crowCells","crowDot","crowInk","crowFog","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
+const ids=["crowSize","crowMin","crowMax","crowCells","crowDot","crowInk","crowFog","par","sens","fog","relief","morph","zNy","zParis","opacity","cells","stag","drift","depth","tint","detail","inset","gap","feather","lift","black","white","gamma","lc","blue","soft"];
 const ctl={}; ids.forEach(i=>ctl[i]=document.getElementById(i));
 let tuning=0;
 
@@ -409,7 +423,8 @@ function labels(){
   s("vLift",(+ctl.lift.value).toFixed(2));   s("vBlack",(+ctl.black.value).toFixed(2));
   s("vWhite",(+ctl.white.value).toFixed(2)); s("vGamma",(+ctl.gamma.value).toFixed(2));
   s("vLc",(+ctl.lc.value).toFixed(2));       s("vBlue",(+ctl.blue.value).toFixed(2));
-  s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowCells",ctl.crowCells.value); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
+  s("vCrowSize",(+ctl.crowSize.value).toFixed(3)); s("vCrowCells",ctl.crowCells.value);
+  s("vCrowMin",ctl.crowMin.value+" px"); s("vCrowMax",ctl.crowMax.value+" px"); s("vCrowDot",(+ctl.crowDot.value).toFixed(1));
   s("vCrowInk",(+ctl.crowInk.value).toFixed(2)); s("vCrowFog",(+ctl.crowFog.value).toFixed(2));
   s("vPar",(+ctl.par.value).toFixed(0)+" px"); s("vSens",(+ctl.sens.value).toFixed(1)+"x"); s("vFog",(+ctl.fog.value).toFixed(2));
   s("vRelief",(+ctl.relief.value).toFixed(2));
@@ -427,7 +442,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.crowSize.value=0.064; ctl.crowCells.value=445; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
+  ctl.crowSize.value=0.064; ctl.crowMin.value=46; ctl.crowMax.value=74; ctl.crowCells.value=445; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();
@@ -438,6 +453,7 @@ document.getElementById("copyBtn").onclick=e=>{
     opacityDepth:+ctl.depth.value, hue:+ctl.tint.value, detail:+ctl.detail.value,
     bandWidthVh:+ctl.inset.value, textKeepOutPx:+ctl.gap.value, keepOutFadePx:+ctl.feather.value, imageLift:+ctl.lift.value,
     morphSeconds:+ctl.morph.value, zoneNyPctOfBand:+ctl.zNy.value, zoneParisPctOfBand:+ctl.zParis.value,
+    crowMinPx:+ctl.crowMin.value, crowMaxPx:+ctl.crowMax.value,
     inkOpacity:+ctl.opacity.value, parallaxPx:+ctl.par.value, tiltSensitivity:+ctl.sens.value, aerialFade:+ctl.fog.value,
     relief:+ctl.relief.value, tone:Object.fromEntries(PLACES.map(p=>[p.key,p.tone]))
   };
@@ -465,9 +481,9 @@ function showCard(on){
   document.body.classList.toggle("crow-card",on);
   crowCard.setAttribute("aria-hidden",String(!on));
 }
-crowHit.onmouseenter=()=>showCard(true);
-crowHit.onmouseleave=()=>showCard(false);
-crowHit.onclick=()=>{ showCard(false); crow.click(cv.getBoundingClientRect().width); };
+crowHit.onmouseenter=()=>{ showCard(true); dot.classList.add("over"); };
+crowHit.onmouseleave=()=>{ showCard(false); dot.classList.remove("over"); };
+crowHit.onclick=()=>{ showCard(false); dot.classList.remove("over"); crow.click(cv.getBoundingClientRect().width); };
 document.getElementById("crowBtn").onclick=()=>{ showCard(false); crow.replay(); };
 
 // the leader: a dashed hop off the bird, a 45 degree run up, then into the card's left edge
@@ -541,7 +557,11 @@ function frame(){
 
   // the crow stands on the name, feet just above the type
   const nameR=nameEl.getBoundingClientRect(), cvr=cv.getBoundingClientRect();
-  const crowScale=bandW()*(+ctl.crowSize.value);
+  // His size follows the band, which runs away on a large screen and collapses on a phone,
+  // so it is held between a floor and a ceiling: proportionally bigger on small windows,
+  // smaller on big ones, and unchanged around a laptop.
+  const crowScale=Math.max(+ctl.crowMin.value,
+                  Math.min(bandW()*(+ctl.crowSize.value), +ctl.crowMax.value));
   crowScreenScale=crowScale;
   const alive=crow.update(reduce?0.016:dt,{
     w:cvr.width, h:cvr.height,
@@ -559,6 +579,7 @@ function frame(){
     if(cardWanted){ showCard(true); placeCard(cvr); }
   } else if(cardOn||cardWanted){
     showCard(false); cardWanted=false;      // he moved: the card goes with him
+    dot.classList.remove("over");
   }
 
   if(ready===NTEX){

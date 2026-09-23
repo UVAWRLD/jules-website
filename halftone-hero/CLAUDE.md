@@ -230,6 +230,17 @@ Fonts are Satoshi for the page (Fontshare), Inconsolata for the pronunciation li
 Libre Caslon Condensed for the word itself. The last is not on Google Fonts, so it falls
 back to Libre Caslon Text until the real file is self hosted.
 
+**His size is held between a floor and a ceiling.** It follows the band, which runs away on
+a large monitor and collapses on a phone, so it is clamped: `clamp(46px, band × 0.064, 74px)`.
+A laptop is unchanged at about 63px; a 2560 wide screen stops at 74 instead of 88; a 390px
+phone gets 46 instead of 25, which is proportionally much larger, as it has to be.
+
+**The pointer is a 7px dot in `#F13A0D`,** with the native cursor hidden. It is an element
+rather than a cursor image, so it stays crisp on a retina screen, and it is moved inside the
+pointer handler rather than the frame loop, so it does not trail the hand. It swells to 13px
+over the bird — without a pointer that is the only thing left to say "this is clickable" —
+and to 11px while the button is down. Coarse pointers keep the normal cursor.
+
 ## Layout, all measured from the mockups, not chosen
 
 Reference frame is 1440 x 1024.
