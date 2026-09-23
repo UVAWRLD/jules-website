@@ -15,6 +15,7 @@
   :root{
     --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
     --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
+    --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
     /* band width follows the viewport height so the picture keeps the same vertical
        composition at every window size; it only gives way when the window is too narrow */
     --band-k:0.96;
@@ -24,15 +25,18 @@
     :root:not([data-theme="light"]){
       --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
       --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
+      --card-line:#4A4A46; --card-shadow:0 2px 32px 2px rgba(0,0,0,.45);
     }
   }
   :root[data-theme="dark"]{
     --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
     --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
+    --card-line:#4A4A46; --card-shadow:0 2px 32px 2px rgba(0,0,0,.45);
   }
   :root[data-theme="light"]{
     --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
     --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
+    --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
@@ -96,29 +100,31 @@
   /* the pointer is a small red dot; the native one is hidden while it is in use */
   body.dotted, body.dotted *{cursor:none}
   #dot{position:fixed;left:0;top:0;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;
-    border-radius:50%;background:#F13A0D;z-index:20;pointer-events:none;
+    box-sizing:border-box;border-radius:50%;background:#F13A0D;border:0 solid #F13A0D;
+    z-index:20;pointer-events:none;
     opacity:0;transition:opacity .12s ease, width .12s ease, height .12s ease,
-      margin .12s ease}
+      margin .12s ease, border-width .12s ease}
   #dot.on{opacity:1}
   #dot.down{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
-  /* over the bird it swells a little: without a pointer, that is the only affordance */
-  #dot.over{width:13px;height:13px;margin:-6.5px 0 0 -6.5px}
+  /* over the bird it hollows out rather than growing: the same dot, now a ring */
+  #dot.over{background:transparent;border-width:2px}
   body:not(.dotted) #dot{display:none}
 
   /* the card that names the bird, and the line that ties it to him */
-  #crowCard{position:fixed;z-index:7;width:280px;box-sizing:border-box;
-    background:var(--paper);border:1px solid #D9D4D4;
-    box-shadow:0 2px 32px 2px rgba(0,0,0,.05);
+  #crowCard{position:fixed;z-index:7;width:280px;max-width:calc(100vw - 24px);box-sizing:border-box;
+    background:var(--paper);border:1px solid var(--card-line);
+    box-shadow:var(--card-shadow);
     padding:10px 16px;display:flex;flex-direction:column;gap:7px;
     opacity:0;transition:opacity .18s ease;pointer-events:none}
   #crowLead{position:fixed;z-index:6;pointer-events:none;overflow:visible;
     opacity:0;transition:opacity .18s ease}
+  #crowLead path{stroke:var(--card-line)}
   body.crow-card #crowCard, body.crow-card #crowLead{opacity:1}
   #crowCard .term{font-family:"Libre Caslon Condensed","Libre Caslon Text",Georgia,serif;
-    font-weight:600;font-size:16px;line-height:21px;color:#000;margin:0}
+    font-weight:600;font-size:16px;line-height:21px;color:var(--ink);margin:0}
   #crowCard .say{font-family:"Inconsolata",ui-monospace,monospace;font-size:8px;line-height:21px;
-    color:#8A8A8A;margin:0}
-  #crowCard .def{font-size:9px;line-height:12px;color:#000;margin:0}
+    color:var(--muted);margin:0}
+  #crowCard .def{font-size:9px;line-height:12px;color:var(--ink);margin:0}
   .zone{position:fixed;z-index:5;pointer-events:none;border:1px dashed var(--rule)}
   .zone.on{border-color:var(--ink)}
   :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
@@ -156,7 +162,7 @@
 <div class="zone" hidden></div><div class="zone" hidden></div>
 <div id="crowHit" hidden></div>
 <div id="dot" aria-hidden="true"></div>
-<svg id="crowLead" width="0" height="0" aria-hidden="true"><path fill="none" stroke="#D9D4D4"/></svg>
+<svg id="crowLead" width="0" height="0" aria-hidden="true"><path fill="none"/></svg>
 <div id="crowCard" role="note" aria-hidden="true">
   <div>
     <p class="term">Crow</p>

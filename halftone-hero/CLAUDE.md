@@ -235,11 +235,21 @@ a large monitor and collapses on a phone, so it is clamped: `clamp(46px, band ×
 A laptop is unchanged at about 63px; a 2560 wide screen stops at 74 instead of 88; a 390px
 phone gets 46 instead of 25, which is proportionally much larger, as it has to be.
 
+**The card takes the theme.** Its hairline and shadow are tokens (`--card-line`,
+`--card-shadow`) and its type uses `--ink` and `--muted`, so the dark scheme inverts with
+everything else instead of leaving black text on a dark card.
+
+**The leader adapts.** The card is placed first, clamped to the window, and the line is then
+built from wherever it landed: off his right shoulder as in the design, off his left when
+there is no room that side, or straight up (or down) when the card ends up over him, which
+is what a phone gets. The rise shortens to whatever fits and the dashes shorten with it. If
+the line cannot be drawn without crossing him, it is dropped rather than drawn through him.
+
 **The pointer is a 7px dot in `#F13A0D`,** with the native cursor hidden. It is an element
 rather than a cursor image, so it stays crisp on a retina screen, and it is moved inside the
-pointer handler rather than the frame loop, so it does not trail the hand. It swells to 13px
-over the bird — without a pointer that is the only thing left to say "this is clickable" —
-and to 11px while the button is down. Coarse pointers keep the normal cursor.
+pointer handler rather than the frame loop, so it does not trail the hand. Over the bird it hollows into a
+ring of the same size rather than growing — without a pointer that is the only thing left to
+say "this is clickable" — and it grows to 11px while the button is down. Coarse pointers keep the normal cursor.
 
 ## Layout, all measured from the mockups, not chosen
 

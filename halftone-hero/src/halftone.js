@@ -486,23 +486,67 @@ crowHit.onmouseleave=()=>{ showCard(false); dot.classList.remove("over"); };
 crowHit.onclick=()=>{ showCard(false); dot.classList.remove("over"); crow.click(cv.getBoundingClientRect().width); };
 document.getElementById("crowBtn").onclick=()=>{ showCard(false); crow.replay(); };
 
-// the leader: a dashed hop off the bird, a 45 degree run up, then into the card's left edge
-const LEAD_GAP=8, LEAD_RISE=75, LEAD_RUN=32, CARD_MID=61;
+// The leader: a dashed hop off the bird, a 45 degree run, then a short horizontal into the
+// card's edge. The card is placed first and clamped to the window, then the leader is built
+// from wherever it landed: off his right shoulder, his left, or straight up when the card
+// sits over him, which is what happens on a phone. Same motif, just shorter.
+const LEAD_RISE=75, CARD_MID=61, EDGE=12, HOP=8, OVER_GAP=22;
 function placeCard(cvr){
-  const [x0,y0,x1]=crow.bbox;
-  const ax=cvr.left+x1-10, ay=cvr.top+y0+2;          // just off his shoulder
-  const cx=ax+LEAD_RISE, cy=ay-LEAD_RISE;            // the corner
-  const ex=cx+LEAD_RUN;
-  crowCard.style.left=(cx+22.5)+"px";
-  crowCard.style.top=(cy-CARD_MID)+"px";
-  const pad=8, lx=Math.min(ax,ex)-pad, ly=cy-pad;
+  const [x0,y0,x1,y1]=crow.bbox;
+  const vw=innerWidth, vh=innerHeight;
+  const cw=crowCard.offsetWidth, ch=crowCard.offsetHeight;
+  const bl=cvr.left+x0, br=cvr.left+x1, bt=cvr.top+y0, bb=cvr.top+y1;
+  const rise=Math.max(14, Math.min(LEAD_RISE, bt-EDGE-CARD_MID));
+
+  // room to the right, as in the design; failing that the left; failing both, above him
+  let side=0;
+  if(br-10+rise+22.5+cw<=vw-EDGE) side=1;
+  else if(bl+10-rise-22.5-cw>=EDGE) side=-1;
+
+  let left, top, ax, ay, entryX, entryY, corner=0;
+  if(side){
+    ax=side>0?br-10:bl+10; ay=bt+2;
+    left=side>0 ? ax+rise+22.5 : ax-rise-22.5-cw;
+    left=Math.max(EDGE, Math.min(left, vw-EDGE-cw));
+    top=Math.max(EDGE, Math.min(ay-rise-CARD_MID, vh-EDGE-ch));
+    entryX=side>0?left:left+cw;
+    entryY=Math.max(top+8, Math.min(top+CARD_MID, top+ch-8));
+    corner=ax+side*Math.max(0, ay-entryY);                  // 45 degrees out of the hop
+    const limit=entryX-side*6;                              // always leave a little run
+    if(side>0 ? corner>limit : corner<limit) corner=limit;
+  } else {
+    // no room either side, so above him, or below when the card is taller than the space
+    // over his head. That is the usual case on a phone.
+    ax=(bl+br)/2;
+    const above=bt-OVER_GAP-ch>=EDGE;
+    left=Math.max(EDGE, Math.min(ax-cw/2, vw-EDGE-cw));
+    if(above){ ay=bt-2; top=Math.max(EDGE, ay-OVER_GAP-ch); entryY=top+ch; }
+    else { ay=bb+2; top=Math.min(vh-EDGE-ch, ay+OVER_GAP); entryY=top; }
+    entryX=Math.max(left+24, Math.min(ax, left+cw-24));
+  }
+  crowCard.style.left=left+"px"; crowCard.style.top=top+"px";
+
+  // no room to draw it without crossing him: better no line than a line into his back
+  const room=side ? true : Math.abs(ay-entryY)>=8;
+  crowLead.style.display=room?"":"none";
+  if(!room) return;
+
+  const xs=[ax,entryX].concat(side?[corner]:[]), pad=10;
+  const lx=Math.min(...xs)-pad, ly=Math.min(entryY,ay)-pad;
   crowLead.style.left=lx+"px"; crowLead.style.top=ly+"px";
-  crowLead.setAttribute("width",(ex-lx+pad)+""); crowLead.setAttribute("height",(ay-ly+pad)+"");
+  crowLead.setAttribute("width",(Math.max(...xs)-lx+pad)+"");
+  crowLead.setAttribute("height",(Math.max(ay,entryY)-ly+pad)+"");
   const P=(x,y)=>(x-lx).toFixed(1)+" "+(y-ly).toFixed(1);
+  const span=Math.abs(ay-entryY);
+  const g=Math.min(HOP, Math.max(4, span*0.35));             // the dashes shrink with it
+  const hx=side?side*g:(entryX>ax?g*0.4:-g*0.4);
+  const hy=(entryY<ay?-1:1)*g;
   crowLeadPath.setAttribute("d",
-    "M "+P(ax,ay)+" L "+P(ax+LEAD_GAP*0.45,ay-LEAD_GAP*0.45)+
-    " M "+P(ax+LEAD_GAP*0.72,ay-LEAD_GAP*0.72)+" L "+P(ax+LEAD_GAP,ay-LEAD_GAP)+
-    " M "+P(ax+LEAD_GAP+2,ay-LEAD_GAP-2)+" L "+P(cx,cy)+" L "+P(ex,cy));
+    "M "+P(ax,ay)+" L "+P(ax+hx*0.45,ay+hy*0.45)+
+    " M "+P(ax+hx*0.72,ay+hy*0.72)+" L "+P(ax+hx,ay+hy)+
+    " M "+P(ax+hx*1.25,ay+hy*1.25)+
+    (side ? " L "+P(corner,entryY)+" L "+P(entryX,entryY)
+          : " L "+P(entryX,entryY)));
 }
 
 const sway=[0,0];
