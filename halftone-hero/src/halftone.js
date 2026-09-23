@@ -449,8 +449,45 @@ addEventListener("load",()=>resize());
 
 const nameEl=document.getElementById("name");
 const crowHit=document.getElementById("crowHit");
-crowHit.onclick=()=>crow.click(cv.getBoundingClientRect().width);
-document.getElementById("crowBtn").onclick=()=>crow.replay();
+if(GRAB) window.__crow=crow;            // ?grab also hands the bird to the console
+const crowCard=document.getElementById("crowCard");
+const crowLead=document.getElementById("crowLead");
+const crowLeadPath=crowLead.querySelector("path");
+
+// The card is a hover on the bird, and only while he is actually still: not in flight, not
+// for the first second on the perch, and gone the moment he leaves.
+const SETTLE=1.0;                       // seconds on the perch before the hover answers
+let cardWanted=false, cardOn=false;
+function showCard(on){
+  cardWanted=on;
+  if(on===cardOn) return;
+  cardOn=on;
+  document.body.classList.toggle("crow-card",on);
+  crowCard.setAttribute("aria-hidden",String(!on));
+}
+crowHit.onmouseenter=()=>showCard(true);
+crowHit.onmouseleave=()=>showCard(false);
+crowHit.onclick=()=>{ showCard(false); crow.click(cv.getBoundingClientRect().width); };
+document.getElementById("crowBtn").onclick=()=>{ showCard(false); crow.replay(); };
+
+// the leader: a dashed hop off the bird, a 45 degree run up, then into the card's left edge
+const LEAD_GAP=8, LEAD_RISE=75, LEAD_RUN=32, CARD_MID=61;
+function placeCard(cvr){
+  const [x0,y0,x1]=crow.bbox;
+  const ax=cvr.left+x1-10, ay=cvr.top+y0+2;          // just off his shoulder
+  const cx=ax+LEAD_RISE, cy=ay-LEAD_RISE;            // the corner
+  const ex=cx+LEAD_RUN;
+  crowCard.style.left=(cx+22.5)+"px";
+  crowCard.style.top=(cy-CARD_MID)+"px";
+  const pad=8, lx=Math.min(ax,ex)-pad, ly=cy-pad;
+  crowLead.style.left=lx+"px"; crowLead.style.top=ly+"px";
+  crowLead.setAttribute("width",(ex-lx+pad)+""); crowLead.setAttribute("height",(ay-ly+pad)+"");
+  const P=(x,y)=>(x-lx).toFixed(1)+" "+(y-ly).toFixed(1);
+  crowLeadPath.setAttribute("d",
+    "M "+P(ax,ay)+" L "+P(ax+LEAD_GAP*0.45,ay-LEAD_GAP*0.45)+
+    " M "+P(ax+LEAD_GAP*0.72,ay-LEAD_GAP*0.72)+" L "+P(ax+LEAD_GAP,ay-LEAD_GAP)+
+    " M "+P(ax+LEAD_GAP+2,ay-LEAD_GAP-2)+" L "+P(cx,cy)+" L "+P(ex,cy));
+}
 
 const sway=[0,0];
 let showDep=false;
@@ -513,11 +550,15 @@ function frame(){
     sway, scale:crowScale, reduce
   });
   if(alive&&crow.count) drawCrow();
-  crowHit.hidden=crow.phase!=="perched";
-  if(!crowHit.hidden){
+  const still=crow.phase==="perched"&&crow.state.t>SETTLE;
+  crowHit.hidden=!still;
+  if(still){
     const [x0,y0,x1,y1]=crow.bbox;
     crowHit.style.left=(cvr.left+x0-6)+"px"; crowHit.style.top=(cvr.top+y0-6)+"px";
     crowHit.style.width=(x1-x0+12)+"px"; crowHit.style.height=(y1-y0+12)+"px";
+    if(cardWanted){ showCard(true); placeCard(cvr); }
+  } else if(cardOn||cardWanted){
+    showCard(false); cardWanted=false;      // he moved: the card goes with him
   }
 
   if(ready===NTEX){
