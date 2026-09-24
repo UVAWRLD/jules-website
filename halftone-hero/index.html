@@ -84,11 +84,18 @@
   .caption{position:absolute;right:4.86%;top:5.18vh;height:27px;z-index:4;
     display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
   .caption .now{color:var(--ink)}
-  /* iPhone and iPad only, until motion access is granted: iOS will only ask from a tap */
-  .tiltbtn{position:absolute;left:calc(4.86% + 44px);top:5.18vh;height:27px;z-index:4;padding:0;
-    border:0;background:none;font:inherit;font-size:12px;color:var(--muted);cursor:pointer;
-    text-decoration:underline;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
-  .tiltbtn[hidden]{display:none}
+  /* the loading screen: white until its canvas takes over, over everything, then gone */
+  html.loading, html.loading body{overflow:hidden}
+  #loader{position:fixed;inset:0;z-index:100;background:#fff}
+  #loader.sweeping{background:transparent}
+  #loader canvas{display:block;width:100%;height:100%}
+  #loaderTilt{position:absolute;left:50%;transform:translateX(-50%);top:70%;
+    font:inherit;font-size:13px;line-height:1;color:#0A0A0A;background:#fff;
+    border:1px solid #0A0A0A;border-radius:999px;padding:11px 22px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;transition:opacity .2s ease}
+  #loaderTilt[hidden]{display:none}
+  #loaderTilt:disabled{opacity:.45}
+  #loader.sweeping #loaderTilt{opacity:0}
   .caption .bar{width:64px;height:2px;background:var(--rule);position:relative}
   .caption .bar i{position:absolute;inset:0 auto 0 0;background:var(--ink);width:0}
 
@@ -153,7 +160,6 @@
     .caption{cursor:pointer}
     .copy{left:6%;transform:none;width:88%;max-width:none;top:calc(var(--vh,100svh) * .2)}
     .caption{right:24px;top:26px}
-    .tiltbtn{left:66px;top:24px}
     body.tune .panel{left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}
   }
   /* a short phone (an iPhone SE in Safari leaves about 550px): the copy tightens up, or it
@@ -168,10 +174,15 @@
 </head>
 <body>
 
+<!-- Loading screen hourglass: "Sands of Time" by Antonio Gloria (sketchfab.com/antong3d), CC-BY-4.0 -->
+<div id="loader" aria-label="Loading">
+  <canvas id="loaderCv" aria-hidden="true"></canvas>
+  <button id="loaderTilt" hidden>Enable tilt</button>
+</div>
+
 <div class="stage" id="stage">
   <div class="pin">
     <div class="mark" aria-hidden="true"></div>
-    <button class="tiltbtn" id="tiltBtn" hidden>Enable tilt</button>
     <div class="band" id="band"><canvas id="c"></canvas></div>
     <div class="copy" id="copy">
       <nav><b id="name">Jules Bockelee Morvan</b><a href="#">Timeline</a><a href="#">Thoughts</a></nav>

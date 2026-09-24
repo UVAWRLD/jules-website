@@ -130,14 +130,14 @@ tone balance, since dot size is carrying two signals at once.
 drives the same `sway` (`onTilt` / `tiltLean` in `src/halftone.js`). The lean is measured
 from a baseline that follows the hand with a 3.5s time constant (`TILT_SETTLE`), so a turn of
 the wrist moves the picture, holding still lets it settle, and the resting angle can be
-anything. 16 degrees from rest is a full lean (`TILT_RANGE`). Axes are remapped for landscape.
+anything. 22 degrees from rest is a full lean (`TILT_RANGE`; 16 was a touch strong). Axes are remapped for landscape.
 The sign follows the cursor's convention, eye position: tipping the right edge away looks
 from the left. If it feels backwards on a phone, flip the minus in `tiltLean`.
 iOS only sends orientation after the visitor allows it, and only asks from inside a gesture
 it trusts. So there are three ways in: a quiet `requestPermission()` on load, which resolves
-at once if it was already allowed (tilt starts, no button); an **"Enable tilt" button** beside
-the logo, shown on iOS until there is an answer, since a button tap is always trusted; and
-any other tap also asks, until iOS answers yes or no. A refusal for want of a gesture throws,
+at once if it was already allowed; the loading screen's **"Enable tilt" button** (`enableTilt()`
+in `src/halftone.js`, called from the tap); and any other tap on the page also asks, until
+iOS answers yes or no. A refusal for want of a gesture throws,
 and is not an answer, so asking continues. The first version asked once, on the first tap
 anywhere, and gave up if iOS did not count that tap: tilt silently never started.
 Android needs no permission. Reduce Motion turns tilt off along with the parallax, on purpose.
@@ -151,6 +151,55 @@ the button (it is looked up at call time). Orientation is faked by dispatching
 viewport and client heights, svh/lvh/dvh, the canvas and picture size, the copy's position,
 the tilt state and raw angles, the sway, and reduce motion / pointer / touch points. It exists
 for phones, where the only way to see these is a screenshot from the visitor.
+
+## The loading screen
+
+`src/loader.js`. A white screen with an hourglass drawn in the crow's dots, the sand running,
+then a halftone sweep into the page. It has its own canvas and WebGL context, fixed over
+everything (`#loader`, z-index 100), since it must cover the copy and logo too; once the sweep
+is done it removes itself and loses its context. `?noloader` skips it.
+
+**Model.** "Sands of Time" by Antonio Gloria, Sketchfab, **CC-BY-4.0: needs credit**. It is
+only in the page source for now; see `public/models/hourglass-license.txt`.
+`tools/bake_hourglass.py` reads the GLB (no loader library) into `hourglass.bin` (169KB) and
+`hourglass.json` (the layout). The model is three rigid parts: frame and glass on one bone,
+sand on another, whose shape is morph targets (the top drains, the stream falls, the pile
+grows). Its 10s animation drains set A for 4s, flips in the 5th, then repeats with set B. The
+halves look alike, so only 0-5s and set A are kept, and looped: flipped with B full on top at
+5s is the same picture as upright with A full at 0s. The last frame is held, not lerped into
+the first, or it would spin back.
+
+**Runtime.** Frame and glass points are stored in bind space with a smoothed normal and baked
+occlusion; sand points as a triangle plus barycentrics, so they ride the morph. Each frame:
+morph the sand, recompute its vertex normals, apply the two bones' matrices (lerped between
+the 30fps frames), turn it slowly about the vertical (`SPIN`) and look down a little (`PITCH`)
+so it reads as 3D. The stream mesh is a smooth rod that reads as still, so ~90 loose grains
+drop through it from the neck to the top of the pile.
+Shading is the crow's: frame = key light + occlusion + rim (a little lighter than the crow,
+so the sand reads against it); sand darker, with a per grain jitter. **Glass** is drawn last,
+blended and without writing depth, with alpha from the rim only: the bulbs show as outlines
+and the sand shows through them.
+Screening is the crow's too: 3x3 tap, dark edge, far side thinned, the shared dot curve; cell
+= hourglass height / 150.
+
+**Timing.** Desktop (fine pointer): the sweep starts 4s after the hourglass first draws, which
+is exactly when the model's sand runs out. Touch: an "Enable tilt" button sits under the
+hourglass; the tap calls `enableTilt()` (iOS shows its prompt) and the sweep starts once there is
+an answer, allow or not; the hourglass keeps draining and flipping while it waits. Either way
+the sweep also waits for the page's textures. The crow's arrival is restarted at the reveal
+(`crow.replay()`), or he would already be perched behind the loader.
+
+**The sweep** (the reference is a halftone gradient of light dots going to dark). A coarse
+lattice (11px, 9 on phones) over the whole loader. A ragged front, value noise at two scales
+plus a slight diagonal, climbs from the bottom: above it the loader is solid, in a band
+(`band` 0.13 of the height) its cells shrink to dots, below it they are gone and a dark layer
+(`uMid`, the reference's near black) shows; a second front follows 0.13 of the sweep behind and
+dissolves the dark the same way, onto the page. The whole thing is 1.15s. Further apart the
+fronts left the whole screen black for a moment. Reduced motion gets a 0.4s fade instead.
+
+Testing: the preview pane's emulated phone sizes offset where taps land, so press the button
+with `document.getElementById("loaderTilt").click()`; stub
+`DeviceOrientationEvent.requestPermission` to resolve `"granted"` to test the allow path.
 
 ## The crow (prototype)
 

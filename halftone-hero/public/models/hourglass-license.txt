@@ -1,0 +1,10 @@
+"Sands of Time" by Antonio Gloria
+https://sketchfab.com/3d-models/sands-of-time-0a227353cd804df2b5414107d9e36d18
+Author: https://sketchfab.com/antong3d
+Licence: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+Used on the loading screen, baked to a point cloud by tools/bake_hourglass.py
+(hourglass.bin / hourglass.json). The GLB itself is not committed.
+
+CC-BY requires appropriate credit. As of 2026-09-24 the credit is only in the page source;
+a visible credit (or the author's waiver, as with the crow) is still to be decided.

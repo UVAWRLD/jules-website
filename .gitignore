@@ -5,3 +5,4 @@ image *.png
 
 # the source model: big, and we commit the baked point cloud instead
 halftone-hero/public/models/*.glb
+__pycache__/

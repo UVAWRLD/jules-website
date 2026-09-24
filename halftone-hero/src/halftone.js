@@ -1,4 +1,5 @@
 import {createCrow} from "./crow.js";
+import {createLoader} from "./loader.js";
 
 // paths are relative to index.html, so the folder runs from any static server.
 // moving to Astro means public/img/x.jpg becomes /img/x.jpg.
@@ -642,6 +643,17 @@ function placeCard(cvr){
 }
 
 const sway=[0,0];
+// The loading screen (src/loader.js). It covers the page until the sweep; the crow's arrival
+// is restarted when the page is revealed, or he would already be perched behind it.
+// ?noloader skips it, which the frame grabs and quick checks want.
+if(!/[?&]noloader\b/.test(location.search)){
+  createLoader({
+    mobile:!fine, reduce,
+    isHeroReady:()=>ready===NTEX,
+    enableTilt:()=>enableTilt(),
+    onReveal:()=>crow.replay(),
+  });
+} else document.getElementById("loader").remove();
 // Tilt. A touch screen has no cursor to lean toward, so the device's own tilt drives the same
 // sway. The resting angle is however the hand happens to hold it, so the lean is measured from
 // a baseline that follows the hand over a few seconds: a turn of the wrist moves the picture,
@@ -652,7 +664,7 @@ const sway=[0,0];
 // tap also asks, until iOS gives a definite answer. The first version asked once, on the first
 // tap anywhere, and gave up if iOS did not count that tap, so it never asked again.
 // Android sends orientation without asking.
-const TILT_RANGE=16;        // degrees from rest for a full lean
+const TILT_RANGE=22;        // degrees from rest for a full lean (16 was a touch strong)
 const TILT_SETTLE=3.5;      // seconds for the baseline to catch up with the hand
 let tiltRaw=null, tiltBase=null, tiltState="off";   // off | ask | on | denied | reduced
 function onTilt(e){
@@ -665,32 +677,38 @@ function onTilt(e){
   else if(a===180){ x=-x; y=-y; }
   tiltRaw=[x,y];
 }
-const tiltBtn=document.getElementById("tiltBtn");
 if(!fine && reduce) tiltState="reduced";               // Reduce Motion is on: no tilt, by design
-if(!fine && !reduce && "DeviceOrientationEvent" in window){
-  let listening=false;
-  const listen=()=>{
-    if(listening) return; listening=true; tiltState="on";
-    addEventListener("deviceorientation",onTilt);
-    tiltBtn.hidden=true;
-    removeEventListener("touchend",ask); removeEventListener("click",ask);
-  };
-  const answer=r=>{
-    if(r==="granted") listen();
-    else { tiltState="denied"; tiltBtn.hidden=true;
-           removeEventListener("touchend",ask); removeEventListener("click",ask); }
-  };
-  // a request iOS refuses for want of a gesture throws; that is not an answer, so keep asking
-  function ask(){ if(!listening) DeviceOrientationEvent.requestPermission().then(answer).catch(()=>{}); }
-  // ?tilt skips the permission step, for testing in a browser that will not grant it
-  if(typeof DeviceOrientationEvent.requestPermission==="function" && !/[?&]tilt\b/.test(location.search)){
+const tiltCapable=!fine && !reduce && "DeviceOrientationEvent" in window;
+// iOS gates orientation behind a prompt it only shows from inside a tap; ?tilt skips the gate,
+// for testing in a browser that will not grant it
+const tiltGated=tiltCapable && typeof DeviceOrientationEvent.requestPermission==="function"
+  && !/[?&]tilt\b/.test(location.search);
+let tiltListening=false;
+function listenTilt(){
+  if(tiltListening) return; tiltListening=true; tiltState="on";
+  addEventListener("deviceorientation",onTilt);
+  stopAsking();
+}
+// Called from inside a tap: the loader's "Enable tilt" button, or any tap on the page until
+// iOS has answered. Resolves once there is an answer, whatever it is.
+function enableTilt(){
+  if(!tiltCapable) return Promise.resolve();
+  if(!tiltGated){ listenTilt(); return Promise.resolve(); }
+  if(tiltListening) return Promise.resolve();
+  return DeviceOrientationEvent.requestPermission()
+    .then(r=>{ if(r==="granted") listenTilt(); else { tiltState="denied"; stopAsking(); } })
+    .catch(()=>{});      // refused for want of a gesture: not an answer, so keep asking
+}
+const askOnTap=()=>{ enableTilt(); };
+function stopAsking(){ removeEventListener("touchend",askOnTap); removeEventListener("click",askOnTap); }
+if(tiltCapable){
+  if(!tiltGated) listenTilt();
+  else {
     tiltState="ask";
-    DeviceOrientationEvent.requestPermission()            // already allowed? then no button
-      .then(r=>{ if(r==="granted") listen(); else if(!listening) tiltBtn.hidden=false; })
-      .catch(()=>{ if(!listening) tiltBtn.hidden=false; });
-    tiltBtn.onclick=e=>{ e.stopPropagation(); ask(); };
-    addEventListener("touchend",ask); addEventListener("click",ask);
-  } else listen();
+    // already allowed on an earlier visit? then it simply starts
+    DeviceOrientationEvent.requestPermission().then(r=>{ if(r==="granted") listenTilt(); }).catch(()=>{});
+    addEventListener("touchend",askOnTap); addEventListener("click",askOnTap);
+  }
 }
 function tiltLean(dt){
   if(!tiltRaw) return null;
