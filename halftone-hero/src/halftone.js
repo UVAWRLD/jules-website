@@ -323,7 +323,7 @@ addEventListener("resize",()=>{resize();labels();});   // zone sizes are relativ
 // overflow is clipped at the top, which for all three is sky.
 // The picture keeps its own centred band inside the full width canvas, never wider than the
 // screen: the whole landscape stays visible, edge to edge, and is never cropped.
-const NARROW=820, NARROW_RAISE=0.17;
+const NARROW=820, NARROW_RAISE=0.06;
 function bandW(){ return Math.min(+ctl.inset.value*H, W); }
 // On a phone the picture is only as tall as the screen is wide, which leaves it stranded at
 // the very bottom with a gap above. Lift it clear of the fold instead of cropping it.
@@ -336,7 +336,9 @@ function xform(p,lift){
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine=matchMedia("(pointer: fine)").matches;
 const stage=document.getElementById("stage");
-let mode=fine?"cursor":"scroll", target=0, current=0, mouse=null, zone=0, last=performance.now();
+let mode=fine?"cursor":(matchMedia("(max-width:820px)").matches?"steps":"scroll");
+let target=0, current=0, mouse=null, zone=0, last=performance.now();
+let step=0;                     // which place a phone is showing, advanced by tapping
 
 function setMode(m){
   mode=m; document.body.classList.toggle("cursor",m==="cursor");
@@ -392,11 +394,22 @@ function readTarget(){
     const within=(z,edge)=>d<=edge+(zone>=z?ZONE_HYST*zoneUnit()/100:0);
     zone = within(2,zonePx(ctl.zNy)) ? 2 : within(1,zonePx(ctl.zParis)) ? 1 : 0;
     target=Math.min(zone,n);
+  } else if(mode==="steps"){
+    target=Math.min(step,n);          // a phone steps through the places on a tap
   } else {
     const total=stage.offsetHeight-innerHeight;
     const done=Math.min(Math.max(-stage.getBoundingClientRect().top,0),total);
     target=(total>0?done/total:0)*n;
   }
+}
+
+// On a phone the caption is the control: it already names where you are and where you are
+// going, so tapping it goes there. Nothing else on the page scrolls or swipes.
+const captionEl=document.querySelector(".caption");
+if(mode==="steps"){
+  captionEl.setAttribute("role","button");
+  captionEl.setAttribute("aria-label","Next place");
+  captionEl.onclick=()=>{ step=(step+1)%PLACES.length; };
 }
 
 const nowEl=document.getElementById("now"), nextEl=document.getElementById("next"), barEl=document.getElementById("bar");

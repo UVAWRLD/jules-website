@@ -313,8 +313,12 @@ Copy config emits that object as JSON.
 - The sticky screen is `lvh`, not `svh`: it has to stay as tall as the window even when the
   phone browser hides its toolbar, or the same strip appears. The picture is lifted clear of
   the fold on phones, so nothing important hides behind the toolbar.
-- Scroll is three screens on a phone, four on a desktop in scroll mode: enough to walk the
-  three places and no more, since nothing lives below the fold.
+- **A phone does not scroll at all.** The page is one screen (`svh`, so it fits inside the
+  browser's own chrome), and the scroll only ever existed to drive the morph. Tapping the
+  caption, which already names where you are and where you are going, steps through the
+  places instead (`mode === "steps"`). This is what finally stopped the strip of bare page
+  appearing under the sticky screen: there is nothing to scroll, so there is no end to
+  scroll past. Scroll mode survives for tablets and for desktop scroll mode.
 - Premultiplied alpha, `blendFunc(ONE, ONE_MINUS_SRC_ALPHA)`, canvas cleared to transparent.
   The page shows through, so paper colour is never painted and cannot mismatch the CSS.
 - `UNPACK_FLIP_Y_WEBGL` is true for the photographs and false for the LUT. Getting this

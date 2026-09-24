@@ -139,8 +139,12 @@
 
   @media (max-width:820px){
     .mark{left:24px;top:24px}
-    /* three screens of scroll is enough to walk the three places on a phone */
-    .stage{height:300vh;height:300lvh}
+    /* A phone gets one screen and no scrolling at all: the page is one screen of content,
+       and the scroll existed only to drive the morph. Tapping the caption does that now.
+       svh, because with nothing to scroll the browser's toolbar never gets out of the way. */
+    .stage{height:100svh}
+    .pin{height:100svh}
+    .caption{cursor:pointer}
     .copy{left:6%;transform:none;width:88%;max-width:none;top:22vh}
     .caption{right:24px;top:26px}
     body.tune .panel{left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}
