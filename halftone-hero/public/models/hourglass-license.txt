@@ -6,5 +6,6 @@ Licence: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 Used on the loading screen, baked to a point cloud by tools/bake_hourglass.py
 (hourglass.bin / hourglass.json). The GLB itself is not committed.
 
-CC-BY requires appropriate credit. As of 2026-09-24 the credit is only in the page source;
-a visible credit (or the author's waiver, as with the crow) is still to be decided.
+The author waived the attribution requirement: he told Jules directly (2026-09-24) that the
+model can be used whenever, without credit. So, as with the crow, there is no credit on the
+page, and this file is kept as the record of where the model came from.

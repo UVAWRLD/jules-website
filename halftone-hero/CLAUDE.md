@@ -159,8 +159,9 @@ then a halftone sweep into the page. It has its own canvas and WebGL context, fi
 everything (`#loader`, z-index 100), since it must cover the copy and logo too; once the sweep
 is done it removes itself and loses its context. `?noloader` skips it.
 
-**Model.** "Sands of Time" by Antonio Gloria, Sketchfab, **CC-BY-4.0: needs credit**. It is
-only in the page source for now; see `public/models/hourglass-license.txt`.
+**Model.** "Sands of Time" by Antonio Gloria, Sketchfab, CC-BY-4.0. The author waived the
+credit to Jules directly (2026-09-24), so, as with the crow, there is none on the page;
+`public/models/hourglass-license.txt` is kept as the record of where it came from.
 `tools/bake_hourglass.py` reads the GLB (no loader library) into `hourglass.bin` (169KB) and
 `hourglass.json` (the layout). The model is three rigid parts: frame and glass on one bone,
 sand on another, whose shape is morph targets (the top drains, the stream falls, the pile
