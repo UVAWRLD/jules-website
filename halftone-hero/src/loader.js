@@ -219,7 +219,7 @@ export function createLoader(opts) {
                      W * 0.9 / 0.47);                               // it is 0.47 as wide as tall
     cx = W / 2;
     cy = H * (mobile ? 0.44 : 0.5);
-    btn.style.top = Math.round(cy + scale * 0.5 + 69) + "px";   // as placed in Figma, Mobile / 1 Loading
+    btn.style.top = Math.round(cy + scale * 0.5 + 34) + "px";
   }
 
   // ---- posing ----
