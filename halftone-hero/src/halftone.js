@@ -355,15 +355,21 @@ const NARROW=820, MIN_CELL=1.1;   // css px
 // Every place is sized from the tallest aspect, so the three stay the same size through the
 // morph and none can reach the text.
 const GAP_ABOVE=20, GAP_BELOW=18, COPY_TOP_MIN=68;   // the logo ends at 51
-const PHONE_W=0.94, PHONE_H=0.32, PHONE_TOP=0.20;
+const PHONE_W=0.94, PHONE_W_MIN=0.80, PHONE_H=0.32, PHONE_TOP=0.20;
 const TALLEST=Math.min(...PLACES.map(p=>p.aspect));
 let phoneW=0;
 function layoutPhone(){
   const copyH=copy.offsetHeight;
   let w=Math.min(W*PHONE_W, H*PHONE_H*TALLEST);
   const floor=()=>H-GAP_BELOW-w/TALLEST-GAP_ABOVE;       // lowest the copy may end
-  const top=Math.max(COPY_TOP_MIN, Math.min(H*PHONE_TOP, floor()-copyH));
-  const over=top+copyH-floor();
+  // The copy holds its place, a fifth of the way down, and the picture gives way first, to
+  // PHONE_W_MIN of the width; only then does the copy climb, and after that the picture
+  // shrinks again. Holding the copy at a share of the visible height keeps browsers alike:
+  // with the copy climbing first, Comet's shorter screen squeezed it up toward the logo.
+  let top=H*PHONE_TOP, over=top+copyH-floor();
+  if(over>0) w=Math.max(Math.min(w, W*PHONE_W_MIN), w-over*TALLEST);
+  top=Math.max(COPY_TOP_MIN, Math.min(top, floor()-copyH));
+  over=top+copyH-floor();
   if(over>0) w=Math.max(120, w-over*TALLEST);
   phoneW=w;
   copy.style.top=Math.round(top)+"px";
@@ -641,10 +647,14 @@ const sway=[0,0];
 // a baseline that follows the hand over a few seconds: a turn of the wrist moves the picture,
 // holding still lets it settle back, and putting the phone down re-centres it.
 // iOS only sends orientation after the visitor allows it, and will only ask from inside a
-// tap, so the first tap anywhere asks. Android sends it without asking.
+// gesture it trusts. So: a quiet check on load (if it was already allowed, tilt just starts),
+// an "Enable tilt" button beside the logo, which is a gesture iOS always trusts, and any other
+// tap also asks, until iOS gives a definite answer. The first version asked once, on the first
+// tap anywhere, and gave up if iOS did not count that tap, so it never asked again.
+// Android sends orientation without asking.
 const TILT_RANGE=16;        // degrees from rest for a full lean
 const TILT_SETTLE=3.5;      // seconds for the baseline to catch up with the hand
-let tiltRaw=null, tiltBase=null;
+let tiltRaw=null, tiltBase=null, tiltState="off";   // off | ask | on | denied | reduced
 function onTilt(e){
   if(e.beta==null||e.gamma==null) return;
   // in screen axes, whichever way up the device is held
@@ -655,14 +665,30 @@ function onTilt(e){
   else if(a===180){ x=-x; y=-y; }
   tiltRaw=[x,y];
 }
+const tiltBtn=document.getElementById("tiltBtn");
+if(!fine && reduce) tiltState="reduced";               // Reduce Motion is on: no tilt, by design
 if(!fine && !reduce && "DeviceOrientationEvent" in window){
-  const listen=()=>addEventListener("deviceorientation",onTilt);
+  let listening=false;
+  const listen=()=>{
+    if(listening) return; listening=true; tiltState="on";
+    addEventListener("deviceorientation",onTilt);
+    tiltBtn.hidden=true;
+    removeEventListener("touchend",ask); removeEventListener("click",ask);
+  };
+  const answer=r=>{
+    if(r==="granted") listen();
+    else { tiltState="denied"; tiltBtn.hidden=true;
+           removeEventListener("touchend",ask); removeEventListener("click",ask); }
+  };
+  // a request iOS refuses for want of a gesture throws; that is not an answer, so keep asking
+  function ask(){ if(!listening) DeviceOrientationEvent.requestPermission().then(answer).catch(()=>{}); }
   // ?tilt skips the permission step, for testing in a browser that will not grant it
   if(typeof DeviceOrientationEvent.requestPermission==="function" && !/[?&]tilt\b/.test(location.search)){
-    const ask=()=>{
-      removeEventListener("touchend",ask); removeEventListener("click",ask);
-      DeviceOrientationEvent.requestPermission().then(r=>{ if(r==="granted") listen(); }).catch(()=>{});
-    };
+    tiltState="ask";
+    DeviceOrientationEvent.requestPermission()            // already allowed? then no button
+      .then(r=>{ if(r==="granted") listen(); else if(!listening) tiltBtn.hidden=false; })
+      .catch(()=>{ if(!listening) tiltBtn.hidden=false; });
+    tiltBtn.onclick=e=>{ e.stopPropagation(); ask(); };
     addEventListener("touchend",ask); addEventListener("click",ask);
   } else listen();
 }
@@ -678,6 +704,32 @@ function tiltLean(dt){
     out[i]=Math.max(-1,Math.min(1,-d/TILT_RANGE));
   }
   return out;
+}
+// ?debug: what the device reports, for diagnosing a phone browser from a screenshot
+if(/[?&]debug\b/.test(location.search)){
+  const box=document.createElement("pre");
+  box.style.cssText="position:fixed;left:8px;top:64px;z-index:30;margin:0;padding:6px 8px;"+
+    "font:10px/1.35 ui-monospace,monospace;background:rgba(255,255,255,.88);color:#000;"+
+    "border:1px solid #bbb;pointer-events:none;white-space:pre";
+  document.body.append(box);
+  const probe=u=>{ const d=document.createElement("div");
+    d.style.cssText="position:fixed;left:-9px;top:0;width:1px;height:100"+u; document.body.append(d);
+    const h=d.getBoundingClientRect().height; d.remove(); return Math.round(h); };
+  const f=n=>n==null?"-":Math.round(n);
+  setInterval(()=>{
+    const c=copy.getBoundingClientRect(), vv=window.visualViewport;
+    box.textContent=
+      "inner      "+innerWidth+" x "+innerHeight+"\n"+
+      "visual vp  "+(vv?f(vv.width)+" x "+f(vv.height)+" @"+f(vv.offsetTop):"-")+"\n"+
+      "client     "+document.documentElement.clientHeight+"\n"+
+      "svh/lvh/dvh "+probe("svh")+" / "+probe("lvh")+" / "+probe("dvh")+"\n"+
+      "screen     "+screen.width+" x "+screen.height+"\n"+
+      "canvas     "+f(W)+" x "+f(H)+"  pic "+f(bandW())+"\n"+
+      "copy       "+f(c.top)+" - "+f(c.bottom)+"\n"+
+      "tilt       "+tiltState+(tiltRaw?"  x "+f(tiltRaw[0])+"  y "+f(tiltRaw[1]):"")+"\n"+
+      "sway       "+sway[0].toFixed(2)+", "+sway[1].toFixed(2)+"\n"+
+      "reduce "+reduce+"  fine "+fine+"  touch "+navigator.maxTouchPoints;
+  },200);
 }
 let showDep=false;
 document.getElementById("depBtn").onclick=e=>{

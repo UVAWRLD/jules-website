@@ -133,11 +133,24 @@ the wrist moves the picture, holding still lets it settle, and the resting angle
 anything. 16 degrees from rest is a full lean (`TILT_RANGE`). Axes are remapped for landscape.
 The sign follows the cursor's convention, eye position: tipping the right edge away looks
 from the left. If it feels backwards on a phone, flip the minus in `tiltLean`.
-iOS only sends orientation after the visitor allows it, and only asks from inside a tap, so
-the first tap anywhere on the page triggers the system prompt; Android needs no permission.
+iOS only sends orientation after the visitor allows it, and only asks from inside a gesture
+it trusts. So there are three ways in: a quiet `requestPermission()` on load, which resolves
+at once if it was already allowed (tilt starts, no button); an **"Enable tilt" button** beside
+the logo, shown on iOS until there is an answer, since a button tap is always trusted; and
+any other tap also asks, until iOS answers yes or no. A refusal for want of a gesture throws,
+and is not an answer, so asking continues. The first version asked once, on the first tap
+anywhere, and gave up if iOS did not count that tap: tilt silently never started.
+Android needs no permission. Reduce Motion turns tilt off along with the parallax, on purpose.
 No library: `deviceorientation` plus `DeviceOrientationEvent.requestPermission` is all of it.
-Testing: the preview pane denies the permission, so `?tilt` skips the prompt, and orientation
-is faked by dispatching `new DeviceOrientationEvent("deviceorientation", {beta, gamma})`.
+Testing: the preview pane denies the permission, so `?tilt` skips the prompt, or replace
+`DeviceOrientationEvent.requestPermission` with one resolving `"granted"` after load and tap
+the button (it is looked up at call time). Orientation is faked by dispatching
+`new DeviceOrientationEvent("deviceorientation", {beta, gamma})`.
+
+**`?debug`** overlays what the device reports, refreshed five times a second: inner, visual
+viewport and client heights, svh/lvh/dvh, the canvas and picture size, the copy's position,
+the tilt state and raw angles, the sway, and reduce motion / pointer / touch points. It exists
+for phones, where the only way to see these is a screenshot from the visitor.
 
 ## The crow (prototype)
 
@@ -336,9 +349,12 @@ Copy config emits that object as JSON.
   scroll past. Scroll mode survives for tablets and for desktop scroll mode.
 - **On a phone the picture is the fixed element and the copy is the one that moves.**
   `layoutPhone()` (run from `resize()`) gives the picture 94% of the screen width, capped at
-  32% of the visible height, 18px off the bottom; then puts the copy at 20% of the visible
-  height, or higher if it would come within 20px of the picture, but never above 68px (the
-  logo ends at 51). Only if the copy cannot climb that far does the picture shrink. All three
+  32% of the visible height, 18px off the bottom, and puts the copy 20% of the way down the
+  visible height. If they would come within 20px, the picture gives way first, down to 80% of
+  the width (`PHONE_W_MIN`); only then does the copy climb, never above 68px (the logo ends at
+  51), and after that the picture shrinks again. The copy holding its share of the height is
+  what makes browsers look alike: when the copy climbed first, Comet's shorter screen squeezed
+  it up toward the logo (17.7% down against Safari's 20%). All three
   places are sized from the tallest aspect (Paris), so they stay the same size through the
   morph.
   The version before this sized the picture from the room left under the copy, and it broke
