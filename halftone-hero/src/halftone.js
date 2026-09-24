@@ -313,7 +313,7 @@ function resize(){
   cv.width=Math.max(1,Math.round(W*dpr)); cv.height=Math.max(1,Math.round(H*dpr));
   gl.viewport(0,0,cv.width,cv.height);
   crowTarget(cv.width,cv.height);
-  if(W<NARROW) layoutPhone(); else copy.style.top="";
+  if(W<NARROW) layoutPhone(); else if(TABLET) layoutTablet(); else copy.style.top="";
   const t=copy.getBoundingClientRect();
   // canvas space: x from the band's left edge, y up from the band's bottom edge
   textRect=[t.left-r.left, r.bottom-t.bottom, t.right-r.left, r.bottom-t.top];
@@ -367,6 +367,19 @@ function layoutPhone(){
   if(over>0) w=Math.max(120, w-over*TALLEST);
   phoneW=w;
   copy.style.top=Math.round(top)+"px";
+}
+// A tablet at desktop width gets the desktop layout, except that the copy is lifted when the
+// picture would climb too far over it. The picture is height driven, so on a landscape iPad
+// Paris reached three quarters of the way up the copy; the tallest place may now reach at most
+// TABLET_REACH of it. Portrait iPads never get that far and are left where they are.
+// Checked by touch points rather than pointer type, since an iPad with a trackpad reports a
+// fine pointer; ?tablet forces it for testing on a desktop.
+const TABLET=navigator.maxTouchPoints>1 || /[?&]tablet\b/.test(location.search), TABLET_REACH=0.45;
+function layoutTablet(){
+  const copyH=copy.offsetHeight, w=Math.min(+ctl.inset.value*H, W);
+  const reach=(H-w/TALLEST)+copyH*TABLET_REACH-copyH;      // top that limits the overlap
+  const floor=H*0.0518+27+56;                               // below the logo and caption
+  copy.style.top=Math.round(Math.max(floor, Math.min(H*0.352, reach)))+"px";
 }
 function pictureFit(){
   if(W>=NARROW) return { w: Math.min(+ctl.inset.value*H, W), up: 0 };
@@ -623,6 +636,49 @@ function placeCard(cvr){
 }
 
 const sway=[0,0];
+// Tilt. A touch screen has no cursor to lean toward, so the device's own tilt drives the same
+// sway. The resting angle is however the hand happens to hold it, so the lean is measured from
+// a baseline that follows the hand over a few seconds: a turn of the wrist moves the picture,
+// holding still lets it settle back, and putting the phone down re-centres it.
+// iOS only sends orientation after the visitor allows it, and will only ask from inside a
+// tap, so the first tap anywhere asks. Android sends it without asking.
+const TILT_RANGE=16;        // degrees from rest for a full lean
+const TILT_SETTLE=3.5;      // seconds for the baseline to catch up with the hand
+let tiltRaw=null, tiltBase=null;
+function onTilt(e){
+  if(e.beta==null||e.gamma==null) return;
+  // in screen axes, whichever way up the device is held
+  const a=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
+  let x=e.gamma, y=e.beta;
+  if(a===90){ x=e.beta; y=-e.gamma; }
+  else if(a===-90||a===270){ x=-e.beta; y=e.gamma; }
+  else if(a===180){ x=-x; y=-y; }
+  tiltRaw=[x,y];
+}
+if(!fine && !reduce && "DeviceOrientationEvent" in window){
+  const listen=()=>addEventListener("deviceorientation",onTilt);
+  // ?tilt skips the permission step, for testing in a browser that will not grant it
+  if(typeof DeviceOrientationEvent.requestPermission==="function" && !/[?&]tilt\b/.test(location.search)){
+    const ask=()=>{
+      removeEventListener("touchend",ask); removeEventListener("click",ask);
+      DeviceOrientationEvent.requestPermission().then(r=>{ if(r==="granted") listen(); }).catch(()=>{});
+    };
+    addEventListener("touchend",ask); addEventListener("click",ask);
+  } else listen();
+}
+function tiltLean(dt){
+  if(!tiltRaw) return null;
+  if(!tiltBase) tiltBase=tiltRaw.slice();
+  const k=1-Math.exp(-dt/TILT_SETTLE), out=[0,0];
+  for(let i=0;i<2;i++){
+    let d=tiltRaw[i]-tiltBase[i];
+    if(Math.abs(d)>60){ tiltBase[i]=tiltRaw[i]; d=0; }    // wrapped past vertical: start again
+    tiltBase[i]+=d*k;
+    // eye position, as with the cursor: tipping the right edge away is looking from the left
+    out[i]=Math.max(-1,Math.min(1,-d/TILT_RANGE));
+  }
+  return out;
+}
 let showDep=false;
 document.getElementById("depBtn").onclick=e=>{
   showDep=!showDep; e.target.setAttribute("aria-pressed",showDep);
@@ -664,10 +720,11 @@ function frame(){
   const r=cv.getBoundingClientRect();
   // sensitivity shrinks the travel needed for a full tilt, so small moves read
   const k=+ctl.sens.value;
+  const lean=tiltLean(dt);
   const want=mouse&&!reduce
     ? [Math.max(-1,Math.min(1,(mouse.x-(r.left+r.width/2))/(r.width/2)*k)),
        Math.max(-1,Math.min(1,(mouse.y-(r.top+r.height/2))/(r.height/2)*k))]
-    : [0,0];
+    : lean || [0,0];
   const ease=1-Math.pow(1-0.12,dt*60);   // frame rate independent, snappier than before
   sway[0]+=(want[0]-sway[0])*ease;
   sway[1]+=(want[1]-sway[1])*ease;

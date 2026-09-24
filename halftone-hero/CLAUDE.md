@@ -126,6 +126,19 @@ Open questions: parallax past about 40px starts to smear the edges of buildings,
 single depth map cannot show what is hidden behind them. Relief above ~0.6 changes the
 tone balance, since dot size is carrying two signals at once.
 
+**Tilt, on phones and tablets.** With no cursor to lean toward, the device's own tilt
+drives the same `sway` (`onTilt` / `tiltLean` in `src/halftone.js`). The lean is measured
+from a baseline that follows the hand with a 3.5s time constant (`TILT_SETTLE`), so a turn of
+the wrist moves the picture, holding still lets it settle, and the resting angle can be
+anything. 16 degrees from rest is a full lean (`TILT_RANGE`). Axes are remapped for landscape.
+The sign follows the cursor's convention, eye position: tipping the right edge away looks
+from the left. If it feels backwards on a phone, flip the minus in `tiltLean`.
+iOS only sends orientation after the visitor allows it, and only asks from inside a tap, so
+the first tap anywhere on the page triggers the system prompt; Android needs no permission.
+No library: `deviceorientation` plus `DeviceOrientationEvent.requestPermission` is all of it.
+Testing: the preview pane denies the permission, so `?tilt` skips the prompt, and orientation
+is faked by dispatching `new DeviceOrientationEvent("deviceorientation", {beta, gamma})`.
+
 ## The crow (prototype)
 
 A rigged model, baked to a point cloud, posed by our own state machine.
@@ -263,7 +276,7 @@ Reference frame is 1440 x 1024.
 | | value |
 |---|---|
 | Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is 94% of the screen width** (capped at 32% of the visible height, for the tallest place), sits 18px off the bottom, and the copy is placed above it by `layoutPhone()`. See below |
-| Text column | centred on the window, 420px wide, 14 / 21px. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
+| Text column | centred on the window, 420px wide, 14 / 21px. On a tablet (`navigator.maxTouchPoints > 1`, or `?tablet`) `layoutTablet()` lifts it so the tallest place reaches at most 45% of the way up the copy (`TABLET_REACH`): a landscape iPad went from Paris covering 244px of the copy to 141, and moved the copy up 82px. Portrait iPads never overlap that much and are unchanged; so are laptops. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |
 | Cassis | aspect 2.530 (reference art), bottom on the fold |
