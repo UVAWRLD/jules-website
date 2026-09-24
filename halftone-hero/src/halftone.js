@@ -336,13 +336,21 @@ addEventListener("resize",()=>{measureViewport();resize();labels();});   // zone
 // The picture keeps its own centred band inside the full width canvas, never wider than the
 // screen: the whole landscape stays visible, edge to edge, and is never cropped.
 const NARROW=820, NARROW_RAISE=0.06;
-function bandW(){ return Math.min(+ctl.inset.value*H, W); }
-// On a phone the picture is only as tall as the screen is wide, which leaves it stranded at
-// the very bottom with a gap above. Lift it clear of the fold instead of cropping it.
-function raise(){ return W<NARROW ? H*NARROW_RAISE : 0; }
+// On a phone the picture gets the room that is left under the copy, and no more: sized to
+// the screen it either runs under the browser's toolbar or climbs over the last line of
+// text. The widest aspect decides the width, so every place fits the same gap and the three
+// stay the same size through the morph.
+const GAP_ABOVE=20, GAP_BELOW=14;
+const TALLEST=Math.min(...PLACES.map(p=>p.aspect));
+function pictureFit(){
+  if(W>=NARROW) return { w: Math.min(+ctl.inset.value*H, W), up: 0 };
+  const room=textRect[1]-GAP_ABOVE-GAP_BELOW;          // copy bottom to canvas bottom
+  return { w: Math.max(80, Math.min(W, room*TALLEST)), up: GAP_BELOW };
+}
+function bandW(){ return pictureFit().w; }
 function xform(p,lift){
-  const dw=bandW(), dh=dw/p.aspect;
-  return [(W-dw)/2, -p.bleed*innerHeight + lift*dh + raise(), dw, dh];
+  const fit=pictureFit(), dw=fit.w, dh=dw/p.aspect;
+  return [(W-dw)/2, -p.bleed*innerHeight + lift*dh + fit.up, dw, dh];
 }
 
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;

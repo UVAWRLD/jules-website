@@ -262,7 +262,7 @@ Reference frame is 1440 x 1024.
 
 | | value |
 |---|---|
-| Band | centred, width `min(0.96 × viewport height, viewport width)`. Never wider than the screen, so the landscape is never cropped; below 820px it is lifted 17% of the screen height off the fold instead, or it strands itself as a thin strip along the bottom of a phone. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
+| Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is sized by the room that is left**, not by the screen: `pictureFit()` takes the gap from the bottom of the copy to the bottom of the canvas, less 20px above and 14px below, and makes the picture as wide as that height allows for the tallest of the three (Paris, aspect 1.830), so all three are the same size and none of them can reach the text. See below |
 | Text column | centred on the window, 420px wide, 14 / 21px. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |
@@ -321,6 +321,13 @@ Copy config emits that object as JSON.
   places instead (`mode === "steps"`). This is what finally stopped the strip of bare page
   appearing under the sticky screen: there is nothing to scroll, so there is no end to
   scroll past. Scroll mode survives for tablets and for desktop scroll mode.
+- **On a phone the picture is sized by the copy, not by the screen.** Every attempt to size
+  it as a share of the viewport failed in one direction or the other: wide enough to read and
+  it collided with the last line of copy, small enough to clear the copy and it hid under
+  Safari's toolbar. The room between the two is the only measurement that is actually
+  available, so `pictureFit()` uses it directly and the width falls out of it. All three
+  places are sized from the tallest aspect, or the picture would jump at each morph and one
+  of them would overrun the gap.
 - Premultiplied alpha, `blendFunc(ONE, ONE_MINUS_SRC_ALPHA)`, canvas cleared to transparent.
   The page shows through, so paper colour is never painted and cannot mismatch the CSS.
 - `UNPACK_FLIP_Y_WEBGL` is true for the photographs and false for the LUT. Getting this
