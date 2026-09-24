@@ -141,9 +141,10 @@
     .mark{left:24px;top:24px}
     /* A phone gets one screen and no scrolling at all: the page is one screen of content,
        and the scroll existed only to drive the morph. Tapping the caption does that now.
-       svh, because with nothing to scroll the browser's toolbar never gets out of the way. */
-    .stage{height:100svh}
-    .pin{height:100svh}
+       The height is --vh, measured from the visual viewport in JS, because svh and lvh both
+       guess at where a phone browser's toolbar is and iOS puts it somewhere else. */
+    .stage{height:var(--vh,100svh)}
+    .pin{height:var(--vh,100svh)}
     .caption{cursor:pointer}
     .copy{left:6%;transform:none;width:88%;max-width:none;top:22vh}
     .caption{right:24px;top:26px}

@@ -317,7 +317,19 @@ function resize(){
   // canvas space: x from the band's left edge, y up from the band's bottom edge
   textRect=[t.left-r.left, r.bottom-t.bottom, t.right-r.left, r.bottom-t.top];
 }
-addEventListener("resize",()=>{resize();labels();});   // zone sizes are relative, so their px readout moves too
+// What a phone browser actually leaves visible, which is neither svh nor lvh: iOS floats
+// its toolbar over the page and moves it as you go. Measure it and let the CSS use it.
+function measureViewport(){
+  const h=(window.visualViewport && window.visualViewport.height) || innerHeight;
+  document.documentElement.style.setProperty("--vh", h+"px");
+}
+measureViewport();
+if(window.visualViewport){
+  visualViewport.addEventListener("resize",()=>{measureViewport();resize();});
+  visualViewport.addEventListener("scroll",measureViewport);
+}
+
+addEventListener("resize",()=>{measureViewport();resize();labels();});   // zone sizes are relative, so their px readout moves too
 
 // every image is drawn at the full matrix width and sits on the bottom edge.
 // overflow is clipped at the top, which for all three is sky.

@@ -313,8 +313,10 @@ Copy config emits that object as JSON.
 - The sticky screen is `lvh`, not `svh`: it has to stay as tall as the window even when the
   phone browser hides its toolbar, or the same strip appears. The picture is lifted clear of
   the fold on phones, so nothing important hides behind the toolbar.
-- **A phone does not scroll at all.** The page is one screen (`svh`, so it fits inside the
-  browser's own chrome), and the scroll only ever existed to drive the morph. Tapping the
+- **A phone does not scroll at all.** The page is one screen, sized from `--vh`, which is
+  `visualViewport.height` measured in JS and updated as the browser's bars move. Neither
+  `svh` nor `lvh` matched what iOS actually leaves visible: with `svh` the landscape ended up
+  under the floating toolbar. Measure, do not guess, and the scroll only ever existed to drive the morph. Tapping the
   caption, which already names where you are and where you are going, steps through the
   places instead (`mode === "steps"`). This is what finally stopped the strip of bare page
   appearing under the sticky screen: there is nothing to scroll, so there is no end to
