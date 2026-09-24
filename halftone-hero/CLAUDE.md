@@ -230,9 +230,10 @@ more than `SETTLE` (1s) has passed since he landed, so the hover is dead through
 arrival, for a second after touchdown, and from the instant he is clicked. Clicking hides
 the card and sends him off in the same gesture.
 
-Fonts are Satoshi for the page (Fontshare), Inconsolata for the pronunciation line, and
-Libre Caslon Condensed for the word itself. The last is not on Google Fonts, so it falls
-back to Libre Caslon Text until the real file is self hosted.
+Fonts: Satoshi for the page and Libre Caslon Condensed for the word itself are self hosted
+from `public/fonts` (one 42KB variable file covers every Satoshi weight; the Caslon is the
+SemiBold cut, 55KB), with their licences beside them. Only Inconsolata, for the
+pronunciation line, still comes from Google.
 
 **His size is held between a floor and a ceiling.** It follows the band, which runs away on
 a large monitor and collapses on a phone, so it is clamped: `clamp(46px, band × 0.064, 74px)`.
@@ -261,7 +262,7 @@ Reference frame is 1440 x 1024.
 
 | | value |
 |---|---|
-| Band | centred, width `min(0.96 × viewport height, viewport width)`, and below 820px the width may overflow the screen by up to 1.9x and crop at the sides, or the landscape is a thin strip along the bottom of a phone. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
+| Band | centred, width `min(0.96 × viewport height, viewport width)`. Never wider than the screen, so the landscape is never cropped; below 820px it is lifted 17% of the screen height off the fold instead, or it strands itself as a thin strip along the bottom of a phone. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
 | Text column | centred on the window, 420px wide, 14 / 21px. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |

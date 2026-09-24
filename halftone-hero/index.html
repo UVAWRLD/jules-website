@@ -6,12 +6,22 @@
 <title>Jules B. M.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<!-- Satoshi is Fontshare's; Libre Caslon Condensed is not on Google Fonts, so the card's
-     heading falls back to Libre Caslon Text until the real file is self hosted -->
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400&family=Libre+Caslon+Text:wght@400;700&display=swap" rel="stylesheet">
+<!-- Satoshi and Libre Caslon Condensed are served from here, so the type does not depend on
+     anyone else's CDN. Licences sit beside the files. Inconsolata is still Google's. -->
+<link rel="preload" href="public/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400&display=swap" rel="stylesheet">
 <style>
+  @font-face{
+    font-family:"Satoshi";
+    src:url("public/fonts/Satoshi-Variable.woff2") format("woff2-variations");
+    font-weight:300 900;             /* one variable file covers every weight we use */
+    font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:"Libre Caslon Condensed";
+    src:url("public/fonts/LibreCaslonCondensed-SemiBold.woff2") format("woff2");
+    font-weight:600; font-style:normal; font-display:swap;
+  }
   :root{
     --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
     --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
@@ -115,7 +125,7 @@
     opacity:0;transition:opacity .18s ease}
   #crowLead path{stroke:var(--card-line)}
   body.crow-card #crowCard, body.crow-card #crowLead{opacity:1}
-  #crowCard .term{font-family:"Libre Caslon Condensed","Libre Caslon Text",Georgia,serif;
+  #crowCard .term{font-family:"Libre Caslon Condensed",Georgia,serif;
     font-weight:600;font-size:16px;line-height:21px;color:var(--ink);margin:0}
   #crowCard .say{font-family:"Inconsolata",ui-monospace,monospace;font-size:8px;line-height:21px;
     color:var(--muted);margin:0}

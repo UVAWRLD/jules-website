@@ -321,17 +321,16 @@ addEventListener("resize",()=>{resize();labels();});   // zone sizes are relativ
 
 // every image is drawn at the full matrix width and sits on the bottom edge.
 // overflow is clipped at the top, which for all three is sky.
-// The picture keeps its own centred band inside the full width canvas. On a phone the band
-// would be the screen width, which leaves the landscape a thin strip along the bottom, so
-// it is allowed to overflow the sides and is cropped instead: taller picture, higher horizon.
-const NARROW=820, NARROW_OVERFLOW=1.9;
-function bandW(){
-  const room=W<NARROW ? W*NARROW_OVERFLOW : W;
-  return Math.min(+ctl.inset.value*H, room);
-}
+// The picture keeps its own centred band inside the full width canvas, never wider than the
+// screen: the whole landscape stays visible, edge to edge, and is never cropped.
+const NARROW=820, NARROW_RAISE=0.17;
+function bandW(){ return Math.min(+ctl.inset.value*H, W); }
+// On a phone the picture is only as tall as the screen is wide, which leaves it stranded at
+// the very bottom with a gap above. Lift it clear of the fold instead of cropping it.
+function raise(){ return W<NARROW ? H*NARROW_RAISE : 0; }
 function xform(p,lift){
   const dw=bandW(), dh=dw/p.aspect;
-  return [(W-dw)/2, -p.bleed*innerHeight + lift*dh, dw, dh];
+  return [(W-dw)/2, -p.bleed*innerHeight + lift*dh + raise(), dw, dh];
 }
 
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
