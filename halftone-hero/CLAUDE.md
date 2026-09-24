@@ -154,7 +154,7 @@ for phones, where the only way to see these is a screenshot from the visitor.
 
 ## The loading screen
 
-`src/loader.js`. A white screen with an hourglass drawn in the crow's dots, the sand running,
+`src/loader.js`. A screen of the page's own paper colour with an hourglass drawn in the crow's dots, the sand running,
 then a halftone sweep into the page. It has its own canvas and WebGL context, fixed over
 everything (`#loader`, z-index 100), since it must cover the copy and logo too; once the sweep
 is done it removes itself and loses its context. `?noloader` skips it.
@@ -184,6 +184,9 @@ cell is held at the crow's pitch, `clamp(height / 80, 1.8, 2.6)` px.
 **Size**: 20% of the screen height, held between 120 and 190px: bigger than the crow (46-74px)
 but a small object on the page. The first version was 40% of the height, which was too much.
 
+Paper and ink are read from the page's computed `body` colours, so the loader is the hero's
+`#ECECEC` (it was white) and would follow a dark theme.
+
 **Timing.** Desktop (fine pointer): the sweep starts 4s after the hourglass first draws, which
 is exactly when the model's sand runs out. Touch: an "Enable tilt" button sits under the
 hourglass; the tap calls `enableTilt()` (iOS shows its prompt) and the sweep starts once there is
@@ -192,7 +195,7 @@ the sweep also waits for the page's textures. The crow's arrival is restarted at
 (`crow.replay()`), or he would already be perched behind the loader.
 
 **The build.** Not a sweep: a first version climbed the page as a ragged front with a dark
-band behind it, which read as a wipe. Now a lattice of small cells (7px, 6 on phones) covers
+band behind it, which read as a wipe. Now a lattice of fine cells (3.5px, 3 on phones; 7px read as coarse) covers
 the loader, and each cell starts at its own moment within `SPREAD` (0.6s): 75% pure random,
 25% low frequency noise, so there is a little clustering and no direction. In `CELL_DUR`
 (0.32s) a cell flicks on a small dark dot (`uMid`, the reference's near black), which then

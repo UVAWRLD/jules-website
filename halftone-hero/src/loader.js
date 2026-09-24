@@ -145,6 +145,10 @@ export function createLoader(opts) {
   const btn = document.getElementById("loaderTilt");
   const gl = cv.getContext("webgl2", { antialias: false, alpha: true, premultipliedAlpha: true });
   const done = () => { root.remove(); document.documentElement.classList.remove("loading"); };
+  // the page's own paper and ink, so the loader is the hero's colour and follows its theme
+  const rgb = v => (v.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(x => +x / 255);
+  const bodyStyle = getComputedStyle(document.body);
+  const PAPER = rgb(bodyStyle.backgroundColor), INK = rgb(bodyStyle.color);
   if (!gl) { done(); onReveal(); return; }                 // no WebGL2: straight to the page
 
   // ---- GL setup ----
@@ -411,10 +415,10 @@ export function createLoader(opts) {
     gl.uniform1f(U.uDpr, dpr);
     gl.uniform1f(U.uCell, clamp(scale / 80, 1.8, 2.6));    // the crow's pitch, whatever its size
     gl.uniform1f(U.uInkK, 0.72); gl.uniform1f(U.uFog, 0.5);
-    gl.uniform3f(U.uPaper, 1, 1, 1);
-    gl.uniform3f(U.uInk, 0.04, 0.04, 0.04);
+    gl.uniform3f(U.uPaper, ...PAPER);
+    gl.uniform3f(U.uInk, ...INK);
     gl.uniform3f(U.uMid, 0.125, 0.114, 0.114);             // the dark of the reference
-    gl.uniform1f(U.uCellT, W < 820 ? 6 : 7);                 // small dots
+    gl.uniform1f(U.uCellT, W < 820 ? 3 : 3.5);               // fine dots: the page builds up like a print
     let bp = -1, fade = 1;
     if (sweepAt !== null) {
       const p = (now - sweepAt) / 1000;
