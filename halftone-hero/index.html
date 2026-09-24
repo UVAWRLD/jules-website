@@ -44,13 +44,16 @@
     --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
   }
   *{box-sizing:border-box}
+  /* the paper belongs on the root, so Safari's rubber band area is paper too, not a void;
+     and the bounce is switched off, so there is nothing past the end to scroll into */
+  html{background:var(--paper);overscroll-behavior-y:none}
   body{margin:0;background:var(--paper);color:var(--ink);
     font-family:"Satoshi","Satoshi Variable","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size:14px;line-height:21px;-webkit-font-smoothing:antialiased}
 
-  .stage{height:400vh;height:400svh;position:relative}
-  body.cursor .stage{height:100vh;height:100svh}
-  .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .stage{height:400vh;height:400lvh;position:relative}
+  body.cursor .stage{height:100vh;height:100lvh}
+  .pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden}
 
   /* the logo is drawn as a mask filled with the ink colour, so one file serves both
      themes and the file itself never needs to know which one is in use */
@@ -136,6 +139,8 @@
 
   @media (max-width:820px){
     .mark{left:24px;top:24px}
+    /* three screens of scroll is enough to walk the three places on a phone */
+    .stage{height:300vh;height:300lvh}
     .copy{left:6%;transform:none;width:88%;max-width:none;top:22vh}
     .caption{right:24px;top:26px}
     body.tune .panel{left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}

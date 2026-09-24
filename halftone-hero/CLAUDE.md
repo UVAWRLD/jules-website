@@ -307,6 +307,14 @@ Copy config emits that object as JSON.
 ## Constraints worth not breaking
 
 - The band is `pointer-events: none` so the canvas never eats clicks on the copy.
+- The paper colour lives on `html`, not just `body`, and `overscroll-behavior-y: none` is
+  set: without both, a phone's rubber band scroll shows a band of bare page under the
+  sticky screen at the end of the scroll, black in a dark browser.
+- The sticky screen is `lvh`, not `svh`: it has to stay as tall as the window even when the
+  phone browser hides its toolbar, or the same strip appears. The picture is lifted clear of
+  the fold on phones, so nothing important hides behind the toolbar.
+- Scroll is three screens on a phone, four on a desktop in scroll mode: enough to walk the
+  three places and no more, since nothing lives below the fold.
 - Premultiplied alpha, `blendFunc(ONE, ONE_MINUS_SRC_ALPHA)`, canvas cleared to transparent.
   The page shows through, so paper colour is never painted and cannot mismatch the CSS.
 - `UNPACK_FLIP_Y_WEBGL` is true for the photographs and false for the LUT. Getting this
