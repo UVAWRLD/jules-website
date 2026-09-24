@@ -146,9 +146,17 @@
     .stage{height:var(--vh,100svh)}
     .pin{height:var(--vh,100svh)}
     .caption{cursor:pointer}
-    .copy{left:6%;transform:none;width:88%;max-width:none;top:22vh}
+    .copy{left:6%;transform:none;width:88%;max-width:none;top:calc(var(--vh,100svh) * .2)}
     .caption{right:24px;top:26px}
     body.tune .panel{left:12px;right:12px;bottom:12px;width:auto;max-height:44vh}
+  }
+  /* a short phone (an iPhone SE in Safari leaves about 550px): the copy tightens up, or it
+     takes nearly the whole screen and leaves the picture a postage stamp */
+  @media (max-width:820px) and (max-height:640px){
+    .copy{font-size:13px;line-height:18px}
+    .copy p{margin-top:13px}
+    .copy nav+p{margin-top:11px}
+    .copy .gap{margin-top:15px}
   }
 </style>
 </head>

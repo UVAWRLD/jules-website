@@ -262,7 +262,7 @@ Reference frame is 1440 x 1024.
 
 | | value |
 |---|---|
-| Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is sized by the room that is left**, not by the screen: `pictureFit()` takes the gap from the bottom of the copy to the bottom of the canvas, less 20px above and 14px below, and makes the picture as wide as that height allows for the tallest of the three (Paris, aspect 1.830), so all three are the same size and none of them can reach the text. See below |
+| Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is 94% of the screen width** (capped at 32% of the visible height, for the tallest place), sits 18px off the bottom, and the copy is placed above it by `layoutPhone()`. See below |
 | Text column | centred on the window, 420px wide, 14 / 21px. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |
@@ -321,13 +321,30 @@ Copy config emits that object as JSON.
   places instead (`mode === "steps"`). This is what finally stopped the strip of bare page
   appearing under the sticky screen: there is nothing to scroll, so there is no end to
   scroll past. Scroll mode survives for tablets and for desktop scroll mode.
-- **On a phone the picture is sized by the copy, not by the screen.** Every attempt to size
-  it as a share of the viewport failed in one direction or the other: wide enough to read and
-  it collided with the last line of copy, small enough to clear the copy and it hid under
-  Safari's toolbar. The room between the two is the only measurement that is actually
-  available, so `pictureFit()` uses it directly and the width falls out of it. All three
-  places are sized from the tallest aspect, or the picture would jump at each morph and one
-  of them would overrun the gap.
+- **On a phone the picture is the fixed element and the copy is the one that moves.**
+  `layoutPhone()` (run from `resize()`) gives the picture 94% of the screen width, capped at
+  32% of the visible height, 18px off the bottom; then puts the copy at 20% of the visible
+  height, or higher if it would come within 20px of the picture, but never above 68px (the
+  logo ends at 51). Only if the copy cannot climb that far does the picture shrink. All three
+  places are sized from the tallest aspect (Paris), so they stay the same size through the
+  morph.
+  The version before this sized the picture from the room left under the copy, and it broke
+  across browsers: width is that room times the aspect, so it amplified every difference in
+  toolbar height by nearly two. Comet's taller bar gave a picture 216px wide against Safari's
+  355, below one device pixel per dot, which reads as mush. The copy also sat at `22vh`, and
+  on a phone `vh` is the height *with the toolbar hidden*, so a taller bar pushed it further
+  down. Anything vertical on a phone must come from `--vh`, never `vh`.
+  Width is the one measurement no browser's chrome changes, so the picture now comes from it,
+  and Safari and Comet get the identical picture; only the copy's position differs.
+- **Short phones** (`max-height:640px`, an iPhone SE in Safari leaves about 550) tighten the
+  copy to 13/18px with smaller paragraph gaps. Without it the copy alone is 357px tall there
+  and the picture fell to 43% of the width; with it, 87%.
+- **The visible height is re-measured** on `visualViewport` resize and scroll, on
+  `orientationchange` and `pageshow`, and at 0.15, 0.5, 1.2 and 2.5s after load, since not
+  every browser has its bars in place when the page first runs. The layout reruns only when
+  the height has actually changed.
+- **The dot pitch has a floor**, `MIN_CELL` = 1.1 css px. Below about a pixel a dot is not a
+  dot, and a picture that small drops dots across rather than turning to mush.
 - Premultiplied alpha, `blendFunc(ONE, ONE_MINUS_SRC_ALPHA)`, canvas cleared to transparent.
   The page shows through, so paper colour is never painted and cannot mismatch the CSS.
 - `UNPACK_FLIP_Y_WEBGL` is true for the photographs and false for the LUT. Getting this

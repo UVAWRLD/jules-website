@@ -313,21 +313,31 @@ function resize(){
   cv.width=Math.max(1,Math.round(W*dpr)); cv.height=Math.max(1,Math.round(H*dpr));
   gl.viewport(0,0,cv.width,cv.height);
   crowTarget(cv.width,cv.height);
+  if(W<NARROW) layoutPhone(); else copy.style.top="";
   const t=copy.getBoundingClientRect();
   // canvas space: x from the band's left edge, y up from the band's bottom edge
   textRect=[t.left-r.left, r.bottom-t.bottom, t.right-r.left, r.bottom-t.top];
 }
 // What a phone browser actually leaves visible, which is neither svh nor lvh: iOS floats
 // its toolbar over the page and moves it as you go. Measure it and let the CSS use it.
+let lastVH=0;
 function measureViewport(){
-  const h=(window.visualViewport && window.visualViewport.height) || innerHeight;
+  const h=Math.round((window.visualViewport && window.visualViewport.height) || innerHeight);
+  if(h===lastVH) return false;
+  lastVH=h;
   document.documentElement.style.setProperty("--vh", h+"px");
+  return true;
 }
+const remeasure=()=>{ if(measureViewport() && W) resize(); };
 measureViewport();
 if(window.visualViewport){
-  visualViewport.addEventListener("resize",()=>{measureViewport();resize();});
-  visualViewport.addEventListener("scroll",measureViewport);
+  visualViewport.addEventListener("resize",remeasure);
+  visualViewport.addEventListener("scroll",remeasure);
 }
+addEventListener("orientationchange",()=>setTimeout(remeasure,250));
+addEventListener("pageshow",remeasure);
+// not every phone browser has its bars in place when the page first runs
+[150,500,1200,2500].forEach(ms=>setTimeout(remeasure,ms));
 
 addEventListener("resize",()=>{measureViewport();resize();labels();});   // zone sizes are relative, so their px readout moves too
 
@@ -335,17 +345,32 @@ addEventListener("resize",()=>{measureViewport();resize();labels();});   // zone
 // overflow is clipped at the top, which for all three is sky.
 // The picture keeps its own centred band inside the full width canvas, never wider than the
 // screen: the whole landscape stays visible, edge to edge, and is never cropped.
-const NARROW=820, NARROW_RAISE=0.06;
-// On a phone the picture gets the room that is left under the copy, and no more: sized to
-// the screen it either runs under the browser's toolbar or climbs over the last line of
-// text. The widest aspect decides the width, so every place fits the same gap and the three
-// stay the same size through the morph.
-const GAP_ABOVE=20, GAP_BELOW=14;
+const NARROW=820, MIN_CELL=1.1;   // css px
+// On a phone the picture is the fixed element and the copy is the one that moves. Sizing the
+// picture from whatever room the copy left over made it depend on the browser: the width is
+// that room times the aspect, so Comet's taller toolbar turned into a picture half the width
+// of Safari's. Instead it takes a share of the screen width, which no browser changes, capped
+// by a share of the height that is actually visible, and the copy is placed above it.
+// Only when the copy cannot climb any higher does the picture give way.
+// Every place is sized from the tallest aspect, so the three stay the same size through the
+// morph and none can reach the text.
+const GAP_ABOVE=20, GAP_BELOW=18, COPY_TOP_MIN=68;   // the logo ends at 51
+const PHONE_W=0.94, PHONE_H=0.32, PHONE_TOP=0.20;
 const TALLEST=Math.min(...PLACES.map(p=>p.aspect));
+let phoneW=0;
+function layoutPhone(){
+  const copyH=copy.offsetHeight;
+  let w=Math.min(W*PHONE_W, H*PHONE_H*TALLEST);
+  const floor=()=>H-GAP_BELOW-w/TALLEST-GAP_ABOVE;       // lowest the copy may end
+  const top=Math.max(COPY_TOP_MIN, Math.min(H*PHONE_TOP, floor()-copyH));
+  const over=top+copyH-floor();
+  if(over>0) w=Math.max(120, w-over*TALLEST);
+  phoneW=w;
+  copy.style.top=Math.round(top)+"px";
+}
 function pictureFit(){
   if(W>=NARROW) return { w: Math.min(+ctl.inset.value*H, W), up: 0 };
-  const room=textRect[1]-GAP_ABOVE-GAP_BELOW;          // copy bottom to canvas bottom
-  return { w: Math.max(80, Math.min(W, room*TALLEST)), up: GAP_BELOW };
+  return { w: phoneW || W*PHONE_W, up: GAP_BELOW };
 }
 function bandW(){ return pictureFit().w; }
 function xform(p,lift){
@@ -707,7 +732,7 @@ function frame(){
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);
-    gl.uniform1f(U.uCell,bandW()/+ctl.cells.value);
+    gl.uniform1f(U.uCell,Math.max(bandW()/+ctl.cells.value, MIN_CELL));
     gl.uniform1f(U.uMix,f);
     gl.uniform1f(U.uStagger,+ctl.stag.value);
     gl.uniform1f(U.uDrift,reduce?0:+ctl.drift.value);
