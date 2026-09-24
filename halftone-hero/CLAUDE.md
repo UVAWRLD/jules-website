@@ -181,7 +181,8 @@ blended and without writing depth, with alpha from the rim only: the bulbs show 
 and the sand shows through them.
 Screening is the crow's too: 3x3 tap, dark edge, far side thinned, the shared dot curve; the
 cell is held at the crow's pitch, `clamp(height / 80, 1.8, 2.6)` px.
-**Size**: 20% of the screen height, held between 120 and 190px: bigger than the crow (46-74px)
+**Size**: on a computer 13% of the screen height, held between 96 and 130px (about 117 on a
+laptop); on touch screens 20%, between 120 and 190px: bigger than the crow (46-74px)
 but a small object on the page. The first version was 40% of the height, which was too much.
 
 Paper and ink are read from the page's computed `body` colours, so the loader is the hero's

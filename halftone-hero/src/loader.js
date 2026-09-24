@@ -214,7 +214,9 @@ export function createLoader(opts) {
   let cx = 0, cy = 0, scale = 1;
   function place() {
     // well under half its first size: bigger than the crow (46-74px), still a small object
-    scale = Math.min(clamp(H * 0.2, 120, 190), W * 0.9 / 0.47);     // it is 0.47 as wide as tall
+    // on a computer it is smaller again, about 115px on a laptop, still a little over the crow
+    scale = Math.min(mobile ? clamp(H * 0.2, 120, 190) : clamp(H * 0.13, 96, 130),
+                     W * 0.9 / 0.47);                               // it is 0.47 as wide as tall
     cx = W / 2;
     cy = H * (mobile ? 0.44 : 0.5);
     btn.style.top = Math.round(cy + scale * 0.5 + 34) + "px";
