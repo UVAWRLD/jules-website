@@ -321,8 +321,14 @@ addEventListener("resize",()=>{resize();labels();});   // zone sizes are relativ
 
 // every image is drawn at the full matrix width and sits on the bottom edge.
 // overflow is clipped at the top, which for all three is sky.
-// the picture keeps its own centred band inside the full width canvas
-function bandW(){ return Math.min(+ctl.inset.value*H, W); }
+// The picture keeps its own centred band inside the full width canvas. On a phone the band
+// would be the screen width, which leaves the landscape a thin strip along the bottom, so
+// it is allowed to overflow the sides and is cropped instead: taller picture, higher horizon.
+const NARROW=820, NARROW_OVERFLOW=1.9;
+function bandW(){
+  const room=W<NARROW ? W*NARROW_OVERFLOW : W;
+  return Math.min(+ctl.inset.value*H, room);
+}
 function xform(p,lift){
   const dw=bandW(), dh=dw/p.aspect;
   return [(W-dw)/2, -p.bleed*innerHeight + lift*dh, dw, dh];
@@ -481,9 +487,19 @@ function showCard(on){
   document.body.classList.toggle("crow-card",on);
   crowCard.setAttribute("aria-hidden",String(!on));
 }
-crowHit.onmouseenter=()=>{ showCard(true); dot.classList.add("over"); };
-crowHit.onmouseleave=()=>{ showCard(false); dot.classList.remove("over"); };
-crowHit.onclick=()=>{ showCard(false); dot.classList.remove("over"); crow.click(cv.getBoundingClientRect().width); };
+crowHit.onmouseenter=()=>{ if(fine){ showCard(true); dot.classList.add("over"); } };
+crowHit.onmouseleave=()=>{ if(fine){ showCard(false); dot.classList.remove("over"); } };
+crowHit.onclick=()=>{
+  // With a mouse the card is already open on hover, so a click sends him off. By touch
+  // there is no hover: the first tap opens the card, the second sends him off.
+  if(!fine && !cardOn){ showCard(true); return; }
+  showCard(false); dot.classList.remove("over");
+  crow.click(cv.getBoundingClientRect().width);
+};
+// a tap anywhere else puts the card away again
+addEventListener("pointerdown",e=>{
+  if(!fine && cardOn && !crowHit.contains(e.target)) showCard(false);
+},{passive:true});
 document.getElementById("crowBtn").onclick=()=>{ showCard(false); crow.replay(); };
 
 // The leader: a dashed hop off the bird, a 45 degree run, then a short horizontal into the

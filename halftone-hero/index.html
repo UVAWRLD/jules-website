@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Halftone morph</title>
+<title>Jules B. M.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -21,13 +21,8 @@
     --band-k:0.96;
     --bw:min(calc(var(--band-k) * 100vh), 100vw);
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
-      --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
-      --card-line:#4A4A46; --card-shadow:0 2px 32px 2px rgba(0,0,0,.45);
-    }
-  }
+  /* the site is light whatever the browser prefers: prefers-color-scheme is deliberately
+     not followed. Dark is still there, but only when asked for with data-theme="dark". */
   :root[data-theme="dark"]{
     --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
     --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
@@ -43,9 +38,9 @@
     font-family:"Satoshi","Satoshi Variable","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size:14px;line-height:21px;-webkit-font-smoothing:antialiased}
 
-  .stage{height:400vh;position:relative}
-  body.cursor .stage{height:100vh}
-  .pin{position:sticky;top:0;height:100vh;overflow:hidden}
+  .stage{height:400vh;height:400svh;position:relative}
+  body.cursor .stage{height:100vh;height:100svh}
+  .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 
   /* the logo is drawn as a mask filled with the ink colour, so one file serves both
      themes and the file itself never needs to know which one is in use */

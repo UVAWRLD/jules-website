@@ -221,6 +221,10 @@ It is a plain DOM card, not part of the screen: 280px wide on the paper colour w
 shoulder, a 45 degree run up, then a short horizontal into the card's left edge. Both follow
 his live bounding box, so they track him rather than sitting at fixed coordinates.
 
+**By touch, the first tap opens the card and the second sends him off**, since there is no
+hover to open it with; a tap anywhere else closes it. With a mouse, hover opens it and one
+click sends him off.
+
 **It only answers while he is still.** `crowHit` is hidden unless the phase is `perched` and
 more than `SETTLE` (1s) has passed since he landed, so the hover is dead through the whole
 arrival, for a second after touchdown, and from the instant he is clicked. Clicking hides
@@ -257,10 +261,10 @@ Reference frame is 1440 x 1024.
 
 | | value |
 |---|---|
-| Band | centred, width `min(0.96 × viewport height, viewport width)`. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
+| Band | centred, width `min(0.96 × viewport height, viewport width)`, and below 820px the width may overflow the screen by up to 1.9x and crop at the sides, or the landscape is a thin strip along the bottom of a phone. Height-driven so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width) |
 | Text column | centred on the window, 420px wide, 14 / 21px. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
-| Page | `#ECECEC` paper, near `#0A0A0A` ink |
+| Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |
 | Cassis | aspect 2.530 (reference art), bottom on the fold |
 | Paris | aspect 1.830 (reference art), bottom on the fold |
 | New York | aspect 2.292 (reference art), bottom on the fold |
