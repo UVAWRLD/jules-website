@@ -16,7 +16,9 @@ const CAM = 5;                        // camera distance, in hourglass heights
 const PITCH = 0.2;                    // looking down on it a little, so the rims read as ellipses
 const SPIN = 0.32;                    // radians a second: a slow turn, so it reads as 3D
 const DESKTOP_HOLD = 4.0;             // seconds on screen before the sweep, on a desktop
-const SWEEP = 1.15;                   // the whole sweep, seconds
+// the build: every cell starts at its own random moment within SPREAD, and takes CELL_DUR
+const SPREAD = 0.6, CELL_DUR = 0.32;
+const SWEEP = SPREAD + CELL_DUR;      // the whole build, seconds
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
 const VS_SPLAT = `#version 300 es
@@ -44,14 +46,15 @@ const VS_FULL = `#version 300 es
 void main(){ vec2 p=vec2((gl_VertexID<<1)&2, gl_VertexID&2); gl_Position=vec4(p*2.0-1.0,0.0,1.0); }`;
 // The screen, and the sweep. The hourglass is screened exactly as the crow is: a 3x3 tap of
 // the splat buffer per cell, a dark edge where coverage falls off, the far side thinned, dot
-// radius from the shared ink curve. The sweep is a second, coarser screen over the whole
-// loader: as a ragged front climbs the page, the loader breaks into white dots that shrink
-// away over a dark band, and the band then breaks into dots that shrink away over the hero.
+// radius from the shared ink curve. The build is a second screen over the whole loader, of
+// small cells, each starting at its own random moment (mostly random, a little clustered, no
+// direction): a small dark dot pops up in the white, opens into a dot of the page, and that
+// dot grows until it meets its neighbours. The page is built out of scattered dots.
 const FS_SCREEN = `#version 300 es
 precision highp float;
 uniform sampler2D uSplat, uLut;
 uniform vec2 uRes, uCss;
-uniform float uDpr, uCell, uInkK, uFog, uCellT, uFrontA, uFrontB, uBand, uFade;
+uniform float uDpr, uCell, uInkK, uFog, uCellT, uP, uSpread, uDur, uFade;
 uniform vec3 uPaper, uInk, uMid;
 out vec4 outColor;
 float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
@@ -86,17 +89,22 @@ void main(){
     }
   }
   vec3 col=mix(uPaper,uInk,aInk);
-  // ---- the sweep ----
-  vec2 ct=(floor(px/uCellT)+0.5)*uCellT;
-  float h=ct.y/uCss.y + 0.12*(ct.x/uCss.x-0.5)
-        + 0.16*(vnoise(ct/uCss.y*5.0)-0.5) + 0.06*(vnoise(ct/uCss.y*17.0)-0.5);
-  float cw=smoothstep(uFrontA-uBand, uFrontA+uBand, h);   // 1: loader solid, 0: gone
-  float cd=smoothstep(uFrontB-uBand, uFrontB+uBand, h);   // the dark band behind it
-  float d=length(px-ct), aa=0.7;
-  float inW=cw>=0.999 ? 1.0 : 1.0-smoothstep(rho(cw)*uCellT-aa, rho(cw)*uCellT+aa, d);
-  float inD=cd>=0.999 ? 1.0 : 1.0-smoothstep(rho(cd)*uCellT-aa, rho(cd)*uCellT+aa, d);
-  vec4 under=vec4(uMid,1.0)*inD;                  // premultiplied
-  outColor=mix(under, vec4(col,1.0), inW)*uFade;
+  // ---- the build ----
+  if(uP<0.0){ outColor=vec4(col,1.0)*uFade; return; }
+  vec2 cid=floor(px/uCellT), ct=(cid+0.5)*uCellT;
+  float delay=0.75*hash(cid+3.1)+0.25*vnoise(ct/uCss.y*3.2+7.0);
+  float q=clamp((uP-delay*uSpread)/uDur,0.0,1.0);
+  // a small dark dot flicks on, then becomes the opening: the dark and the page never share a
+  // cell, so there are no rings, just dots, and the page grows out of each one to fill it
+  float d=length(px-ct), aa=0.6;
+  float r0=rho(0.22)*uCellT;                               // the size the dot pops at
+  float rd=r0*smoothstep(0.0,0.18,q);
+  float rh=mix(r0, 0.7072*uCellT, smoothstep(0.3,1.0,q));
+  bool open=q>0.3;
+  float inH=open ? (q>=1.0 ? 1.0 : 1.0-smoothstep(rh-aa,rh+aa,d)) : 0.0;
+  float inD=open ? 0.0 : 1.0-smoothstep(rd-aa,rd+aa,d);
+  vec4 c=mix(vec4(col,1.0), vec4(uMid,1.0), inD);
+  outColor=mix(c, vec4(0.0), inH)*uFade;                 // and the page through the hole
 }`;
 
 async function loadModel(base) {
@@ -147,7 +155,7 @@ export function createLoader(opts) {
     gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p)); return p; };
   const pSplat = program(VS_SPLAT, FS_SPLAT), pScreen = program(VS_FULL, FS_SCREEN);
   const U = {};
-  ["uRes", "uCss", "uDpr", "uCell", "uInkK", "uFog", "uCellT", "uFrontA", "uFrontB", "uBand", "uFade",
+  ["uRes", "uCss", "uDpr", "uCell", "uInkK", "uFog", "uCellT", "uP", "uSpread", "uDur", "uFade",
    "uPaper", "uInk", "uMid", "uSplat", "uLut"].forEach(n => U[n] = gl.getUniformLocation(pScreen, n));
   const SU = {}; ["uRes", "uDpr", "uSize"].forEach(n => SU[n] = gl.getUniformLocation(pSplat, n));
 
@@ -201,7 +209,8 @@ export function createLoader(opts) {
   // ---- layout: where the hourglass sits and how big ----
   let cx = 0, cy = 0, scale = 1;
   function place() {
-    scale = Math.min(H * (mobile ? 0.40 : 0.40), W * 0.9 / 0.47);   // it is 0.47 as wide as tall
+    // well under half its first size: bigger than the crow (46-74px), still a small object
+    scale = Math.min(clamp(H * 0.2, 120, 190), W * 0.9 / 0.47);     // it is 0.47 as wide as tall
     cx = W / 2;
     cy = H * (mobile ? 0.44 : 0.5);
     btn.style.top = Math.round(cy + scale * 0.5 + 34) + "px";
@@ -400,29 +409,19 @@ export function createLoader(opts) {
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, lut); gl.uniform1i(U.uLut, 1);
     gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform2f(U.uCss, W, H);
     gl.uniform1f(U.uDpr, dpr);
-    gl.uniform1f(U.uCell, Math.max(1.6, scale / 150));      // about the crow's pitch
+    gl.uniform1f(U.uCell, clamp(scale / 80, 1.8, 2.6));    // the crow's pitch, whatever its size
     gl.uniform1f(U.uInkK, 0.72); gl.uniform1f(U.uFog, 0.5);
     gl.uniform3f(U.uPaper, 1, 1, 1);
     gl.uniform3f(U.uInk, 0.04, 0.04, 0.04);
     gl.uniform3f(U.uMid, 0.125, 0.114, 0.114);             // the dark of the reference
-    gl.uniform1f(U.uCellT, W < 820 ? 9 : 11);
-    const band = 0.13;                                       // a long gradient of dot sizes, as in the reference
-    // h runs 0 at the bottom to 1 at the top; above a front is solid, below it is gone
-    let a = -2, b = -2, fade = 1;                            // fronts below the page: all solid
+    gl.uniform1f(U.uCellT, W < 820 ? 6 : 7);                 // small dots
+    let bp = -1, fade = 1;
     if (sweepAt !== null) {
       const p = (now - sweepAt) / 1000;
-      if (reduce) { fade = clamp(1 - p / 0.4, 0, 1); }
-      else {
-        const e = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
-        const lo = -0.4, hi = 1.45;                          // below the page to above it, noise included
-        // the dark band trails the white front closely: far enough to show, not so far that
-        // the page goes black
-        const lag = SWEEP * 0.13, run = SWEEP - lag;
-        a = lo + (hi - lo) * e(p / run);
-        b = lo + (hi - lo) * e((p - lag) / run);
-      }
+      if (reduce) fade = clamp(1 - p / 0.4, 0, 1);
+      else bp = p;
     }
-    gl.uniform1f(U.uFrontA, a); gl.uniform1f(U.uFrontB, b); gl.uniform1f(U.uBand, band);
+    gl.uniform1f(U.uP, bp); gl.uniform1f(U.uSpread, SPREAD); gl.uniform1f(U.uDur, CELL_DUR);
     gl.uniform1f(U.uFade, fade);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }

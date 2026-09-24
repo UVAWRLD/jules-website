@@ -179,8 +179,10 @@ Shading is the crow's: frame = key light + occlusion + rim (a little lighter tha
 so the sand reads against it); sand darker, with a per grain jitter. **Glass** is drawn last,
 blended and without writing depth, with alpha from the rim only: the bulbs show as outlines
 and the sand shows through them.
-Screening is the crow's too: 3x3 tap, dark edge, far side thinned, the shared dot curve; cell
-= hourglass height / 150.
+Screening is the crow's too: 3x3 tap, dark edge, far side thinned, the shared dot curve; the
+cell is held at the crow's pitch, `clamp(height / 80, 1.8, 2.6)` px.
+**Size**: 20% of the screen height, held between 120 and 190px: bigger than the crow (46-74px)
+but a small object on the page. The first version was 40% of the height, which was too much.
 
 **Timing.** Desktop (fine pointer): the sweep starts 4s after the hourglass first draws, which
 is exactly when the model's sand runs out. Touch: an "Enable tilt" button sits under the
@@ -189,13 +191,15 @@ an answer, allow or not; the hourglass keeps draining and flipping while it wait
 the sweep also waits for the page's textures. The crow's arrival is restarted at the reveal
 (`crow.replay()`), or he would already be perched behind the loader.
 
-**The sweep** (the reference is a halftone gradient of light dots going to dark). A coarse
-lattice (11px, 9 on phones) over the whole loader. A ragged front, value noise at two scales
-plus a slight diagonal, climbs from the bottom: above it the loader is solid, in a band
-(`band` 0.13 of the height) its cells shrink to dots, below it they are gone and a dark layer
-(`uMid`, the reference's near black) shows; a second front follows 0.13 of the sweep behind and
-dissolves the dark the same way, onto the page. The whole thing is 1.15s. Further apart the
-fronts left the whole screen black for a moment. Reduced motion gets a 0.4s fade instead.
+**The build.** Not a sweep: a first version climbed the page as a ragged front with a dark
+band behind it, which read as a wipe. Now a lattice of small cells (7px, 6 on phones) covers
+the loader, and each cell starts at its own moment within `SPREAD` (0.6s): 75% pure random,
+25% low frequency noise, so there is a little clustering and no direction. In `CELL_DUR`
+(0.32s) a cell flicks on a small dark dot (`uMid`, the reference's near black), which then
+becomes the opening, a dot of the page that grows until it meets its neighbours. The dark dot
+and the opening never share a cell: drawn together they made rings, and the screen read as a
+scatter of little o's. The page is built out of scattered dots in about 0.9s. Reduced motion
+gets a 0.4s fade instead.
 
 Testing: the preview pane's emulated phone sizes offset where taps land, so press the button
 with `document.getElementById("loaderTilt").click()`; stub
