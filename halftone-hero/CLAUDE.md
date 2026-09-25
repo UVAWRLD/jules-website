@@ -23,6 +23,8 @@ npx serve .          # or: python3 -m http.server
 index.html            page markup and all CSS, plus the tuning panel
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
 src/crow.js           the crow: loads the baked cloud, skins it, runs the state machine
+src/loader.js         the loading screen: hourglass and the dot build into the page
+src/chain.js          the pull chain that switches light and dark
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
@@ -151,6 +153,39 @@ the button (it is looked up at call time). Orientation is faked by dispatching
 viewport and client heights, svh/lvh/dvh, the canvas and picture size, the copy's position,
 the tilt state and raw angles, the sway, and reduce motion / pointer / touch points. It exists
 for phones, where the only way to see these is a screenshot from the visitor.
+
+## The pull chain
+
+`src/chain.js`. A small chain hangs just left of the place caption; pulling it down switches
+light and dark, like a lamp cord. Its own 2D canvas (`#chainCv`, pointer-events none) and an
+invisible button (`#chainPull`) that follows the bead and takes the grab.
+
+**Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
+stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (56 on
+touch), shortened on a short screen so it always stops 30px above the copy. The mount sits
+14px left of the caption and glides after it when the caption changes width with the place
+names (it is pinned by its right edge), so the chain swings from the move rather than jumping.
+The cursor brushing past it sets it swinging; on a phone the device tilt (`sway`) leans its
+gravity. Reduce Motion damps it heavily.
+
+**The pull.** Dragging the bead down feeds more chain out of the mount, up to `MAX_PULL`
+(30px); past `PULL_AT` (19px) it clicks, vibrates on Android, and the theme flips, once per
+pull. On release the extra chain springs back in with a little bounce. A plain tap on the
+bead, or Enter / Space when it has focus, does a whole pull by itself. The button's label
+says which way the next pull goes.
+
+**Drawing.** Links slide along the rope at a 5px pitch, and slide out of the mount as it is
+pulled, so the pattern moves with the chain. Alternate links sit at right angles (a ring seen
+face on, then a bar seen edge on), each with a glint on its lit side, and they twist a little
+while it swings. The bead is a shaded sphere lit from the upper left. Colours come from the
+page's ink and paper each frame: dark metal with a pale glint on light paper, pale metal
+with a bright glint on dark.
+
+**The theme.** `setTheme()` in `src/halftone.js` sets or clears `data-theme="dark"` and
+remembers the choice in `localStorage` ("theme"); a small script in `<head>` applies a saved
+dark before the first paint, so there is no flash of light. The default is still light.
+During the switch `html.theming` cross-fades colours for half a second; the halftone and the
+crow follow by themselves, since the renderer reads the page's ink every frame.
 
 ## The loading screen
 
@@ -349,7 +384,7 @@ Reference frame is 1440 x 1024.
 | Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is 94% of the screen width** (capped at 32% of the visible height, for the tallest place), sits 18px off the bottom, and the copy is placed above it by `layoutPhone()`. See below |
 | Text column | centred on the window, 420px wide, 14 / 21px. On a tablet (`navigator.maxTouchPoints > 1`, or `?tablet`) `layoutTablet()` lifts it so the tallest place reaches at most 45% of the way up the copy (`TABLET_REACH`): a landscape iPad went from Paris covering 244px of the copy to 141, and moved the copy up 82px. Portrait iPads never overlap that much and are unchanged; so are laptops. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
-| Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed, and dark only happens with `data-theme="dark"` |
+| Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed; dark only happens with `data-theme="dark"`, which the pull chain sets and remembers |
 | Cassis | aspect 2.530 (reference art), bottom on the fold |
 | Paris | aspect 1.830 (reference art), bottom on the fold |
 | New York | aspect 2.292 (reference art), bottom on the fold |

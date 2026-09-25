@@ -1,5 +1,6 @@
 import {createCrow} from "./crow.js";
 import {createLoader} from "./loader.js";
+import {createChain} from "./chain.js";
 
 // paths are relative to index.html, so the folder runs from any static server.
 // moving to Astro means public/img/x.jpg becomes /img/x.jpg.
@@ -643,6 +644,21 @@ function placeCard(cvr){
 }
 
 const sway=[0,0];
+// Light or dark, from the pull chain. The choice is remembered for the next visit (the
+// default is still light), and the colours cross-fade for as long as html.theming is set.
+let themeTimer=0;
+function setTheme(dark){
+  const root=document.documentElement;
+  root.classList.add("theming");
+  clearTimeout(themeTimer); themeTimer=setTimeout(()=>root.classList.remove("theming"),650);
+  if(dark) root.setAttribute("data-theme","dark"); else root.removeAttribute("data-theme");
+  try{ localStorage.setItem("theme",dark?"dark":"light"); }catch(e){}
+}
+createChain({
+  fine, reduce, dot,
+  getLean:()=>sway,                       // on a phone, tilting leans the chain too
+  onPull:()=>setTheme(document.documentElement.getAttribute("data-theme")!=="dark"),
+});
 // The loading screen (src/loader.js). It covers the page until the sweep; the crow's arrival
 // is restarted when the page is revealed, or he would already be perched behind it.
 // ?noloader skips it, which the frame grabs and quick checks want.

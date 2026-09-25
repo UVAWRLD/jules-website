@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jules B. M.</title>
+<script>
+  // a visitor's own choice of dark, from the pull chain, applied before the first paint so
+  // there is no flash of light; the default stays light
+  try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Satoshi and Libre Caslon Condensed are served from here, so the type does not depend on
@@ -84,6 +89,17 @@
   .caption{position:absolute;right:4.86%;top:5.18vh;height:27px;z-index:4;
     display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
   .caption .now{color:var(--ink)}
+  /* the pull chain (src/chain.js): drawn on its own canvas, grabbed by an invisible button
+     that follows the bead */
+  #chainCv{position:fixed;left:0;top:0;z-index:5;pointer-events:none}
+  #chainPull{position:fixed;left:0;top:0;width:32px;height:40px;z-index:6;padding:0;margin:0;
+    border:0;background:none;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
+  #chainPull.held{cursor:grabbing}
+  #chainPull:focus-visible{outline:1px solid var(--ink);outline-offset:-8px;border-radius:50%}
+  /* while the theme changes, everything cross-fades; the halftone follows by itself, since
+     it reads the page's ink every frame */
+  html.theming, html.theming *{transition:color .5s ease, background-color .5s ease,
+    border-color .5s ease !important}
   /* the loading screen: the page's paper, over everything, then gone */
   html.loading, html.loading body{overflow:hidden}
   #loader{position:fixed;inset:0;z-index:100;background:var(--paper)}
