@@ -40,6 +40,10 @@ tools/                build_sources.py (descreen refs), build_depth.py (depth ma
                       build_single.py (one-file HTML), bake_crow.py (glTF to point
                       cloud), crow-preview.html (crow poses)
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
+public/img/favicon.svg  the logo mark (Jules's Vector.svg): ink on a light tab, #ECECEC on a
+                      dark one, by prefers-color-scheme inside the SVG. favicon-32.png and
+                      apple-touch-icon.png (on the paper, 180px) for Safari and the home screen;
+                      favicon.ico (16+32) at the root. Rendered from the same path.
 public/img/timeline/  the Timeline page's assets, from Figma (rule, rings, connectors,
                       certificate dashes, back link icon and underline)
 ```
