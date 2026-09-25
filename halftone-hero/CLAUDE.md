@@ -173,7 +173,8 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   value times `--k`: 1.26648 on a computer, 1 on phones, where the larger type did not fit
   the rail and date column. The column sits 164px down, as in the frame.
 - **Layout in flow, not at the frame's coordinates.** The header (Libre Caslon Condensed
-  Medium title, the back link without an underline, the rule), the intro, then the sections in a column 118 x k
+  Medium title, the back link on the title's baseline, without an underline and with 4.5 x k
+  between "Back" and the house, the rule), the intro, then the sections in a column 118 x k
   in and 355 x k wide. At 1440 the header and intro land on the frame's numbers; the sections
   sit ~17px higher, because the browser wraps the intro in 4 lines where Figma wraps it in 5.
 - **The markers are per entry.** Each `.tl-item` draws its own hollow ring and a connector
@@ -428,10 +429,10 @@ Fonts: Satoshi for the page and Libre Caslon Condensed are self hosted from `pub
 (one 42KB variable file covers every Satoshi weight; Caslon in three cuts: SemiBold for the
 card's word, Medium for the name on the home page and the Timeline title, Regular unused
 for now), with their licences beside them. The name "Jules Bockelee Morvan" is Caslon Medium
-at 0.96em, the size at which its capitals stand exactly as tall as Satoshi Bold's beside it
-(0.762 em against 0.731, measured in the browser); the nav is aligned on its baseline. Being
-condensed, the name is 119px wide at 14px where Satoshi was 150; the crow perches on it all
-the same. Only Inconsolata, for the
+at 1.15em (16.1px), a step above the links so it reads as the heading: at 0.96em its capitals
+would stand exactly as tall as Satoshi Bold's beside it (0.762 em against 0.731, measured in
+the browser), which read as too small. The nav is aligned on its baseline. It is 143px wide,
+where Satoshi at 14px was 150; the crow perches on it all the same. Only Inconsolata, for the
 pronunciation line, still comes from Google.
 
 **His size is held between a floor and a ceiling.** It follows the band, which runs away on

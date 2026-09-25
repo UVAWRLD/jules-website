@@ -31,10 +31,11 @@
   /* the copy is placed against the band (29.8% in), so the image sits beside it the same way */
   .copy{position:absolute;left:50%;transform:translateX(-50%);top:35.2vh;width:420px;max-width:88%;z-index:3}
   .copy nav{display:flex;gap:19px;align-items:baseline}
-  /* the name in Libre Caslon Condensed Medium, at the size where its capitals stand exactly as
-     tall as Satoshi's beside it: Caslon's caps are 0.762 em, Satoshi Bold's 0.731, so 0.96 em.
-     In em so it keeps the ratio when a short phone drops the copy to 13px. */
-  .copy nav b{font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:0.96em}
+  /* the name in Libre Caslon Condensed Medium, a step above the links beside it: at 0.96em its
+     capitals would stand exactly as tall as Satoshi's (Caslon's caps are 0.762 em, Satoshi
+     Bold's 0.731); at 1.15em they are a fifth taller, so it reads as the heading. In em so it
+     keeps the ratio when a short phone drops the copy to 13px; the nav shares one baseline. */
+  .copy nav b{font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:1.15em}
   .copy nav a{color:var(--muted);text-decoration:none}
   .copy nav a:hover{color:var(--ink)}
   .copy p{margin:21px 0 0}
