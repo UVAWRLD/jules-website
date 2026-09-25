@@ -173,7 +173,7 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   value times `--k`: 1.26648 on a computer, 1 on phones, where the larger type did not fit
   the rail and date column. The column sits 164px down, as in the frame.
 - **Layout in flow, not at the frame's coordinates.** The header (Libre Caslon Condensed
-  Regular title, the back link, the rule), the intro, then the sections in a column 118 x k
+  Medium title, the back link without an underline, the rule), the intro, then the sections in a column 118 x k
   in and 355 x k wide. At 1440 the header and intro land on the frame's numbers; the sections
   sit ~17px higher, because the browser wraps the intro in 4 lines where Figma wraps it in 5.
 - **The markers are per entry.** Each `.tl-item` draws its own hollow ring and a connector
@@ -424,9 +424,14 @@ more than `SETTLE` (1s) has passed since he landed, so the hover is dead through
 arrival, for a second after touchdown, and from the instant he is clicked. Clicking hides
 the card and sends him off in the same gesture.
 
-Fonts: Satoshi for the page and Libre Caslon Condensed for the word itself are self hosted
-from `public/fonts` (one 42KB variable file covers every Satoshi weight; the Caslon is the
-SemiBold cut, 55KB), with their licences beside them. Only Inconsolata, for the
+Fonts: Satoshi for the page and Libre Caslon Condensed are self hosted from `public/fonts`
+(one 42KB variable file covers every Satoshi weight; Caslon in three cuts: SemiBold for the
+card's word, Medium for the name on the home page and the Timeline title, Regular unused
+for now), with their licences beside them. The name "Jules Bockelee Morvan" is Caslon Medium
+at 0.96em, the size at which its capitals stand exactly as tall as Satoshi Bold's beside it
+(0.762 em against 0.731, measured in the browser); the nav is aligned on its baseline. Being
+condensed, the name is 119px wide at 14px where Satoshi was 150; the crow perches on it all
+the same. Only Inconsolata, for the
 pronunciation line, still comes from Google.
 
 **His size is held between a floor and a ceiling.** It follows the band, which runs away on
