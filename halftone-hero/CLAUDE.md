@@ -176,17 +176,21 @@ pull. On release the extra chain springs back in with a little bounce. A plain t
 bead, or Enter / Space when it has focus, does a whole pull by itself. The button's label
 says which way the next pull goes.
 
-**Drawing, in dots.** Links sit along the rope at a 6px pitch and slide out of the mount as it
-is pulled, so the pattern moves with the chain. Each link is its outline, sampled at under a
-pixel so the splats merge into a wire before the screen averages them: alternate links sit at
-right angles, a ring seen face on, then a bar seen edge on, and they twist a little while it
-swings. Each point carries the crow's format (x, y, depth, ink), ink from a key light on the
-wire's normal, so the lit side of every link screens into smaller dots. The bead is a small
-lit sphere, shaded with the crow's formula. `drawCrow()` in `src/halftone.js` splats the chain
-with its own splat size (1.9px) before the bird, and the crow screen is switched on whenever
-either is present. At a laptop's pitch (~2px) the chain reads as a dotted cord whose width
-pulses with the links; the openings in the rings would only show with links about twice the
-size. The first version drew solid lines on its own 2D canvas.
+**Drawing, in dots: a ball chain.** Modelled on a lamp pull chain: beads 3.2px across on a
+4.4px pitch, joined by a hairline wire, ending in a turned pull (neck, cone, flange ring, groove,
+rounded body, nub; `profile()` gives its radius by height). The beads slide out of a small cup
+at the mount as it is pulled. Every surface is sampled at a third of a pixel and each point
+carries the crow's format (x, y, depth, ink), shaded with the crow's formula from its normal:
+spheres for the beads, a surface of revolution for the pull (tipped up where it widens), and
+the groove under the flange darkened.
+**Its own lattice.** At the bird's ~2px pitch a 3px bead is one dot and cannot show depth, so
+the chain is screened on a lattice of its own, `uCellChain` = max(1.05px, 2 device px). The
+splat pass tags chain points in the buffer's blue channel (`uFlag`); the crow's screen ignores
+tagged pixels and a second screen in the main shader draws them at the fine pitch, with a
+light 5 tap average rather than the crow's 3x3 blur, so a bead is a few dots across: small
+dots on its lit upper left, large on its shadow side. That is what shows it as round.
+Earlier versions: solid lines on a 2D canvas, then interlocking links in the crow's dots,
+which at the bird's pitch read as a thick dotted cord.
 
 **The theme.** `setTheme()` in `src/halftone.js` sets or clears `data-theme="dark"` and
 remembers the choice in `localStorage` ("theme"); a small script in `<head>` applies a saved

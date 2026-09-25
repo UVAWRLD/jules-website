@@ -20,8 +20,8 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   const REST_MAX = fine ? 64 : 56;        // hanging length, px, when there is room for it
   let REST = REST_MAX;
   const MAX_PULL = 30, PULL_AT = 19;      // extra chain a pull can draw out; where it clicks
-  const PITCH = 6;                        // one link, px: a touch larger than drawn in lines, so
-                                          // the rings and bars survive being screened into dots
+  const PITCH = 4.4;                      // bead to bead, px: a ball chain, like a lamp pull
+  const BEAD = 1.6;                       // bead radius, px
   const G = 1700;                         // gravity, px/s²
   const STEP = 1 / 120;
 
@@ -167,19 +167,74 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
 
   // ---- points for the renderer ----
   // Each point is x, y (page px), depth 0..1 (1 near) and ink 0..1, the crow's own format.
-  // The link outlines are sampled at under a pixel, so the splats overlap into a solid wire
-  // before the screen averages them into dots.
+  // The renderer screens the chain on a finer lattice than the bird's (about a pixel), so a
+  // bead is a few dots across and its shading shows: small dots on the lit side, large in the
+  // shadow. Surfaces are sampled at a third of a pixel so the splats merge before screening.
   const LIGHT = [-0.45, -0.78, 0.44];                       // upper left front, y down
-  const out = new Float32Array(2400 * 4);
+  const L3 = Math.hypot(...LIGHT); LIGHT[0] /= L3; LIGHT[1] /= L3; LIGHT[2] /= L3;
+  const MAXP = 4200;
+  const out = new Float32Array(MAXP * 4);
   let count = 0;
   const put = (x, y, z, ink) => {
-    if (count >= 2400) return;
+    if (count >= MAXP) return;
     const o = count * 4; out[o] = x; out[o + 1] = y; out[o + 2] = z; out[o + 3] = ink; count++;
   };
-  function build(t) {
+  const GRID = 0.33;
+  // shade a point of a surface from its normal: the crow's formula, key light plus a rim
+  const shadeN = (nx, ny, nz, extra) => {
+    const lam = Math.max(0, nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]);
+    const rim = 1 - Math.max(0, nz);
+    return clamp(0.08 + 0.74 * (1 - lam) + 0.28 * rim * rim + (extra || 0), 0, 1);
+  };
+  function bead(cx, cy, R) {
+    for (let y = -R; y <= R; y += GRID) for (let x = -R; x <= R; x += GRID) {
+      const r2 = (x * x + y * y) / (R * R);
+      if (r2 > 1) continue;
+      const nz = Math.sqrt(1 - r2);
+      put(cx + x, cy + y, 0.5 + 0.5 * nz, shadeN(x / R, y / R, nz));
+    }
+  }
+  // The pull at the end, turned like the one in the reference: a neck, a cone, a flange,
+  // a groove, a rounded body and a small nub. Radius by distance down from the top, px.
+  const PULL_H = 12.6;
+  const profile = y => {
+    if (y < 0.9) return 0.75;                                              // neck
+    if (y < 4.3) return 1.1 + (y - 0.9) / 3.4 * 2.1;                       // cone
+    if (y < 5.7) return 4.15 - 0.5 * Math.pow(Math.abs(y - 5.0) / 0.7, 2); // flange, rounded
+    if (y < 6.2) return 3.3;                                               // groove
+    if (y < 11.2) { const k = (y - 6.2) / 5.0; return 3.55 * Math.sqrt(Math.max(0, 1 - 0.78 * k * k)); } // body
+    if (y < PULL_H) { const k = (y - 11.2) / (PULL_H - 11.2); return 1.05 * Math.sqrt(Math.max(0, 1 - k * k)); } // nub
+    return 0;
+  };
+  function pullKnob(tx, ty, ex, ey) {
+    // (tx, ty): where it hangs from; (ex, ey): its axis, pointing down the chain
+    const nx = -ey, ny = ex;                                               // across it
+    for (let y = 0; y <= PULL_H; y += GRID) {
+      const r = profile(y);
+      if (r <= 0.05) continue;
+      const dr = (profile(y + 0.2) - profile(y - 0.2)) / 0.4;             // how fast it widens
+      // under the flange sits in its shadow
+      const occl = y > 5.7 && y < 6.6 ? 0.22 : 0;
+      for (let x = -r; x <= r; x += GRID) {
+        const u = x / r, cz = Math.sqrt(Math.max(0, 1 - u * u));
+        // the normal of a turned surface: around the axis, tipped up where it widens downward
+        let gx = u, gy = -dr * cz, gz = cz;
+        const gl = Math.hypot(gx, gy, gz) || 1; gx /= gl; gy /= gl; gz /= gl;
+        // into screen space: the local x runs across the axis, y down it
+        const sx = nx * gx + ex * gy, sy = ny * gx + ey * gy;
+        put(tx + nx * x + ex * y, ty + ny * x + ey * y, 0.5 + 0.5 * cz, shadeN(sx, sy, gz, occl));
+      }
+    }
+    return [tx + ex * PULL_H * 0.55, ty + ey * PULL_H * 0.55];
+  }
+
+  function build() {
     count = 0;
-    // the mount: a short bar
-    for (let x = -2.5; x <= 2.5; x += 0.7) { put(ax + x, ay - 1.2, 0.8, 0.85); put(ax + x, ay, 0.8, 0.85); }
+    // the mount: a small cup the chain comes out of
+    for (let y = -2.2; y <= 0.4; y += GRID) for (let x = -2.4; x <= 2.4; x += GRID) {
+      const u = x / 2.4, cz = Math.sqrt(Math.max(0, 1 - u * u));
+      put(ax + x, ay + y, 0.5 + 0.5 * cz, shadeN(u, 0, cz, 0.05));
+    }
 
     const s = [0];
     for (let i = 1; i < N; i++) s.push(s[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
@@ -187,59 +242,29 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     const at = u => {
       let i = 1; while (i < N - 1 && s[i] < u) i++;
       const k = clamp((u - s[i - 1]) / Math.max(1e-6, s[i] - s[i - 1]), 0, 1);
-      return [p[i - 1][0] + (p[i][0] - p[i - 1][0]) * k, p[i - 1][1] + (p[i][1] - p[i - 1][1]) * k,
-              p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]];
+      return [p[i - 1][0] + (p[i][0] - p[i - 1][0]) * k, p[i - 1][1] + (p[i][1] - p[i - 1][1]) * k];
     };
-    let energy = 0;
-    for (let i = 1; i < N; i++) energy += Math.abs(p[i][0] - q[i][0]);
-    energy = Math.min(1, energy / 6);
-
-    // links slide out of the mount as it is pulled, so the pattern moves with the chain
-    const shift = feed % PITCH, first = Math.floor(feed / PITCH);
+    // beads slide out of the mount as it is pulled, so the chain visibly feeds out
+    const shift = feed % PITCH;
+    let prev = [ax, ay + 0.4];
     for (let k = 0; ; k++) {
-      const u = k * PITCH + shift - PITCH;
-      if (u > total - 1) break;
-      if (u + PITCH < 0) continue;
-      const c = at(clamp(u + PITCH / 2, 0, total));
-      const l = Math.hypot(c[2], c[3]) || 1, tx = c[2] / l, ty = c[3] / l;   // along the chain
-      const nx = -ty, ny = tx;                                              // across it
-      const j = k - first;
-      // alternate links sit at right angles: a ring face on, then a bar edge on; the twist
-      // lets each turn a little as it swings
-      const twist = (j & 1 ? Math.PI / 2 : 0) + (reduce ? 0 : 0.5 * energy * Math.sin(t * 5 + j * 0.9));
-      const open = Math.abs(Math.cos(twist));
-      const half = PITCH * 0.66, hw = Math.max(0.35, 2.2 * open);
-      // the outline of a stadium: two straights and two round ends
-      const straight = Math.max(0, half - hw);
-      const perim = 4 * straight + 2 * Math.PI * hw;
-      const n = Math.max(8, Math.ceil(perim / 0.75));
-      for (let m = 0; m < n; m++) {
-        let d = m / n * perim, lx, ly, ox, oy;             // local position and outward normal
-        if (d < 2 * straight) { lx = -straight + d; ly = -hw; ox = 0; oy = -1; }
-        else if ((d -= 2 * straight) < Math.PI * hw) { const a = -Math.PI / 2 + d / hw; lx = straight + hw * Math.cos(a); ly = hw * Math.sin(a); ox = Math.cos(a); oy = Math.sin(a); }
-        else if ((d -= Math.PI * hw) < 2 * straight) { lx = straight - d; ly = hw; ox = 0; oy = 1; }
-        else { d -= 2 * straight; const a = Math.PI / 2 + d / hw; lx = -straight + hw * Math.cos(a); ly = hw * Math.sin(a); ox = Math.cos(a); oy = Math.sin(a); }
-        const wx = c[0] + tx * lx + nx * ly, wy = c[1] + ty * lx + ny * ly;
-        // the wire's own normal on screen, tipped toward the viewer where the ring turns away
-        const gx = tx * ox + nx * oy, gy = ty * ox + ny * oy, gz = 0.55 + 0.45 * (1 - open);
-        const lam = Math.max(0, (gx * LIGHT[0] + gy * LIGHT[1] + gz * LIGHT[2]) / Math.hypot(gx, gy, gz));
-        put(wx, wy, 0.75, clamp(0.35 + 0.65 * (1 - lam) + 0.15 * (1 - open), 0, 1));
-      }
+      const u = k * PITCH + shift + BEAD;
+      if (u > total - BEAD) break;
+      const c = at(u);
+      // the wire between two beads: a hairline, drawn dark
+      const dx = c[0] - prev[0], dy = c[1] - prev[1], d = Math.hypot(dx, dy);
+      for (let w = 0; w <= d; w += 0.4) put(prev[0] + dx * w / d, prev[1] + dy * w / d, 0.45, 0.9);
+      bead(c[0], c[1], BEAD);
+      prev = c;
     }
-
-    // the bead: a small lit sphere, shaded as the crow is
-    const e = at(total), el = Math.hypot(e[2], e[3]) || 1;
-    const R = 3.8, bx = p[N - 1][0] + e[2] / el * (R + 0.6), by = p[N - 1][1] + e[3] / el * (R + 0.6);
-    for (let y = -R; y <= R; y += 0.7) for (let x = -R; x <= R; x += 0.7) {
-      const r2 = (x * x + y * y) / (R * R);
-      if (r2 > 1) continue;
-      const nz = Math.sqrt(1 - r2), nx2 = x / R, ny2 = y / R;
-      const lam = Math.max(0, nx2 * LIGHT[0] + ny2 * LIGHT[1] + nz * LIGHT[2]);
-      const rim = 1 - nz;
-      put(bx + x, by + y, 0.55 + 0.45 * nz, clamp(0.1 + 0.62 * (1 - lam) + 0.3 * rim * rim, 0, 1));
-    }
-    // the grab area follows the bead
-    handle.style.transform = `translate3d(${bx - 16}px, ${by - 20}px, 0)`;
+    // the pull hangs from the last bead, along the end of the chain
+    const e0 = at(total - 3), e1 = at(total);
+    let ex = e1[0] - e0[0], ey = e1[1] - e0[1]; const el = Math.hypot(ex, ey) || 1; ex /= el; ey /= el;
+    const top = [prev[0] + ex * (BEAD + 0.2), prev[1] + ey * (BEAD + 0.2)];
+    for (let w = 0; w <= Math.hypot(e1[0] - top[0], e1[1] - top[1]); w += 0.4) put(top[0] + ex * w, top[1] + ey * w, 0.45, 0.9);
+    const mid = pullKnob(e1[0], e1[1], ex, ey);
+    // the grab area follows the pull
+    handle.style.transform = `translate3d(${mid[0] - 16}px, ${mid[1] - 20}px, 0)`;
   }
 
   let acc = 0, last = performance.now();
@@ -248,7 +273,7 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     brush();
     acc += dt;
     while (acc >= STEP) { step(STEP, now / 1000); acc -= STEP; }
-    build(now / 1000);
+    build();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

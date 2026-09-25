@@ -43,7 +43,7 @@ uniform vec3  uHueA,uHueB,uInk;
 uniform float uDpr,uCell,uMix,uStagger,uDrift,uTint,uDepth,uDetail,uOpacity;
 uniform float uPar,uFog,uRelief,uShowDep;
 uniform vec2  uSway,uRes;
-uniform float uCrowOn,uCrowInk,uCrowFog,uCellCrow;
+uniform float uCrowOn,uCrowInk,uCrowFog,uCellCrow,uCellChain;
 uniform vec2 uTexW;
 uniform vec4 uTextRect;
 uniform vec2 uTextPad;
@@ -155,7 +155,9 @@ void main(){
     // landscape, so the body turns away from the viewer instead of reading flat
     float crowNear=clamp(cr.g/max(cr.a,0.001),0.0,1.0);
     ink*=mix(1.0, 0.45+0.55*crowNear, uCrowFog);
-    float crowCov=ink*smoothstep(0.1,0.5,cr.a)*uCrowInk;
+    // the chain shares this buffer but has its own screen below
+    float notChain=1.0-smoothstep(0.3,0.7,cr.b/max(cr.a,0.001));
+    float crowCov=ink*smoothstep(0.1,0.5,cr.a)*uCrowInk*notChain;
     if(crowCov>=0.004){
       float rhoC=texture(uLut,vec2(crowCov,0.5)).r*0.75;
       float rC=rhoC*uCellCrow*mix(1.0, 0.72+0.56*crowNear, uRelief);
@@ -166,7 +168,31 @@ void main(){
     }
   }
 
-  float a=max(aScene,aCrow)*uOpacity;
+  // ---- the pull chain, on a lattice of its own, about a pixel ----
+  // Its beads are under 3px across: at the bird's pitch each would be a single dot. At this
+  // pitch a bead is a few dots across, so its light and shadow come out as dot sizes.
+  float aChain=0.0;
+  if(uCrowOn>0.5){
+    vec2 cq=(floor(px/uCellChain)+0.5)*uCellChain;
+    vec2 sq=cq/uRes, eq=vec2(uCellChain*0.33)/uRes;
+    vec4 ch=(texture(uCrow,sq)*2.0+texture(uCrow,sq+vec2(eq.x,0.0))+texture(uCrow,sq-vec2(eq.x,0.0))
+            +texture(uCrow,sq+vec2(0.0,eq.y))+texture(uCrow,sq-vec2(0.0,eq.y)))/6.0;
+    if(ch.a>0.02 && ch.b/ch.a>0.5){
+      float ink=ch.r/ch.a;
+      float near=clamp(ch.g/ch.a,0.0,1.0);
+      ink*=mix(1.0, 0.5+0.5*near, uCrowFog);
+      float cov=ink*smoothstep(0.08,0.5,ch.a);
+      if(cov>=0.01){
+        float rho=texture(uLut,vec2(cov,0.5)).r;
+        float r=rho*uCellChain*mix(1.0, 0.8+0.4*near, uRelief);
+        float aa=min(0.6,r*0.9);
+        aChain=1.0-smoothstep(r-aa,r+aa,length(px-cq));
+        covOut=max(covOut,cov);
+      }
+    }
+  }
+
+  float a=max(aScene,max(aCrow,aChain))*uOpacity;
   if(a<=0.002){ outColor=vec4(0.0); return; }
 
   vec3 placeInk=mix(uHueA,uHueB,tl);
@@ -183,7 +209,7 @@ gl.linkProgram(prog); gl.useProgram(prog);
 if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
 const U={}; ["uSrcA","uSrcB","uLut","uXfA","uXfB","uToneA","uToneB","uBlueAB","uHueA","uHueB",
   "uInk","uDpr","uCell","uMix","uStagger","uDrift","uTint","uDepth","uTexW","uTextRect","uTextPad",
-  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk","uCrowFog","uCellCrow"]
+  "uSoftAB","uDetail","uOpacity","uDepA","uDepB","uPar","uFog","uRelief","uSway","uShowDep","uCrow","uRes","uCrowOn","uCrowInk","uCrowFog","uCellCrow","uCellChain"]
   .forEach(n=>U[n]=gl.getUniformLocation(prog,n));
 const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
 
@@ -206,19 +232,20 @@ void main(){
 const crowFS=`#version 300 es
 precision highp float;
 in float vDepth; in float vInk;
+uniform float uFlag;                // 1 for the pull chain, which is screened on its own lattice
 out vec4 outColor;
 void main(){
   vec2 d=gl_PointCoord*2.0-1.0;
   float a=1.0-smoothstep(0.45,1.0,dot(d,d));   // soft edged splat, so the outline is not blocky
   if(a<=0.01) discard;
-  outColor=vec4(vInk*a, vDepth*a, 0.0, a);     // premultiplied, so blurring averages it
+  outColor=vec4(vInk*a, vDepth*a, uFlag*a, a); // premultiplied, so blurring averages it
 }`;
 const crowProg=gl.createProgram();
 gl.attachShader(crowProg,sh(gl.VERTEX_SHADER,crowVS));
 gl.attachShader(crowProg,sh(gl.FRAGMENT_SHADER,crowFS));
 gl.linkProgram(crowProg);
 if(!gl.getProgramParameter(crowProg,gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(crowProg));
-const CU={}; ["uRes","uDpr","uSize"].forEach(n=>CU[n]=gl.getUniformLocation(crowProg,n));
+const CU={}; ["uRes","uDpr","uSize","uFlag"].forEach(n=>CU[n]=gl.getUniformLocation(crowProg,n));
 const crowVAO=gl.createVertexArray(), crowBuf=gl.createBuffer();
 let crowBufBytes=0;
 gl.bindVertexArray(crowVAO);
@@ -269,8 +296,9 @@ function drawCrow(withCrow,chainN){
     for(let i=0;i<chainN*4;i+=4){ chainLocal[i]=src[i]-r.left; chainLocal[i+1]=src[i+1]-r.top; chainLocal[i+2]=src[i+2]; chainLocal[i+3]=src[i+3]; }
     gl.bindVertexArray(chainVAO); gl.bindBuffer(gl.ARRAY_BUFFER,chainBuf);
     gl.bufferData(gl.ARRAY_BUFFER,chainLocal.subarray(0,chainN*4),gl.DYNAMIC_DRAW);
-    gl.uniform1f(CU.uSize,1.9);
+    gl.uniform1f(CU.uSize,1.0); gl.uniform1f(CU.uFlag,1);
     gl.drawArrays(gl.POINTS,0,chainN);
+    gl.uniform1f(CU.uFlag,0);
   }
   if(!withCrow){ gl.bindVertexArray(null); gl.bindFramebuffer(gl.FRAMEBUFFER,null);
     gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.useProgram(prog); gl.bindVertexArray(vao); return; }
@@ -284,7 +312,7 @@ function drawCrow(withCrow,chainN){
   gl.uniform2f(CU.uRes,cv.width,cv.height);
   gl.uniform1f(CU.uDpr,dpr);
   // splat size follows the bird's size on screen, so its coverage stays solid at any scale
-  gl.uniform1f(CU.uSize,+ctl.crowDot.value*crowScreenScale/110);
+  gl.uniform1f(CU.uSize,+ctl.crowDot.value*crowScreenScale/110); gl.uniform1f(CU.uFlag,0);
   gl.drawArrays(gl.POINTS,0,crow.count);
   gl.bindVertexArray(null);
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);
@@ -897,6 +925,7 @@ function frame(){
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
     gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
     gl.uniform1f(U.uCellCrow,bandW()/+ctl.crowCells.value);
+    gl.uniform1f(U.uCellChain,Math.max(1.05,2/dpr));      // about a pixel, two device pixels at least
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);
     gl.uniform1f(U.uDpr,dpr);
