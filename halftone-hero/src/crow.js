@@ -60,8 +60,13 @@ async function load(base) {
   return { n, pos, nrm, ao, joint, weight, frames, joints, fps, mats, meta };
 }
 
-export function createCrow(base = BASE) {
+export function createCrow(base = BASE, opts = {}) {
   const CAM = 7;                       // camera distance, in body lengths
+  // Which way it travels. 1: in from the left, perched facing right, off to the right (the
+  // home page). -1: the mirror, in from the right and off to the left (the Timeline). The
+  // mirror is done in screen space, after the pose, with the light kept at the upper left,
+  // so the bird is lit the same way whichever way it faces.
+  const DIR = opts.dir === -1 ? -1 : 1;
   const st = {
     phase: "loading",                  // loading -> waiting -> flyIn -> perched -> takeoff -> gone
     t: 0, delay: 1.1,
@@ -142,15 +147,17 @@ export function createCrow(base = BASE) {
       u * u * u * p[0][1] + 3 * u * u * t * p[1][1] + 3 * u * t * t * p[2][1] + t * t * t * p[3][1],
     ];
   };
+  // paths are laid out for travel to the right, then mirrored across the window if not
+  const mirror = (pts, w) => DIR > 0 ? pts : pts.map(([x, y]) => [w - x, y]);
   function flyIn(w, h) {
-    const [px, py] = perch;
-    path = [[-0.15 * w, py - 0.3 * h], [0.16 * w, py - 0.36 * h], [px - 0.4 * w, py - 0.12 * h], [px, py]];
+    const px = DIR > 0 ? perch[0] : w - perch[0], py = perch[1];
+    path = mirror([[-0.15 * w, py - 0.3 * h], [0.16 * w, py - 0.36 * h], [px - 0.4 * w, py - 0.12 * h], [px, py]], w);
     startPhase("flyIn");
   }
   function takeoff(w) {
-    const [px, py] = perch;
+    const px = DIR > 0 ? perch[0] : w - perch[0], py = perch[1];
     const rise = Math.min(0.13 * w, 130);   // the model leaps on its own, so ours is gentle
-    path = [[px, py], [px + 0.08 * w, py - rise], [px + 0.45 * w, py - rise * 1.2], [w * 1.2, py - rise * 1.05]];
+    path = mirror([[px, py], [px + 0.08 * w, py - rise], [px + 0.45 * w, py - rise * 1.2], [w * 1.2, py - rise * 1.05]], w);
     startPhase("takeoff");
   }
 
@@ -167,10 +174,12 @@ export function createCrow(base = BASE) {
       return [rx * cy + tz * sy, ty, -rx * sy + tz * cy];
     };
     for (let i = 0, p = 0, q = 0; i < n; i++, p += 3, q += 4) {
-      const [fx, ty, fz] = rot(skinned[p], skinned[p + 1] - foot, skinned[p + 2]);
+      const [fx0, ty, fz] = rot(skinned[p], skinned[p + 1] - foot, skinned[p + 2]);
+      const fx = fx0 * DIR;
       const k = pose.scale * CAM / (CAM - fz);
       const sx = pose.x + fx * k, syy = pose.y - ty * k;
-      const [nx, ny, nz] = rot(skinnedN[p], skinnedN[p + 1], skinnedN[p + 2]);
+      const [nx0, ny, nz] = rot(skinnedN[p], skinnedN[p + 1], skinnedN[p + 2]);
+      const nx = nx0 * DIR;
       // one key light from the upper left front: the shading is what the screen turns
       // into dots of different sizes, so the bird reads as a form rather than a cut-out
       const lam = Math.max(0, nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]);

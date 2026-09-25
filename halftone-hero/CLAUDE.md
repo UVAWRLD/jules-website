@@ -21,11 +21,14 @@ npx serve .          # or: python3 -m http.server
 
 ```
 index.html            the home page: markup and its CSS, plus the tuning panel
-timeline.html         the Timeline page (static, no renderer)
+timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
 src/crow.js           the crow: loads the baked cloud, skins it, runs the state machine
+src/crowui.js         around the crow, on every page: his card, its leader, the hit area,
+                      the red dot pointer
+src/crowstage.js      the crow alone on a transparent canvas, for pages without the landscape
 src/loader.js         the loading screen: hourglass and the dot build into the page
 src/chain.js          the pull chain that switches light and dark
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
@@ -38,7 +41,7 @@ tools/                build_sources.py (descreen refs), build_depth.py (depth ma
                       cloud), crow-preview.html (crow poses)
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
 public/img/timeline/  the Timeline page's assets, from Figma (rule, rings, connectors,
-                      certificate dashes, back link icon and underline, the crow render)
+                      certificate dashes, back link icon and underline)
 ```
 
 ## How the renderer works
@@ -162,34 +165,50 @@ for phones, where the only way to see these is a screenshot from the visitor.
 ## The Timeline page
 
 `timeline.html`, served at `/timeline` (Vercel `cleanUrls`; `tools/devserver.py` does the
-same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2, a 1440 x 1144 frame).
-The home page's "Timeline" nav link points to it; the logo and "← Back ⌂" link home.
+same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home page's
+"Timeline" nav link points to it; the logo and "← Back ⌂" link home. It scrolls.
 
-- **Layout in flow, not at the frame's coordinates.** One centred 537px column 155px down:
-  the header (Libre Caslon Condensed Regular 24/21 title, the back link, a 1px rule), the
-  intro (11/1.2, -0.22px), then the sections in a 355px column 118px in. At 1440 every entry
-  lands within a couple of pixels of the design's spacing; the whole list sits ~13px higher
-  because the browser wraps the intro in 4 lines where Figma wraps it in 5.
-- **The markers are per entry.** Each `.tl-item` draws its own hollow ring (58px left of the
-  column) and a connector fading toward the text; in the Experience list (`.tl-rail`) each
-  also draws the rail from under its ring, through the gap, to the next ring. The li reaches
-  62px left of the column (negative margin, equal padding) so the rail can be a background
-  inside it. So the rail stays joined however the text wraps; the design's rail is one fixed
-  487px dashed line, which only fits the design's exact wrapping.
+- **One scale factor.** The frame was scaled up 1.2665x in Figma, uniformly (the column went
+  from 537 to 680px, the title from 24 to 30.4px). Every size on the page is the first cut's
+  value times `--k`: 1.26648 on a computer, 1 on phones, where the larger type did not fit
+  the rail and date column. The column sits 164px down, as in the frame.
+- **Layout in flow, not at the frame's coordinates.** The header (Libre Caslon Condensed
+  Regular title, the back link, the rule), the intro, then the sections in a column 118 x k
+  in and 355 x k wide. At 1440 the header and intro land on the frame's numbers; the sections
+  sit ~17px higher, because the browser wraps the intro in 4 lines where Figma wraps it in 5.
+- **The markers are per entry.** Each `.tl-item` draws its own hollow ring and a connector
+  fading toward the text; in the Experience list (`.tl-rail`) each also draws the rail from
+  under its ring, through the gap, to the next ring. The li reaches 62 x k left of the column
+  (negative margin, equal padding) so the rail can be a background inside it: it stays joined
+  however the text wraps, where the design's rail is one fixed dashed line.
 - **The Figma vectors are masks** filled with colour tokens (`--strong`, `--body`, `--faint`,
-  `--muted`, `--ink`), like the logo, so they turn with the dark theme instead of staying
-  black. The crow in the header is the design's own render, used the same way: the full
-  2880x2048 frame render as a mask, cropped by mask position exactly as the design crops it,
-  flipped to face left, filled with ink. It is 2.1MB for a 129px bird; the live crow would be
-  better (see open items).
+  `--muted`, `--ink`), like the logo, so they turn with the dark theme instead of staying black.
+- **The crow is the live bird** (`src/crowstage.js`, `dir: -1`): he flies in from the right,
+  lands on the rule under the title (centred on it, feet on the line), and on a click leaves
+  off the left edge, back ten seconds later. Hovering him opens his card, a tap does on a
+  phone, exactly as on the home page (`src/crowui.js`). The stage's canvas is fixed and the
+  perch is read every frame, so he rides the rule as the page scrolls. It replaced the
+  design's static render of him, a 2.1MB mask for a 129px bird.
 - **Where the design was inconsistent, one choice was made:** Satoshi throughout (the design
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing
   (two are not in capitals) and the smaller role size on the later entries.
-- **Phones**: the column fills the width less 24px a side, the sections move to 62px in, and
-  the certificate dashes are dropped (they only line up three across).
+- **Phones**: `--k` 1, the column fills the width less 24px a side, the sections move to 62px
+  in, and the certificate dashes are dropped (they only line up three across).
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
   coming back from the Timeline does not mean four more seconds of hourglass.
+
+**The crow on other pages.** `src/crowstage.js` is the home page's two crow passes lifted
+out: splat the posed cloud into an offscreen buffer with a depth test, then screen it on his
+lattice (3x3 tap, dark edge, far side thinned, the shared dot curve), with the home page's
+size and pitch from the same band, so it is the same bird. `createCrowStage({perchOn, perchAt,
+dir})` perches him on the bottom edge of any element. `src/crow.js` takes `{dir}`: -1 mirrors
+the flight paths across the window and the model in screen space after the pose, with the
+light kept at the upper left, so he is lit the same way facing either way.
+`src/crowui.js` is the card, the leader, the hit area and the red dot pointer, moved out of
+`src/halftone.js` so every page with the bird shares them; it adds its own markup if a page
+lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their CSS is in
+`src/site.css`.
 
 ## The pull chain
 
@@ -468,10 +487,7 @@ Copy config emits that object as JSON.
 5. **Local contrast halos.** Above roughly 2.5 expect visible halos along hard edges, most
    obviously the New York skyline against sky. The fix is a wider blur radius, not less
    amount, which means exposing the `+1.32` lod offset as a fourth tone control.
-6. **Timeline crow.** The header crow is a static render (2.1MB mask). The live crow, perched
-   on the rule, would match the home page and weigh less, but needs the crow renderer split
-   out of `src/halftone.js` so a page can run it without the landscape.
-7. **Accessibility.** `prefers-reduced-motion` is honoured (no damping, no drift). The canvas
+6. **Accessibility.** `prefers-reduced-motion` is honoured (no damping, no drift). The canvas
    is decorative and has no alt text; add an `aria-hidden` and make sure the copy reads
    standalone.
 

@@ -1,6 +1,7 @@
 import {createCrow} from "./crow.js";
 import {createLoader} from "./loader.js";
 import {createChain} from "./chain.js";
+import {createCrowUI} from "./crowui.js";
 
 // paths are relative to index.html, so the folder runs from any static server.
 // moving to Astro means public/img/x.jpg becomes /img/x.jpg.
@@ -480,20 +481,13 @@ themes.forEach(([id,v])=>document.getElementById(id).onclick=()=>{
   themes.forEach(([j,w])=>document.getElementById(j).setAttribute("aria-pressed",w===v));
 });
 
-// A dot instead of a pointer. Drawn as an element rather than a cursor image so it stays
-// crisp on a retina screen; it is moved in the pointer handler itself, not in the frame
-// loop, so it does not lag behind the hand.
-const dot=document.getElementById("dot");
-if(fine){
-  document.body.classList.add("dotted");
-  addEventListener("pointerdown",()=>dot.classList.add("down"));
-  addEventListener("pointerup",()=>dot.classList.remove("down"));
-  addEventListener("pointerleave",()=>dot.classList.remove("on"));
-}
+// The card, the leader, the hit area over the bird and the red dot pointer (src/crowui.js),
+// shared with the other pages that have the bird.
+const ui=createCrowUI({crow, fine, canvasWidth:()=>cv.getBoundingClientRect().width});
+const dot=ui.dot;
 addEventListener("pointermove",e=>{
   if(e.pointerType!=="mouse") return;
   mouse={x:e.clientX,y:e.clientY};
-  if(fine){ dot.style.transform="translate3d("+e.clientX+"px,"+e.clientY+"px,0)"; dot.classList.add("on"); }
 },{passive:true});
 addEventListener("pointerleave",()=>{mouse=null;});
 addEventListener("scroll",()=>readTarget(),{passive:true});
@@ -600,100 +594,8 @@ pullTone(); labels(); resize(); setMode(mode);
 addEventListener("load",()=>resize());
 
 const nameEl=document.getElementById("name");
-const crowHit=document.getElementById("crowHit");
 if(GRAB) window.__crow=crow;            // ?grab also hands the bird to the console
-const crowCard=document.getElementById("crowCard");
-const crowLead=document.getElementById("crowLead");
-const crowLeadPath=crowLead.querySelector("path");
-
-// The card is a hover on the bird, and only while he is actually still: not in flight, not
-// for the first second on the perch, and gone the moment he leaves.
-const SETTLE=1.0;                       // seconds on the perch before the hover answers
-let cardWanted=false, cardOn=false;
-function showCard(on){
-  cardWanted=on;
-  if(on===cardOn) return;
-  cardOn=on;
-  document.body.classList.toggle("crow-card",on);
-  crowCard.setAttribute("aria-hidden",String(!on));
-}
-crowHit.onmouseenter=()=>{ if(fine){ showCard(true); dot.classList.add("over"); } };
-crowHit.onmouseleave=()=>{ if(fine){ showCard(false); dot.classList.remove("over"); } };
-crowHit.onclick=()=>{
-  // With a mouse the card is already open on hover, so a click sends him off. By touch
-  // there is no hover: the first tap opens the card, the second sends him off.
-  if(!fine && !cardOn){ showCard(true); return; }
-  showCard(false); dot.classList.remove("over");
-  crow.click(cv.getBoundingClientRect().width);
-};
-// a tap anywhere else puts the card away again
-addEventListener("pointerdown",e=>{
-  if(!fine && cardOn && !crowHit.contains(e.target)) showCard(false);
-},{passive:true});
-document.getElementById("crowBtn").onclick=()=>{ showCard(false); crow.replay(); };
-
-// The leader: a dashed hop off the bird, a 45 degree run, then a short horizontal into the
-// card's edge. The card is placed first and clamped to the window, then the leader is built
-// from wherever it landed: off his right shoulder, his left, or straight up when the card
-// sits over him, which is what happens on a phone. Same motif, just shorter.
-const LEAD_RISE=75, CARD_MID=61, EDGE=12, HOP=8, OVER_GAP=22;
-function placeCard(cvr){
-  const [x0,y0,x1,y1]=crow.bbox;
-  const vw=innerWidth, vh=innerHeight;
-  const cw=crowCard.offsetWidth, ch=crowCard.offsetHeight;
-  const bl=cvr.left+x0, br=cvr.left+x1, bt=cvr.top+y0, bb=cvr.top+y1;
-  const rise=Math.max(14, Math.min(LEAD_RISE, bt-EDGE-CARD_MID));
-
-  // room to the right, as in the design; failing that the left; failing both, above him
-  let side=0;
-  if(br-10+rise+22.5+cw<=vw-EDGE) side=1;
-  else if(bl+10-rise-22.5-cw>=EDGE) side=-1;
-
-  let left, top, ax, ay, entryX, entryY, corner=0;
-  if(side){
-    ax=side>0?br-10:bl+10; ay=bt+2;
-    left=side>0 ? ax+rise+22.5 : ax-rise-22.5-cw;
-    left=Math.max(EDGE, Math.min(left, vw-EDGE-cw));
-    top=Math.max(EDGE, Math.min(ay-rise-CARD_MID, vh-EDGE-ch));
-    entryX=side>0?left:left+cw;
-    entryY=Math.max(top+8, Math.min(top+CARD_MID, top+ch-8));
-    corner=ax+side*Math.max(0, ay-entryY);                  // 45 degrees out of the hop
-    const limit=entryX-side*6;                              // always leave a little run
-    if(side>0 ? corner>limit : corner<limit) corner=limit;
-  } else {
-    // no room either side, so above him, or below when the card is taller than the space
-    // over his head. That is the usual case on a phone.
-    ax=(bl+br)/2;
-    const above=bt-OVER_GAP-ch>=EDGE;
-    left=Math.max(EDGE, Math.min(ax-cw/2, vw-EDGE-cw));
-    if(above){ ay=bt-2; top=Math.max(EDGE, ay-OVER_GAP-ch); entryY=top+ch; }
-    else { ay=bb+2; top=Math.min(vh-EDGE-ch, ay+OVER_GAP); entryY=top; }
-    entryX=Math.max(left+24, Math.min(ax, left+cw-24));
-  }
-  crowCard.style.left=left+"px"; crowCard.style.top=top+"px";
-
-  // no room to draw it without crossing him: better no line than a line into his back
-  const room=side ? true : Math.abs(ay-entryY)>=8;
-  crowLead.style.display=room?"":"none";
-  if(!room) return;
-
-  const xs=[ax,entryX].concat(side?[corner]:[]), pad=10;
-  const lx=Math.min(...xs)-pad, ly=Math.min(entryY,ay)-pad;
-  crowLead.style.left=lx+"px"; crowLead.style.top=ly+"px";
-  crowLead.setAttribute("width",(Math.max(...xs)-lx+pad)+"");
-  crowLead.setAttribute("height",(Math.max(ay,entryY)-ly+pad)+"");
-  const P=(x,y)=>(x-lx).toFixed(1)+" "+(y-ly).toFixed(1);
-  const span=Math.abs(ay-entryY);
-  const g=Math.min(HOP, Math.max(4, span*0.35));             // the dashes shrink with it
-  const hx=side?side*g:(entryX>ax?g*0.4:-g*0.4);
-  const hy=(entryY<ay?-1:1)*g;
-  crowLeadPath.setAttribute("d",
-    "M "+P(ax,ay)+" L "+P(ax+hx*0.45,ay+hy*0.45)+
-    " M "+P(ax+hx*0.72,ay+hy*0.72)+" L "+P(ax+hx,ay+hy)+
-    " M "+P(ax+hx*1.25,ay+hy*1.25)+
-    (side ? " L "+P(corner,entryY)+" L "+P(entryX,entryY)
-          : " L "+P(entryX,entryY)));
-}
+document.getElementById("crowBtn").onclick=()=>{ ui.hide(); crow.replay(); };
 
 const sway=[0,0];
 // Light or dark, from the pull chain. The choice is remembered for the next visit (the
@@ -886,17 +788,7 @@ function frame(){
   });
   const chainN=chain?chain.count:0, crowOn=!!(alive&&crow.count);
   if(crowOn||chainN) drawCrow(crowOn,chainN);
-  const still=crow.phase==="perched"&&crow.state.t>SETTLE;
-  crowHit.hidden=!still;
-  if(still){
-    const [x0,y0,x1,y1]=crow.bbox;
-    crowHit.style.left=(cvr.left+x0-6)+"px"; crowHit.style.top=(cvr.top+y0-6)+"px";
-    crowHit.style.width=(x1-x0+12)+"px"; crowHit.style.height=(y1-y0+12)+"px";
-    if(cardWanted){ showCard(true); placeCard(cvr); }
-  } else if(cardOn||cardWanted){
-    showCard(false); cardWanted=false;      // he moved: the card goes with him
-    dot.classList.remove("over");
-  }
+  ui.update(cvr);
 
   if(ready===NTEX){
     const i=Math.min(Math.floor(current),PLACES.length-2), f0=current-i;
