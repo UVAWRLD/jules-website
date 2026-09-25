@@ -11,61 +11,17 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Satoshi and Libre Caslon Condensed are served from here, so the type does not depend on
-     anyone else's CDN. Licences sit beside the files. Inconsolata is still Google's. -->
 <link rel="preload" href="public/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400&display=swap" rel="stylesheet">
+<!-- fonts, colour tokens in both themes, and the page itself, shared with the other pages -->
+<link rel="stylesheet" href="src/site.css">
 <style>
-  @font-face{
-    font-family:"Satoshi";
-    src:url("public/fonts/Satoshi-Variable.woff2") format("woff2-variations");
-    font-weight:300 900;             /* one variable file covers every weight we use */
-    font-style:normal; font-display:swap;
-  }
-  @font-face{
-    font-family:"Libre Caslon Condensed";
-    src:url("public/fonts/LibreCaslonCondensed-SemiBold.woff2") format("woff2");
-    font-weight:600; font-style:normal; font-display:swap;
-  }
-  :root{
-    --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
-    --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
-    --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
-    /* band width follows the viewport height so the picture keeps the same vertical
-       composition at every window size; it only gives way when the window is too narrow */
-    --band-k:0.96;
-    --bw:min(calc(var(--band-k) * 100vh), 100vw);
-  }
-  /* the site is light whatever the browser prefers: prefers-color-scheme is deliberately
-     not followed. Dark is still there, but only when asked for with data-theme="dark". */
-  :root[data-theme="dark"]{
-    --paper:#0F0F0E; --ink:#EDEDEB; --muted:#79796F;
-    --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
-    --card-line:#4A4A46; --card-shadow:0 2px 32px 2px rgba(0,0,0,.45);
-  }
-  :root[data-theme="light"]{
-    --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
-    --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
-    --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
-  }
-  *{box-sizing:border-box}
-  /* the paper belongs on the root, so Safari's rubber band area is paper too, not a void;
-     and the bounce is switched off, so there is nothing past the end to scroll into */
-  html{background:var(--paper);overscroll-behavior-y:none}
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font-family:"Satoshi","Satoshi Variable","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size:14px;line-height:21px;-webkit-font-smoothing:antialiased}
 
   .stage{height:400vh;height:400lvh;position:relative}
   body.cursor .stage{height:100vh;height:100lvh}
   .pin{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden}
 
-  /* the logo is drawn as a mask filled with the ink colour, so one file serves both
-     themes and the file itself never needs to know which one is in use */
-  .mark{position:absolute;left:4.86%;top:5.18vh;width:27px;height:27.4px;z-index:4;
-    background:var(--ink);
-    -webkit-mask:url(public/img/logo.svg) no-repeat center/contain;
-    mask:url(public/img/logo.svg) no-repeat center/contain}
+
 
   /* the canvas spans the window so the crow can fly the whole width; the picture itself
      still only occupies the centred band, which the renderer works out from --band-k */
@@ -95,10 +51,7 @@
     border:0;background:none;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
   #chainPull.held{cursor:grabbing}
   #chainPull:focus-visible{outline:1px solid var(--ink);outline-offset:-8px;border-radius:50%}
-  /* while the theme changes, everything cross-fades; the halftone follows by itself, since
-     it reads the page's ink every frame */
-  html.theming, html.theming *{transition:color .5s ease, background-color .5s ease,
-    border-color .5s ease !important}
+
   /* the loading screen: the page's paper, over everything, then gone */
   html.loading, html.loading body{overflow:hidden}
   #loader{position:fixed;inset:0;z-index:100;background:var(--paper)}
@@ -199,7 +152,7 @@
     <div class="mark" aria-hidden="true"></div>
     <div class="band" id="band"><canvas id="c"></canvas></div>
     <div class="copy" id="copy">
-      <nav><b id="name">Jules Bockelee Morvan</b><a href="#">Timeline</a><a href="#">Thoughts</a></nav>
+      <nav><b id="name">Jules Bockelee Morvan</b><a href="timeline">Timeline</a><a href="#">Thoughts</a></nav>
       <p class="lede">Product &amp; brand strategist.</p>
       <p class="dim">I've seen good ideas get lost in the handover more often than anywhere else.</p>
       <p class="dim gap">Between the promise and the budget, the brand and the product, the pitch and the people who build it. That's where I work, across hospitality, tech and consumer brands.</p>

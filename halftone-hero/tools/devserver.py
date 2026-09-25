@@ -16,6 +16,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=str(ROOT), **kw)
 
+    def do_GET(self):
+        # clean URLs, as on Vercel: /timeline serves timeline.html
+        path = self.path.split("?", 1)[0]
+        if path != "/" and "." not in path.rsplit("/", 1)[-1] and (ROOT / (path.lstrip("/") + ".html")).is_file():
+            self.path = path + ".html" + (self.path[len(path):] if "?" in self.path else "")
+        return super().do_GET()
+
     def do_POST(self):
         if not self.path.startswith("/_grab"):
             return self.send_error(404)

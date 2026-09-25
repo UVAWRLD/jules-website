@@ -713,13 +713,16 @@ const chain=createChain({
 });
 // The loading screen (src/loader.js). It covers the page until the sweep; the crow's arrival
 // is restarted when the page is revealed, or he would already be perched behind it.
-// ?noloader skips it, which the frame grabs and quick checks want.
-if(!/[?&]noloader\b/.test(location.search)){
+// ?noloader skips it, which the frame grabs and quick checks want. It plays once a visit:
+// coming back from the Timeline page should not mean four more seconds of hourglass.
+let loaderSeen=false;
+try{ loaderSeen=sessionStorage.getItem("loaderSeen")==="1"; }catch(e){}
+if(!/[?&]noloader\b/.test(location.search) && !loaderSeen){
   createLoader({
     mobile:!fine, reduce,
     isHeroReady:()=>ready===NTEX,
     enableTilt:()=>enableTilt(),
-    onReveal:()=>crow.replay(),
+    onReveal:()=>{ crow.replay(); try{ sessionStorage.setItem("loaderSeen","1"); }catch(e){} },
   });
 } else document.getElementById("loader").remove();
 // Tilt. A touch screen has no cursor to lean toward, so the device's own tilt drives the same
