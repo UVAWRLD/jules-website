@@ -183,6 +183,13 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   however the text wraps, where the design's rail is one fixed dashed line.
 - **The Figma vectors are masks** filled with colour tokens (`--strong`, `--body`, `--faint`,
   `--muted`, `--ink`), like the logo, so they turn with the dark theme instead of staying black.
+- **The markers' spotlight** (a mouse only). An invisible soft circle, 70px (`--R`), follows the
+  cursor and touches only the markers: the rail and connectors darken toward `--strong` per
+  pixel, so only the stretch near the cursor changes, and each ring darkens and fills to a
+  solid circle as the cursor nears it (`--hot`, 0..1, by distance to the ring's centre). A
+  small script tells every entry where the cursor is relative to it (`--mx`, `--my`) on
+  pointer move and on scroll; each marker's background is a radial gradient centred there,
+  inside the Figma shape's mask, and the ring's mask gains a disc whose alpha is `--hot`.
 - **The crow is the live bird** (`src/crowstage.js`, `dir: -1`): he flies in from the right,
   lands on the rule under the title (centred on it, feet on the line), and on a click leaves
   off the left edge, back ten seconds later. Hovering him opens his card, a tap does on a

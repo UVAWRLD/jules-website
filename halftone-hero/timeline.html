@@ -64,23 +64,39 @@
     column-gap:calc(var(--k) * 12.101px);margin-left:calc(var(--k) * -62px);padding-left:calc(var(--k) * 62px);
     padding-bottom:calc(var(--k) * 8.643px)}
   .tl-item:last-child{padding-bottom:0}
+  /* The spotlight. An invisible soft circle follows the cursor (--R across) and touches only
+     the markers: inside it the lines darken toward the text colour, per pixel, so only the
+     stretch near the cursor changes, and the rings darken and fill in solid. The script at
+     the end keeps each entry told where the cursor is relative to it (--mx, --my) and how
+     close it is to the ring (--hot, 0..1); far away, both leave everything as drawn. */
+  .tl-item{--mx:-9999px;--my:-9999px;--hot:0;--R:70px;
+    --spot:var(--strong) 0%, color-mix(in srgb, var(--strong) 45%, var(--muted)) 40%, var(--muted) 100%}
   .tl-item::before{content:"";position:absolute;left:calc(var(--k) * 3px);top:calc(var(--k) * 5px);
-    width:calc(var(--k) * 8px);height:calc(var(--k) * 8px);background:var(--faint);
-    -webkit-mask:url(public/img/timeline/ring.svg) no-repeat 0 0/100% 100%;
-    mask:url(public/img/timeline/ring.svg) no-repeat 0 0/100% 100%}
+    width:calc(var(--k) * 8px);height:calc(var(--k) * 8px);
+    background:color-mix(in srgb, var(--strong) calc(var(--hot) * 100%), var(--faint));
+    /* the ring, plus a disc that fades in with --hot: the ring fills to a solid circle */
+    -webkit-mask:url(public/img/timeline/ring.svg) no-repeat 0 0/100% 100%,
+      radial-gradient(circle closest-side, rgb(0 0 0 / var(--hot)) 97%, transparent 100%) no-repeat 0 0/100% 100%;
+    mask:url(public/img/timeline/ring.svg) no-repeat 0 0/100% 100%,
+      radial-gradient(circle closest-side, rgb(0 0 0 / var(--hot)) 97%, transparent 100%) no-repeat 0 0/100% 100%;
+    -webkit-mask-composite:source-over;mask-composite:add}
   .tl-item::after{content:"";position:absolute;left:calc(var(--k) * 10px);top:calc(var(--k) * 8.5px);
-    width:calc(var(--k) * 49px);height:calc(var(--k) * 1px);background:var(--muted);
+    width:calc(var(--k) * 49px);height:calc(var(--k) * 1px);
+    background:radial-gradient(circle var(--R) at calc(var(--mx) - var(--k) * 10px) calc(var(--my) - var(--k) * 8.5px), var(--spot));
     -webkit-mask:url(public/img/timeline/connector.svg) no-repeat 0 0/100% 100%;
     mask:url(public/img/timeline/connector.svg) no-repeat 0 0/100% 100%}
+  /* the rail: a 1px band under the ring and one above it, each lit from the cursor's position
+     relative to its own box */
   .tl-rail .tl-item{
-    --seg:linear-gradient(var(--muted),var(--muted));
     --x:calc(var(--k) * 6.5px); --w:calc(var(--k) * 1px);
+    --segA:radial-gradient(circle var(--R) at calc(var(--mx) - var(--x)) var(--my), var(--spot));
+    --segB:radial-gradient(circle var(--R) at calc(var(--mx) - var(--x)) calc(var(--my) - var(--k) * 12.5px), var(--spot));
     --below:var(--x) calc(var(--k) * 12.5px)/var(--w) calc(100% - var(--k) * 12.5px);
     --above:var(--x) 0/var(--w) calc(var(--k) * 5.5px)}
-  .tl-rail .tl-item:not(:last-child){background:var(--seg) no-repeat var(--below)}
-  .tl-rail .tl-item:not(:first-child){background:var(--seg) no-repeat var(--above)}
+  .tl-rail .tl-item:not(:last-child){background:var(--segB) no-repeat var(--below)}
+  .tl-rail .tl-item:not(:first-child){background:var(--segA) no-repeat var(--above)}
   .tl-rail .tl-item:not(:first-child):not(:last-child){
-    background:var(--seg) no-repeat var(--above), var(--seg) no-repeat var(--below)}
+    background:var(--segA) no-repeat var(--above), var(--segB) no-repeat var(--below)}
 
   .tl-date{font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--faint)}
   .tl-body{display:flex;flex-direction:column;gap:calc(var(--k) * 6.58px);min-width:0}
@@ -220,6 +236,31 @@
   import { createCrowStage } from "./src/crowstage.js";
   const stage = createCrowStage({ perchOn: document.querySelector(".tl-head"), perchAt: 0.5, dir: -1 });
   if (stage && /[?&]grab\b/.test(location.search)) window.__crow = stage.crow;   // for checking, as on home
+
+  // The markers' spotlight (see the CSS): each entry is told where the cursor is relative to
+  // it, and how close it is to its ring. A mouse only; a phone has no hover to follow.
+  if (matchMedia("(pointer: fine)").matches) {
+    const items = [...document.querySelectorAll(".tl-item")];
+    const R = 70;                                   // as --R
+    let px = -1e4, py = -1e4, queued = false;
+    const paint = () => {
+      queued = false;
+      const k = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--k")) || 1;
+      for (const li of items) {
+        const r = li.getBoundingClientRect();
+        const mx = px - r.left, my = py - r.top;
+        li.style.setProperty("--mx", mx + "px");
+        li.style.setProperty("--my", my + "px");
+        const d = Math.hypot(mx - 7 * k, my - 9 * k);             // to the ring's centre
+        const t = Math.max(0, Math.min(1, (R - d) / (R * 0.7)));
+        li.style.setProperty("--hot", (t * t * (3 - 2 * t)).toFixed(3));
+      }
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+    addEventListener("pointermove", e => { if (e.pointerType === "mouse") { px = e.clientX; py = e.clientY; queue(); } }, { passive: true });
+    addEventListener("scroll", queue, { passive: true });          // the page moves under a still cursor
+    document.documentElement.addEventListener("pointerleave", () => { px = py = -1e4; queue(); });
+  }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
