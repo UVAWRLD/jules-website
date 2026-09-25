@@ -156,7 +156,7 @@ for phones, where the only way to see these is a screenshot from the visitor.
 
 ## The pull chain
 
-`src/chain.js`. A small chain hangs just left of the place caption; pulling it down switches
+`src/chain.js`. A small chain hangs just right of the place caption; pulling it down switches
 light and dark, like a lamp cord. It has no canvas of its own: every frame it hands the renderer
 shaded points, which are splatted into the crow's buffer and screened by the crow's pass, so the
 chain is made of the bird's dots, on the bird's lattice, and takes the ink of the theme the same
@@ -165,8 +165,9 @@ way. An invisible button (`#chainPull`) follows the bead and takes the grab.
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (56 on
 touch), shortened on a short screen so it always stops 30px above the copy. The mount sits
-14px left of the caption and glides after it when the caption changes width with the place
-names (it is pinned by its right edge), so the chain swings from the move rather than jumping.
+14px right of the caption, whose right edge is where it is pinned, so it does not move when
+the place names change width (it first hung on the left, and slid with every change); if the
+layout moves it, it glides there and the chain swings from the move rather than jumping.
 The cursor brushing past it sets it swinging; on a phone the device tilt (`sway`) leans its
 gravity. Reduce Motion damps it heavily.
 

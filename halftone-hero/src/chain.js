@@ -1,4 +1,4 @@
-// A pull chain hanging to the left of the place caption. Pull it down and the page switches
+// A pull chain hanging to the right of the place caption. Pull it down and the page switches
 // between light and dark, like a lamp cord.
 //
 // The chain is a verlet rope (a string of points with their last positions, gravity, and
@@ -29,13 +29,13 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   const p = [], q = [];
   for (let i = 0; i < N; i++) { p.push([0, 0]); q.push([0, 0]); }
 
-  // The mount sits just left of the caption. The caption is pinned by its right edge, so its
-  // left edge moves when the place names change width; the mount glides after it (in step())
-  // and the chain swings from the move, rather than jumping.
+  // The mount sits just right of the caption. The caption is pinned by its right edge, so the
+  // mount stays put when the place names change width; if the layout moves it, it glides
+  // there (in step()) and the chain swings from the move, rather than jumping.
   let axT = 0, ayT = 0, ready = false;
   function measure() {
     const r = caption.getBoundingClientRect();
-    axT = r.left - 14; ayT = r.top + r.height / 2 - 1;
+    axT = r.right + 14; ayT = r.top + r.height / 2 - 1;
     // never down into the copy: on a short screen the chain is shortened to stop above it
     const c = document.getElementById("copy").getBoundingClientRect();
     const over = axT > c.left - 20 && axT < c.right + 20;
@@ -264,7 +264,8 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     for (let w = 0; w <= Math.hypot(e1[0] - top[0], e1[1] - top[1]); w += 0.4) put(top[0] + ex * w, top[1] + ey * w, 0.45, 0.9);
     const mid = pullKnob(e1[0], e1[1], ex, ey);
     // the grab area follows the pull
-    handle.style.transform = `translate3d(${mid[0] - 16}px, ${mid[1] - 20}px, 0)`;
+    const hx = Math.min(mid[0] - 16, innerWidth - 32);
+    handle.style.transform = `translate3d(${hx}px, ${mid[1] - 20}px, 0)`;
   }
 
   let acc = 0, last = performance.now();
