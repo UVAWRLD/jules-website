@@ -244,13 +244,37 @@ function crowTarget(w,h){
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,crowDepth);
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);
 }
-function drawCrow(){
+// the pull chain (src/chain.js) is splatted into the same buffer, so the crow's screen turns
+// it into the bird's dots; it has its own buffer, since its points arrive in page px
+const chainVAO=gl.createVertexArray(), chainBuf=gl.createBuffer();
+gl.bindVertexArray(chainVAO);
+gl.bindBuffer(gl.ARRAY_BUFFER,chainBuf);
+gl.enableVertexAttribArray(aPosLoc);
+gl.vertexAttribPointer(aPosLoc,4,gl.FLOAT,false,0,0);
+gl.bindVertexArray(null);
+let chainLocal=new Float32Array(0);
+function drawCrow(withCrow,chainN){
   gl.bindFramebuffer(gl.FRAMEBUFFER,crowFB);
   gl.viewport(0,0,cv.width,cv.height);
   gl.clearColor(0,0,0,0); gl.clearDepth(1);
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND);
-  gl.useProgram(crowProg); gl.bindVertexArray(crowVAO);
+  gl.useProgram(crowProg);
+  gl.uniform2f(CU.uRes,cv.width,cv.height);
+  gl.uniform1f(CU.uDpr,dpr);
+  if(chainN){
+    // page px to this canvas's px
+    const r=cv.getBoundingClientRect(), src=chain.points;
+    if(chainLocal.length<chainN*4) chainLocal=new Float32Array(src.length);
+    for(let i=0;i<chainN*4;i+=4){ chainLocal[i]=src[i]-r.left; chainLocal[i+1]=src[i+1]-r.top; chainLocal[i+2]=src[i+2]; chainLocal[i+3]=src[i+3]; }
+    gl.bindVertexArray(chainVAO); gl.bindBuffer(gl.ARRAY_BUFFER,chainBuf);
+    gl.bufferData(gl.ARRAY_BUFFER,chainLocal.subarray(0,chainN*4),gl.DYNAMIC_DRAW);
+    gl.uniform1f(CU.uSize,1.9);
+    gl.drawArrays(gl.POINTS,0,chainN);
+  }
+  if(!withCrow){ gl.bindVertexArray(null); gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+    gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.useProgram(prog); gl.bindVertexArray(vao); return; }
+  gl.bindVertexArray(crowVAO);
   gl.bindBuffer(gl.ARRAY_BUFFER,crowBuf);
   if(crowBufBytes!==crow.positions.byteLength){
     crowBufBytes=crow.positions.byteLength;
@@ -654,7 +678,7 @@ function setTheme(dark){
   if(dark) root.setAttribute("data-theme","dark"); else root.removeAttribute("data-theme");
   try{ localStorage.setItem("theme",dark?"dark":"light"); }catch(e){}
 }
-createChain({
+const chain=createChain({
   fine, reduce, dot,
   getLean:()=>sway,                       // on a phone, tilting leans the chain too
   onPull:()=>setTheme(document.documentElement.getAttribute("data-theme")!=="dark"),
@@ -829,7 +853,8 @@ function frame(){
     perchY:nameR.top-cvr.top-1,
     sway, scale:crowScale, reduce
   });
-  if(alive&&crow.count) drawCrow();
+  const chainN=chain?chain.count:0, crowOn=!!(alive&&crow.count);
+  if(crowOn||chainN) drawCrow(crowOn,chainN);
   const still=crow.phase==="perched"&&crow.state.t>SETTLE;
   crowHit.hidden=!still;
   if(still){
@@ -868,7 +893,7 @@ function frame(){
     gl.uniform1f(U.uShowDep,showDep?1:0);
     gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D,crowTex); gl.uniform1i(U.uCrow,5);
     gl.uniform2f(U.uRes,cv.width/dpr,cv.height/dpr);
-    gl.uniform1f(U.uCrowOn,alive&&crow.count?1:0);
+    gl.uniform1f(U.uCrowOn,crowOn||chainN?1:0);
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
     gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
     gl.uniform1f(U.uCellCrow,bandW()/+ctl.crowCells.value);

@@ -157,8 +157,10 @@ for phones, where the only way to see these is a screenshot from the visitor.
 ## The pull chain
 
 `src/chain.js`. A small chain hangs just left of the place caption; pulling it down switches
-light and dark, like a lamp cord. Its own 2D canvas (`#chainCv`, pointer-events none) and an
-invisible button (`#chainPull`) that follows the bead and takes the grab.
+light and dark, like a lamp cord. It has no canvas of its own: every frame it hands the renderer
+shaded points, which are splatted into the crow's buffer and screened by the crow's pass, so the
+chain is made of the bird's dots, on the bird's lattice, and takes the ink of the theme the same
+way. An invisible button (`#chainPull`) follows the bead and takes the grab.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (56 on
@@ -174,12 +176,17 @@ pull. On release the extra chain springs back in with a little bounce. A plain t
 bead, or Enter / Space when it has focus, does a whole pull by itself. The button's label
 says which way the next pull goes.
 
-**Drawing.** Links slide along the rope at a 5px pitch, and slide out of the mount as it is
-pulled, so the pattern moves with the chain. Alternate links sit at right angles (a ring seen
-face on, then a bar seen edge on), each with a glint on its lit side, and they twist a little
-while it swings. The bead is a shaded sphere lit from the upper left. Colours come from the
-page's ink and paper each frame: dark metal with a pale glint on light paper, pale metal
-with a bright glint on dark.
+**Drawing, in dots.** Links sit along the rope at a 6px pitch and slide out of the mount as it
+is pulled, so the pattern moves with the chain. Each link is its outline, sampled at under a
+pixel so the splats merge into a wire before the screen averages them: alternate links sit at
+right angles, a ring seen face on, then a bar seen edge on, and they twist a little while it
+swings. Each point carries the crow's format (x, y, depth, ink), ink from a key light on the
+wire's normal, so the lit side of every link screens into smaller dots. The bead is a small
+lit sphere, shaded with the crow's formula. `drawCrow()` in `src/halftone.js` splats the chain
+with its own splat size (1.9px) before the bird, and the crow screen is switched on whenever
+either is present. At a laptop's pitch (~2px) the chain reads as a dotted cord whose width
+pulses with the links; the openings in the rings would only show with links about twice the
+size. The first version drew solid lines on its own 2D canvas.
 
 **The theme.** `setTheme()` in `src/halftone.js` sets or clears `data-theme="dark"` and
 remembers the choice in `localStorage` ("theme"); a small script in `<head>` applies a saved
