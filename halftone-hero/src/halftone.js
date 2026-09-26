@@ -572,7 +572,7 @@ document.getElementById("reset").onclick=()=>{
   PLACES.forEach((p,i)=>p.tone=Object.assign({},DEFAULTS[i]));
   ctl.cells.value=311; ctl.stag.value=0.28; ctl.drift.value=0; ctl.depth.value=0;
   ctl.tint.value=0; ctl.detail.value=1; ctl.inset.value=0.96; ctl.gap.value=8; ctl.feather.value=14; ctl.lift.value=0;
-  ctl.crowSize.value=0.064; ctl.crowMin.value=46; ctl.crowMax.value=74; ctl.crowCells.value=445; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
+  ctl.crowSize.value=0.048; ctl.crowMin.value=35; ctl.crowMax.value=56; ctl.crowCells.value=593; ctl.crowDot.value=2.7; ctl.crowInk.value=0.58; ctl.crowFog.value=0.5;
   ctl.par.value=26; ctl.sens.value=1.6; ctl.fog.value=0.35; ctl.relief.value=0.35;
   ctl.morph.value=1.6; ctl.zNy.value=5.3; ctl.zParis.value=10.5; ctl.opacity.value=0.61;
   pullTone(); labels(); resize();

@@ -65,7 +65,9 @@ void main(){
 
 // the home page's defaults, so the bird matches
 const CROW_INK = 0.58, CROW_FOG = 0.5, RELIEF = 0.35, OPACITY = 0.61, SPLAT = 2.7;
-const DOTS_ACROSS = 445, SIZE = 0.064, SIZE_MIN = 46, SIZE_MAX = 74;
+// a quarter smaller than he started (0.064, 46-74px, 445), with his lattice scaled to match,
+// so he keeps the same number of dots across him
+const DOTS_ACROSS = 593, SIZE = 0.048, SIZE_MIN = 35, SIZE_MAX = 56;
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
 export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" }) {

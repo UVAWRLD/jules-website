@@ -213,7 +213,7 @@ export function createLoader(opts) {
   // ---- layout: where the hourglass sits and how big ----
   let cx = 0, cy = 0, scale = 1;
   function place() {
-    // well under half its first size: bigger than the crow (46-74px), still a small object
+    // well under half its first size: bigger than the crow (35-56px), still a small object
     // on a computer it is smaller again, about 115px on a laptop, still a little over the crow
     scale = Math.min(mobile ? clamp(H * 0.2, 120, 190) : clamp(H * 0.13, 96, 130),
                      W * 0.9 / 0.47);                               // it is 0.47 as wide as tall

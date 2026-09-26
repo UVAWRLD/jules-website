@@ -298,7 +298,7 @@ and the sand shows through them.
 Screening is the crow's too: 3x3 tap, dark edge, far side thinned, the shared dot curve; the
 cell is held at the crow's pitch, `clamp(height / 80, 1.8, 2.6)` px.
 **Size**: on a computer 13% of the screen height, held between 96 and 130px (about 117 on a
-laptop); on touch screens 20%, between 120 and 190px: bigger than the crow (46-74px)
+laptop); on touch screens 20%, between 120 and 190px: bigger than the crow (35-56px)
 but a small object on the page. The first version was 40% of the height, which was too much.
 
 Paper and ink are read from the page's computed `body` colours, so the loader is the hero's
@@ -385,7 +385,7 @@ the bird is lit and the screen turns that into a tonal range:
   buffer's coverage falls off, and thins the ink on the bird's own far side (its depth, the
   same idea as the landscape's aerial fade)
 
-**The crow has its own lattice**, 445 dots across the band against the picture's 311. It is
+**The crow has its own lattice**, 593 dots across the band (445 before he was made a quarter smaller) against the picture's 311. It is
 small on the page, so at the picture's pitch there were only about 13 dots across it, too
 few to show any form; at 445 there are about 19. The two screens are computed separately,
 each with its own cell, radius from the same ink curve, and relief, and composited by
@@ -440,9 +440,12 @@ where Satoshi at 14px was 150; the crow perches on it all the same. Only Inconso
 pronunciation line, still comes from Google.
 
 **His size is held between a floor and a ceiling.** It follows the band, which runs away on
-a large monitor and collapses on a phone, so it is clamped: `clamp(46px, band × 0.064, 74px)`.
-A laptop is unchanged at about 63px; a 2560 wide screen stops at 74 instead of 88; a 390px
-phone gets 46 instead of 25, which is proportionally much larger, as it has to be.
+a large monitor and collapses on a phone, so it is clamped: `clamp(35px, band × 0.048, 56px)`.
+That is the first rule, `clamp(46, band × 0.064, 74)`, scaled by 0.75 throughout, after he
+read as too big on a 1880 x 1135 window (70px there, 52 now; about 47 on a laptop, 35 on a
+phone). His lattice was scaled with him, 445 to 593 dots across the band, so he keeps the
+same ~20 dots across his body and reads the same, only smaller. The same numbers are in the
+tuning panel's defaults and reset, and in `src/crowstage.js` for the other pages.
 
 **The card takes the theme.** Its hairline and shadow are tokens (`--card-line`,
 `--card-shadow`) and its type uses `--ink` and `--muted`, so the dark scheme inverts with
