@@ -183,7 +183,8 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   in and 355 x k wide. At 1440 the header and intro land on the frame's numbers; the sections
   sit ~17px higher, because the browser wraps the intro in 4 lines where Figma wraps it in 5.
 - **The markers are per entry.** Each `.tl-item` draws its own hollow ring and a connector
-  fading toward the text; in the Experience list (`.tl-rail`) each also draws the rail from
+  fading toward the text, both centred on `--cy`, the middle of the year's digits (its baseline
+  less half Satoshi's cap height, 6.4 x k down; the design's 9 x k sat 3px low); in the Experience list (`.tl-rail`) each also draws the rail from
   under its ring, through the gap, to the next ring. The li reaches 62 x k left of the column
   (negative margin, equal padding) so the rail can be a background inside it: it stays joined
   however the text wraps, where the design's rail is one fixed dashed line.

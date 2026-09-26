@@ -72,9 +72,11 @@
      stretch near the cursor changes, and the rings darken and fill in solid. The script at
      the end keeps each entry told where the cursor is relative to it (--mx, --my) and how
      close it is to the ring (--hot, 0..1); far away, both leave everything as drawn. */
-  .tl-item{--mx:-9999px;--my:-9999px;--hot:0;--R:70px;
+  /* --cy: the height every marker is centred on, the middle of the year's digits (its
+     baseline less half Satoshi's cap height, measured: 6.4 x k from the top of the entry) */
+  .tl-item{--mx:-9999px;--my:-9999px;--hot:0;--R:70px;--cy:calc(var(--k) * 6.4px);
     --spot:var(--strong) 0%, color-mix(in srgb, var(--strong) 45%, var(--muted)) 40%, var(--muted) 100%}
-  .tl-item::before{content:"";position:absolute;left:calc(var(--k) * 3px);top:calc(var(--k) * 5px);
+  .tl-item::before{content:"";position:absolute;left:calc(var(--k) * 3px);top:calc(var(--cy) - var(--k) * 4px);
     width:calc(var(--k) * 8px);height:calc(var(--k) * 8px);
     background:color-mix(in srgb, var(--strong) calc(var(--hot) * 100%), var(--faint));
     /* the ring, plus a disc that fades in with --hot: the ring fills to a solid circle */
@@ -83,9 +85,9 @@
     mask:url(public/img/timeline/ring.svg) no-repeat 0 0/100% 100%,
       radial-gradient(circle closest-side, rgb(0 0 0 / var(--hot)) 97%, transparent 100%) no-repeat 0 0/100% 100%;
     -webkit-mask-composite:source-over;mask-composite:add}
-  .tl-item::after{content:"";position:absolute;left:calc(var(--k) * 10px);top:calc(var(--k) * 8.5px);
+  .tl-item::after{content:"";position:absolute;left:calc(var(--k) * 10px);top:calc(var(--cy) - var(--k) * 0.5px);
     width:calc(var(--k) * 49px);height:calc(var(--k) * 1px);
-    background:radial-gradient(circle var(--R) at calc(var(--mx) - var(--k) * 10px) calc(var(--my) - var(--k) * 8.5px), var(--spot));
+    background:radial-gradient(circle var(--R) at calc(var(--mx) - var(--k) * 10px) calc(var(--my) - var(--cy) + var(--k) * 0.5px), var(--spot));
     -webkit-mask:url(public/img/timeline/connector.svg) no-repeat 0 0/100% 100%;
     mask:url(public/img/timeline/connector.svg) no-repeat 0 0/100% 100%}
   /* the rail: a 1px band under the ring and one above it, each lit from the cursor's position
@@ -93,9 +95,9 @@
   .tl-rail .tl-item{
     --x:calc(var(--k) * 6.5px); --w:calc(var(--k) * 1px);
     --segA:radial-gradient(circle var(--R) at calc(var(--mx) - var(--x)) var(--my), var(--spot));
-    --segB:radial-gradient(circle var(--R) at calc(var(--mx) - var(--x)) calc(var(--my) - var(--k) * 12.5px), var(--spot));
-    --below:var(--x) calc(var(--k) * 12.5px)/var(--w) calc(100% - var(--k) * 12.5px);
-    --above:var(--x) 0/var(--w) calc(var(--k) * 5.5px)}
+    --segB:radial-gradient(circle var(--R) at calc(var(--mx) - var(--x)) calc(var(--my) - var(--cy) - var(--k) * 3.5px), var(--spot));
+    --below:var(--x) calc(var(--cy) + var(--k) * 3.5px)/var(--w) calc(100% - var(--cy) - var(--k) * 3.5px);
+    --above:var(--x) 0/var(--w) calc(var(--cy) - var(--k) * 3.5px)}
   .tl-rail .tl-item:not(:last-child){background:var(--segB) no-repeat var(--below)}
   .tl-rail .tl-item:not(:first-child){background:var(--segA) no-repeat var(--above)}
   .tl-rail .tl-item:not(:first-child):not(:last-child){
@@ -254,7 +256,7 @@
         const mx = px - r.left, my = py - r.top;
         li.style.setProperty("--mx", mx + "px");
         li.style.setProperty("--my", my + "px");
-        const d = Math.hypot(mx - 7 * k, my - 9 * k);             // to the ring's centre
+        const d = Math.hypot(mx - 7 * k, my - 6.4 * k);           // to the ring's centre (--cy)
         const t = Math.max(0, Math.min(1, (R - d) / (R * 0.7)));
         li.style.setProperty("--hot", (t * t * (3 - 2 * t)).toFixed(3));
       }
