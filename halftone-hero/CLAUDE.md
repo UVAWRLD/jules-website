@@ -32,6 +32,7 @@ src/crowstage.js      the crow alone on a transparent canvas, for pages without 
 src/loader.js         the loading screen: hourglass and the dot build into the page
 src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
+src/tldots.js         the dot screen behind a detail card, built in at random
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
@@ -209,13 +210,20 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   opens its card: the six jobs, Parsons, and the certificates, in that order. The card's text
   lives in `CARDS` in the script, copied from Figma (straight apostrophes made curly, and the
   design's "associate Data Analyst" capitalised). One dialog is reused for all eight.
-  Opening: the page goes under a fine hex dot screen (the design's pattern fill, as two offset
-  radial gradients over a light blur of the page) that ripples out from the clicked ring as a
-  growing circle; the card unrolls from its top edge, tipped back a little in perspective, and
+  Opening: the page goes under a fine hex dot screen (the design's pattern fill: 1.8px dots,
+  3.6px across, 3.12px between rows) over a grey wash and a light blur of the page. The dots are
+  built in the way the loader builds the home page (`src/tldots.js`, a small WebGL2 shader on a
+  canvas in the veil): each comes on at its own moment within 0.7s, 75% random and 25% low
+  frequency noise, popping a little large and dark before it settles. Meanwhile the whole veil
+  eases from nothing to full strength over 1.1s, so it arrives gradually rather than at full
+  strength from the first dot. (The first version grew out of the clicked ring as a circle at
+  full strength; Jules preferred the random build.) Without WebGL2 the dots are CSS gradients,
+  all at once. The card unrolls from its top edge, tipped back a little in perspective, and
   its lines wave in one after another. Previous / Next (and the arrow keys) wave the old text
   out sideways, the new in, while the card eases to its new height; they loop, so Previous on
-  the first gives the certificates. Close ×, Escape or a click on the dots rolls it back up and
-  the ripple closes back onto the entry's ring; focus returns to the entry. The page does not
+  the first gives the certificates. Close ×, Escape or a click on the dots rolls it back up, the
+  dots go out at random (the build backwards, 1.7x faster) and the veil fades; focus returns
+  to the entry. The page does not
   scroll while one is open (the scrollbar's width is kept so nothing shifts), Tab stays inside
   the card, and Reduce Motion makes every step instant. Sizes are the open card's in Figma,
   divided by the frame's 1.26648 and times `--k`, like the rest of the page; the card centres

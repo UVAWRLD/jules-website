@@ -1,12 +1,18 @@
 // The Timeline's detail cards (Figma: V4.0 / detail-card-1 to 8, and card 1 shown open over
 // the page in the second "Timeline WIP" frame). Clicking an entry, its ring or its text, opens
-// its card: the dot screen ripples out from the ring over the page, the card unrolls from its
-// top edge, and its lines wave in one after another. Previous and Next move through the eight
-// in the timeline's order, looping; the old text waves out and the new waves in while the card
-// eases to its new height. Close rolls it back up and the ripple returns to the ring.
+// its card: a dot screen builds over the page, dot by dot at random (src/tldots.js) while the
+// wash under it slowly comes up to full strength, the card unrolls from its top edge, and its
+// lines wave in one after another. Previous and Next move through the eight in the timeline's
+// order, looping; the old text waves out and the new waves in while the card eases to its new
+// height. Close rolls it back up and the dots go the way they came, as the wash fades.
 //
 // Close ×, Escape or a click on the dots closes; the arrow keys step. The page behind does not
 // scroll while a card is open, and focus goes back to the entry it came from.
+
+import { createDots } from "./tldots.js";
+
+// the wash under the dots comes up slowly, over the whole build and a little more
+const WASH_IN = 1100, WASH_OUT = 600;
 
 const CARDS = [
   { title: "44LLC, NEW YORK", meta: "Three roles · 2024-2026 · New York and remote", body: [
@@ -96,20 +102,14 @@ export function createTimelineCards(items) {
   inner.className = "tc-inner";
   card.append(inner);
   document.body.append(veil, card);
+  const dots = createDots(veil);
+  if (!dots) veil.classList.add("css-dots");              // no WebGL2: the dots in CSS, all at once
   const dot = document.getElementById("dot");
 
-  let open = -1, from = null, busy = false, origin = [innerWidth / 2, innerHeight / 2];
+  let open = -1, from = null, busy = false;
   const lines = () => [...inner.querySelectorAll(".tc-head > div > *, .tc-close, .tc-body > *, .tc-foot")];
   const done = a => a.finished.catch(() => {});
 
-  // where the ripple starts: the entry's ring, wherever the page has scrolled to
-  function ringOf(li) {
-    const r = li.getBoundingClientRect();
-    const k = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--k")) || 1;
-    return [r.left + 7 * k, r.top + 6.4 * k];
-  }
-  const circle = (r, [x, y]) => `circle(${r}px at ${x}px ${y}px)`;
-  const far = ([x, y]) => Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 20;
 
   function waveIn(dir = 0, delay = 0) {
     return lines().map((el, i) => el.animate([
@@ -136,19 +136,20 @@ export function createTimelineCards(items) {
     if (busy) return;
     busy = true; open = i; from = li || items[i];
     inner.innerHTML = render(CARDS[i]);
-    origin = ringOf(from);
     lockScroll(true);
     veil.hidden = false; card.hidden = false;
     if (dot) dot.classList.remove("over");
-    // the dots ripple out from the ring
-    veil.animate([{ clipPath: circle(0, origin) }, { clipPath: circle(far(origin), origin) }],
-      { duration: reduce ? 1 : 760, easing: "cubic-bezier(.3,.1,.2,1)", fill: "both" });
+    // the dots build in at random while the whole veil eases up to full strength
+    if (dots) dots.in(reduce);
+    const wash = veil.animate([{ opacity: 0 }, { opacity: 1 }],
+      { duration: reduce ? 1 : WASH_IN, easing: "cubic-bezier(.4,0,.3,1)", fill: "both" });
+    done(wash).then(() => { if (open >= 0 && wash.playState === "finished") wash.cancel(); });
     // the card unrolls from its top edge, tipping toward the viewer like paper coming off a roll
     const roll = card.animate([
       { clipPath: "inset(0 0 100% 0)", transform: "perspective(1200px) rotateX(-14deg) translateY(-10px)", opacity: 0.4 },
       { clipPath: "inset(0 0 0 0)", transform: "none", opacity: 1 },
-    ], { duration: reduce ? 1 : 640, delay: reduce ? 0 : 140, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" });
-    waveIn(0, 260);
+    ], { duration: reduce ? 1 : 640, delay: reduce ? 0 : 200, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" });
+    waveIn(0, 320);
     card.scrollTop = 0;
     card.focus({ preventScroll: true });
     await done(roll);
@@ -176,15 +177,16 @@ export function createTimelineCards(items) {
   async function hide() {
     if (open < 0 || busy) return;
     busy = true;
-    const back = ringOf(items[open]);
     lines().forEach(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduce ? 1 : 140, fill: "forwards" }));
     const roll = card.animate([
       { clipPath: "inset(0 0 0 0)", transform: "none", opacity: 1 },
       { clipPath: "inset(0 0 100% 0)", transform: "perspective(1200px) rotateX(-10deg) translateY(-6px)", opacity: 0.4 },
     ], { duration: reduce ? 1 : 340, easing: "cubic-bezier(.5,0,.8,.4)", fill: "forwards" });
-    const ripple = veil.animate([{ clipPath: circle(far(back), back) }, { clipPath: circle(0, back) }],
-      { duration: reduce ? 1 : 520, delay: reduce ? 0 : 120, easing: "cubic-bezier(.5,0,.6,1)", fill: "forwards" });
-    await Promise.all([done(roll), done(ripple)]);
+    const o0 = getComputedStyle(veil).opacity;           // the wash may still be coming up
+    veil.getAnimations().forEach(x => x.cancel());
+    const wash = veil.animate([{ opacity: o0 }, { opacity: 0 }],
+      { duration: reduce ? 1 : WASH_OUT, delay: reduce ? 0 : 80, easing: "cubic-bezier(.5,0,.7,1)", fill: "forwards" });
+    await Promise.all([done(roll), done(wash), dots ? dots.out(reduce) : null]);
     card.getAnimations().forEach(a => a.cancel()); veil.getAnimations().forEach(a => a.cancel());
     card.hidden = true; veil.hidden = true;
     lockScroll(false);
