@@ -31,6 +31,7 @@ src/crowui.js         around the crow, on every page: his card, its leader, the 
 src/crowstage.js      the crow alone on a transparent canvas, for pages without the landscape
 src/loader.js         the loading screen: hourglass and the dot build into the page
 src/chain.js          the pull chain that switches light and dark
+src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
@@ -203,6 +204,25 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   phone, exactly as on the home page (`src/crowui.js`). The stage's canvas is fixed and the
   perch is read every frame, so he rides the rule as the page scrolls. It replaced the
   design's static render of him, a 2.1MB mask for a 129px bird.
+- **The detail cards** (`src/tlcards.js`; Figma: V4.0 / detail-card-1 to 8, and card 1 open
+  over the page in the second Timeline frame). Every entry, ring or text, is a button that
+  opens its card: the six jobs, Parsons, and the certificates, in that order. The card's text
+  lives in `CARDS` in the script, copied from Figma (straight apostrophes made curly, and the
+  design's "associate Data Analyst" capitalised). One dialog is reused for all eight.
+  Opening: the page goes under a fine hex dot screen (the design's pattern fill, as two offset
+  radial gradients over a light blur of the page) that ripples out from the clicked ring as a
+  growing circle; the card unrolls from its top edge, tipped back a little in perspective, and
+  its lines wave in one after another. Previous / Next (and the arrow keys) wave the old text
+  out sideways, the new in, while the card eases to its new height; they loop, so Previous on
+  the first gives the certificates. Close ×, Escape or a click on the dots rolls it back up and
+  the ripple closes back onto the entry's ring; focus returns to the entry. The page does not
+  scroll while one is open (the scrollbar's width is kept so nothing shifts), Tab stays inside
+  the card, and Reduce Motion makes every step instant. Sizes are the open card's in Figma,
+  divided by the frame's 1.26648 and times `--k`, like the rest of the page; the card centres
+  in the window and scrolls inside itself if taller. Satoshi stands in for the design's Inter;
+  Inconsolata for the meta line and Previous / Next as designed. The certificate's name, issuer
+  and year use the page list's sizes, since the card's came out at 7 to 8px. The stray house
+  icons beside Close / Previous / Next on cards 4, 7 and 8 were left out as copy leftovers.
 - **Where the design was inconsistent, one choice was made:** Satoshi throughout (the design
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing

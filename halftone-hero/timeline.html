@@ -127,6 +127,63 @@
     -webkit-mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%;mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%}
   .tl-certs-item{display:block}
 
+  /* ---- the detail cards (src/tlcards.js). Figma: V4.0 / detail-card-1 to 8, and card 1 open
+     over the page. Sizes are the in-page card's, back at the first cut's scale, times --k. ---- */
+  .tl-item{cursor:pointer}
+  .tl-item:focus{outline:none}
+  .tl-item:focus-visible .tl-body h3, .tl-item:focus-visible .tl-cert b{text-decoration:underline;
+    text-underline-offset:3px}
+  html.tc-open{overflow:hidden}
+  html.tc-open body{padding-right:var(--sbw,0)}
+  /* The page goes under a fine dot screen, as in the design (a hex tiling of 2.3px dots at 73%
+     ink, blurred), drawn here as two offset rows of radial gradients over a blur of the page. */
+  .tc-veil{position:fixed;inset:0;z-index:15;
+    --d:color-mix(in srgb, var(--ink) 34%, transparent);
+    background:
+      radial-gradient(circle at 50% 50%, var(--d) 0 0.9px, transparent 1.25px) 0 0/3.6px 6.24px,
+      radial-gradient(circle at 50% 50%, var(--d) 0 0.9px, transparent 1.25px) 1.8px 3.12px/3.6px 6.24px,
+      linear-gradient(rgba(10,10,10,.1), rgba(10,10,10,.26));
+    -webkit-backdrop-filter:blur(1.5px) saturate(0);backdrop-filter:blur(1.5px) saturate(0)}
+  :root[data-theme="dark"] .tc-veil{
+    --d:color-mix(in srgb, var(--ink) 16%, transparent);
+    background:
+      radial-gradient(circle at 50% 50%, var(--d) 0 0.9px, transparent 1.25px) 0 0/3.6px 6.24px,
+      radial-gradient(circle at 50% 50%, var(--d) 0 0.9px, transparent 1.25px) 1.8px 3.12px/3.6px 6.24px,
+      linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55))}
+  .tc-card{position:fixed;inset:0;margin:auto;z-index:16;height:fit-content;
+    width:calc(var(--k) * 386.1px);max-width:calc(100vw - 24px);max-height:calc(100dvh - 48px);
+    overflow:auto;overscroll-behavior:contain;
+    background:var(--paper);border:calc(var(--k) * 1.38px) solid var(--card-line);
+    box-shadow:calc(var(--k) * 5.5px) calc(var(--k) * 5.5px) calc(var(--k) * 9.6px) rgba(0,0,0,.25);
+    transform-origin:50% 0;outline:none}
+  .tc-inner{display:flex;flex-direction:column;gap:calc(var(--k) * 9.66px);
+    padding:calc(var(--k) * 13.79px) calc(var(--k) * 22.06px)}
+  /* Close sits in the corner, over the meta line's end, so the meta can run the full width */
+  .tc-head{position:relative}
+  .tc-head h2{margin:0 0 calc(var(--k) * -5.51px);padding-right:calc(var(--k) * 60px);font-weight:700;font-size:calc(var(--k) * 15.46px);
+    line-height:1.4;color:var(--strong)}
+  .tc-meta{margin:0;font-family:"Inconsolata",ui-monospace,monospace;font-size:calc(var(--k) * 11.03px);
+    line-height:1.45;padding:calc(var(--k) * 6.48px) 0;color:var(--muted)}
+  .tc-inner button{appearance:none;background:none;border:0;padding:0;color:var(--ink);cursor:pointer;
+    font:inherit}
+  .tc-inner button:hover{color:var(--muted)}
+  .tc-inner button:focus-visible{outline:1px solid var(--card-line);outline-offset:3px}
+  .tc-close{position:absolute;right:0;top:calc(var(--k) * 1.8px);font-size:calc(var(--k) * 9.79px);line-height:calc(var(--k) * 17.13px);white-space:nowrap}
+  .tc-body{display:flex;flex-direction:column;gap:calc(var(--k) * 11.6px);
+    font-size:calc(var(--k) * 11.27px);line-height:1.5}
+  .tc-body p{margin:0}
+  .tc-h{color:var(--strong)}
+  .tc-p{color:var(--body)}
+  .tc-cert{display:flex;flex-direction:column;gap:calc(var(--k) * 1.41px)}
+  /* the certificate's name, issuer and year at the page list's sizes: the card's own (7.4 x k)
+     came out at 7 to 8px, too small to read */
+  .tc-cert b{font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
+  .tc-cert b small{font-size:calc(var(--k) * 7.676px)}
+  .tc-cert span{font-size:calc(var(--k) * 8.643px);line-height:1.4;color:var(--body)}
+  .tc-cert em{font-style:normal;font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--faint)}
+  .tc-foot{display:flex;justify-content:space-between;
+    font-family:"Inconsolata",ui-monospace,monospace;font-size:calc(var(--k) * 9.79px);line-height:1.75}
+
   /* ---- phones: the design's first size, with the column brought in to fit ---- */
   @media (max-width:820px){
     :root{--k:1}
@@ -239,8 +296,13 @@
   // The crow: in from the right, down onto the rule under the title, off to the left when he
   // is clicked, back ten seconds later. Hovering him opens his card, as on the home page.
   import { createCrowStage } from "./src/crowstage.js";
+  import { createTimelineCards } from "./src/tlcards.js";
   const stage = createCrowStage({ perchOn: document.querySelector(".tl-head"), perchAt: 0.5, dir: -1 });
   if (stage && /[?&]grab\b/.test(location.search)) window.__crow = stage.crow;   // for checking, as on home
+
+  // The detail cards: each entry, ring or text, opens its own (src/tlcards.js)
+  const cards = createTimelineCards([...document.querySelectorAll(".tl-item")]);
+  if (/[?&]grab\b/.test(location.search)) window.__cards = cards;
 
   // The markers' spotlight (see the CSS): each entry is told where the cursor is relative to
   // it, and how close it is to its ring. A mouse only; a phone has no hover to follow.
