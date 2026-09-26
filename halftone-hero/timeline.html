@@ -23,10 +23,11 @@
   /* Figma: V4.0 / Timeline WIP (node 1700:2). One centred column, laid out in flow rather
      than at the frame's absolute positions, so it grows with the text and folds onto a phone.
      Every size is the design's first cut times --k: the frame was scaled up 1.2665 times in
-     Figma, uniformly, so one factor carries the whole page, and a phone can take it back to 1.
+     Figma, uniformly, so one factor carries the whole page; that read as too big, so the
+     page sits halfway, at 1.1332. A phone takes it back to 1.
      The vector assets are used as masks filled with the colour tokens, as the logo is, so they
      turn with the theme instead of staying black. */
-  :root{--k:1.26648}
+  :root{--k:1.1332}                /* halfway between the first cut (1) and the Figma update (1.26648) */
   .tl{position:relative;width:calc(var(--k) * 537px);max-width:calc(100% - 48px);margin:0 auto;
     padding:164px 0 calc(var(--k) * 72px)}
   #crowStage{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}

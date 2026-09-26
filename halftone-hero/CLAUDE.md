@@ -174,8 +174,9 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
 
 - **One scale factor.** The frame was scaled up 1.2665x in Figma, uniformly (the column went
   from 537 to 680px, the title from 24 to 30.4px). Every size on the page is the first cut's
-  value times `--k`: 1.26648 on a computer, 1 on phones, where the larger type did not fit
-  the rail and date column. The column sits 164px down, as in the frame.
+  value times `--k`: 1.1332 on a computer, halfway between the first cut and the Figma update
+  (1.26648 read as too big), and 1 on phones, where larger type did not fit the rail and
+  date column. The column sits 164px down, as in the frame.
 - **Layout in flow, not at the frame's coordinates.** The header (Libre Caslon Condensed
   Medium title, the back link on the title's baseline, without an underline and with 4.5 x k
   between "Back" and the house, the rule), the intro, then the sections in a column 118 x k
