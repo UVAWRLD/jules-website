@@ -250,11 +250,17 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   on the lit side, and a small shadow cast down and right (further off for the front half, which
   stands off the photo). Earlier: a red pushpin, first as an SVG, then screened in dots like the
   crow; both read as too big and not natural enough.
-  Everything turns about the clip (68% across, on the top edge), so the clip stays put: with a
-  mouse, the print lifts toward you and tips toward the cursor, and brushing past it swings it on
-  the clip (a damped spring). **A click, tap or Enter knocks it down**: the clip springs back a
-  touch as the photo slides out, and the print moves to a layer fixed to the window where it was and falls like a leaf. It drops almost
-  straight out of the clip; as it gains speed the swing builds over half a second, then it rocks side
+  Everything turns about the clip (68% across, on the top edge): with a mouse, the print lifts
+  toward you and tips toward the cursor, and brushing past it swings it on the clip (a damped
+  spring). Scrolling nudges it too, on every device: the page moves and the print's bottom lags,
+  tipping it back or forward a couple of degrees and settling, which is what gives it life on a
+  phone before it is tapped. **The clip has its own spring** (`--cw`, `--cx` on the button): it
+  follows the print's swing and tip at 40% and 30%, a beat behind, so the wire seems to flex as
+  the photo moves in it and settles after it. (A clip fixed rigidly read as too still.)
+  **A click, tap or Enter knocks it down**: the clip gets a push as the photo slides out and
+  rings to rest through the same spring, and the print moves to a layer fixed to the window where it was and falls like a leaf. The swing starts as it leaves the clip, building over
+  0.45s from its first frame (a version that dropped straight for a moment first read, on a
+  computer, as two animations joined together), then it rocks side
   to side on an arc (about 40px each way, a swing every ~0.7s), level and fastest through the
   middle, its outer edge tipping up as it slows at each end, turning a little into each swing
   and lying back as it drops, until it has left the bottom of the window. Its pivot moves from
@@ -269,7 +275,10 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   in the frame, 77 x k wide (87px on a computer), its right edge 25 x k short of the column and
   its top 16 x k above the header's. Under 900px that margin is too narrow, so it is floated
   into the top right of the intro instead (70 x k wide, 70px on a phone) and the text wraps
-  round it; after it falls the space stays, with the clip in it.
+  round it; after it falls the space stays, with the clip in it. The intro is a `flow-root` at
+  those sizes so it contains the photo: left hanging below the paragraph, the float narrowed the
+  whole timeline beneath it, because the sections are a flex box and a flex box keeps clear of
+  floats.
 - **Where the design was inconsistent, one choice was made:** Satoshi throughout (the design
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing

@@ -77,21 +77,36 @@ export function createPinup(el) {
   new ResizeObserver(redraw).observe(front);
   redraw();
 
-  // ---- hanging: a damped spring for the swing about the pin, and a tilt toward the cursor ----
+  // ---- hanging ----
+  // Three springs. The print swings about the clip (ang) and tips toward the cursor (tx, ty); a
+  // scroll gives it a nudge back or forward as the page moves under it (sx), the bottom lagging
+  // behind like anything hung by its top. The clip is its own spring (cw, cx), driven by the print
+  // but a beat behind and with a fraction of its travel: the wire flexes a little as the photo
+  // moves in it and settles after it. When the photo has gone, only the clip is left moving.
   let ang = 0, vel = 0, tx = 0, ty = 0, tx0 = 0, ty0 = 0, lift = 0, liftT = 0, raf = 0, last = 0, lastX = null;
+  let sx = 0, sxv = 0, cw = 0, cwv = 0, cx = 0, cxv = 0;
+  const spring = (x, v, target, k, d, dt) => { v += (-k * (x - target) - d * v) * dt; return [x + v * dt, v]; };
   function frame(now) {
     const dt = Math.min(0.033, (now - (last || now)) / 1000); last = now;
-    vel += (-60 * ang - 5 * vel) * dt;              // stiff enough to settle in a second
-    ang += vel * dt;
-    tx += (tx0 - tx) * Math.min(1, dt * 10);
-    ty += (ty0 - ty) * Math.min(1, dt * 10);
-    lift += (liftT - lift) * Math.min(1, dt * 8);
-    print.style.setProperty("--sw", ang.toFixed(3) + "deg");
-    print.style.setProperty("--rx", tx.toFixed(2) + "deg");
-    print.style.setProperty("--ry", ty.toFixed(2) + "deg");
-    print.style.setProperty("--lift", lift.toFixed(3));
-    const still = Math.abs(ang) < 0.02 && Math.abs(vel) < 0.02 && Math.abs(tx - tx0) < 0.02 && Math.abs(ty - ty0) < 0.02 && Math.abs(lift - liftT) < 0.002;
-    raf = still ? 0 : requestAnimationFrame(frame);
+    const gone = el.classList.contains("fallen");
+    if (!gone) {
+      [ang, vel] = spring(ang, vel, 0, 60, 5, dt);            // settles in about a second
+      [sx, sxv] = spring(sx, sxv, 0, 70, 7, dt);
+      tx += (tx0 - tx) * Math.min(1, dt * 10);
+      ty += (ty0 - ty) * Math.min(1, dt * 10);
+      lift += (liftT - lift) * Math.min(1, dt * 8);
+      print.style.setProperty("--sw", ang.toFixed(3) + "deg");
+      print.style.setProperty("--rx", (tx + sx).toFixed(2) + "deg");
+      print.style.setProperty("--ry", ty.toFixed(2) + "deg");
+      print.style.setProperty("--lift", lift.toFixed(3));
+    }
+    [cw, cwv] = spring(cw, cwv, gone ? 0 : ang * 0.4, 90, 6, dt);
+    [cx, cxv] = spring(cx, cxv, gone ? 0 : (tx + sx) * 0.3, 90, 6, dt);
+    el.style.setProperty("--cw", cw.toFixed(3) + "deg");
+    el.style.setProperty("--cx", cx.toFixed(2) + "deg");
+    const moving = [vel, sxv, cwv, cxv].some(v => Math.abs(v) > 0.02) || [ang, sx, cw - (gone ? 0 : ang * 0.4)].some(v => Math.abs(v) > 0.02)
+      || (!gone && (Math.abs(tx - tx0) > 0.02 || Math.abs(ty - ty0) > 0.02 || Math.abs(lift - liftT) > 0.002));
+    raf = moving ? requestAnimationFrame(frame) : 0;
   }
   const kick = () => { if (!raf && !reduce) { last = 0; raf = requestAnimationFrame(frame); } };
 
@@ -109,6 +124,17 @@ export function createPinup(el) {
     el.addEventListener("pointerleave", () => { tx0 = ty0 = 0; liftT = 0; lastX = null; if (dot) dot.classList.remove("over"); kick(); });
   }
 
+  if (!reduce) {
+    let lastY = scrollY;
+    addEventListener("scroll", () => {
+      const d = scrollY - lastY; lastY = scrollY;
+      if (el.classList.contains("fallen")) return;
+      sxv += Math.max(-40, Math.min(40, d)) * 1.2;           // page moves up, the bottom lags: tips back
+      vel += Math.max(-40, Math.min(40, d)) * 0.15;          // and a touch of swing
+      kick();
+    }, { passive: true });
+  }
+
   // ---- the fall ----
   // Paper falls like a leaf. Freed from the pin it drops almost straight at first; as it picks
   // up speed the air starts to swing it from side to side, a pendulum without a string: it follows
@@ -123,10 +149,8 @@ export function createPinup(el) {
     if (dot) dot.classList.remove("over");
     cancelAnimationFrame(raf); raf = 0;
 
-    // the clip springs back a touch as the paper slides out of it
-    if (!reduce) clips.forEach(clip => clip.animate([
-      { rotate: "0deg" }, { rotate: "-4deg" }, { rotate: "2.5deg" }, { rotate: "-1deg" }, { rotate: "0deg" },
-    ], { duration: 550, easing: "ease-out" }));
+    // the clip is left springing a little as the paper slides out of it, and settles
+    if (!reduce) { cwv += (Math.random() < 0.5 ? -1 : 1) * 55; cxv -= 40; kick(); }
 
     // the print leaves the page for a layer of its own, fixed to the window, where it was
     const r = el.getBoundingClientRect();
@@ -159,12 +183,12 @@ export function createPinup(el) {
     const step = now => {
       const dt = Math.min(0.033, (now - (prev || now)) / 1000); prev = now;
       f.t += dt;
-      const env = Math.min(1, Math.max(0, (f.t - 0.12) / 0.6));   // the swing builds once it is falling
+      const env = Math.min(1, f.t / 0.45);                        // the swing starts as it leaves the clip
       const e = env * env * (3 - 2 * env);
-      const ph = f.w * (f.t - 0.12);
+      const ph = f.w * f.t;
       const s = Math.sin(ph), c = Math.cos(ph);
       // slower at the ends of the swing, faster through the middle
-      const terminal = 330 * (1 - e) + e * (150 + 260 * c * c);
+      const terminal = 150 + 260 * c * c;
       f.vy += (G - G * Math.min(4, (f.vy / terminal) ** 2)) * dt;
       f.vy = Math.max(f.vy, 0);
       f.y += f.vy * dt;
@@ -194,7 +218,8 @@ export function createPinup(el) {
   addEventListener("pageshow", e => {
     if (!e.persisted || !el.classList.contains("fallen")) return;
     if (falling) { cancelAnimationFrame(falling.raf); falling.layer.remove(); falling = null; }
-    ang = vel = tx = ty = tx0 = ty0 = lift = liftT = 0;
+    ang = vel = tx = ty = tx0 = ty0 = lift = liftT = sx = sxv = cw = cwv = cx = cxv = 0;
+    el.style.removeProperty("--cw"); el.style.removeProperty("--cx");
     ["--sw", "--rx", "--ry", "--lift", "--base"].forEach(p => print.style.removeProperty(p));
     print.style.transformOrigin = "";
     print.getAnimations().forEach(a => a.cancel());
