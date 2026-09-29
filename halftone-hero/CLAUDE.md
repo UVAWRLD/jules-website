@@ -33,6 +33,7 @@ src/loader.js         the loading screen: hourglass and the dot build into the p
 src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
+src/pinup.js          the photo pinned beside the Timeline title: the swing, and the fall
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
@@ -47,7 +48,9 @@ public/img/favicon.svg  the logo mark (Jules's Vector.svg): ink on a light tab, 
                       apple-touch-icon.png (on the paper, 180px) for Safari and the home screen;
                       favicon.ico (16+32) at the root. Rendered from the same path.
 public/img/timeline/  the Timeline page's assets, from Figma (rule, rings, connectors,
-                      certificate dashes, back link icon and underline)
+                      certificate dashes, back link icon and underline), and portrait.jpg, the pinned
+                      photo: Jules's print straightened (it came tilted 5.6 degrees) and cut
+                      from its border, which the page draws, 440px wide
 ```
 
 ## How the renderer works
@@ -231,6 +234,26 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   Inconsolata for the meta line and Previous / Next as designed. The certificate's name, issuer
   and year use the page list's sizes, since the card's came out at 7 to 8px. The stray house
   icons beside Close / Previous / Next on cards 4, 7 and 8 were left out as copy leftovers.
+- **The pinned photo** (`src/pinup.js`; Figma: Timeline WIP, the print left of the title). A
+  photo print of Jules held by one red pushpin near its top right corner. The print is the photo
+  on a paper-coloured card (the border in CSS, in the source's proportions) with layered
+  shadows, a glossy band of light that slides as it tips, and the paper bowing a touch at a
+  corner; the pin is an SVG: a shaded sphere with a specular highlight and bounce light, a
+  steel needle entering the paper, and their cast shadow down and to the right (the crow's key
+  light is upper left). Everything turns about the pin (88% across, 2.5% down), so the pin stays
+  put: with a mouse, the print lifts toward you and tips toward the cursor, and brushing past it
+  swings it on the pin (a damped spring). **A click, tap or Enter knocks it down**: the pin
+  shudders, the print moves to a layer fixed to the window where it was and falls like paper
+  (gravity against drag, 520px/s at most, drifting and rocking side to side, tumbling toward and
+  away from the viewer) until it has left the bottom of the window. The pin stays in the wall.
+  It comes back only with a new visit: a reload, or returning to the page, including from the
+  back/forward cache (`pageshow` with `persisted` restores it). Reduce Motion: no swing, and the
+  print fades instead of falling.
+  **Placement at every size**: on a wide screen it hangs in the margin left of the header, as
+  in the frame, 77 x k wide (87px on a computer), its right edge 25 x k short of the column and
+  its top 16 x k above the header's. Under 900px that margin is too narrow, so it is floated
+  into the top right of the intro instead (70 x k wide, 70px on a phone) and the text wraps
+  round it; after it falls the space stays, with the pin in it.
 - **Where the design was inconsistent, one choice was made:** Satoshi throughout (the design
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing
