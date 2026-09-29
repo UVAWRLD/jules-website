@@ -260,10 +260,15 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   **A click, tap or Enter knocks it down**: the clip gets a push as the photo slides out and
   rings to rest through the same spring, and the print moves to a layer fixed to the window where it was and falls like a leaf. The swing starts as it leaves the clip, building over
   0.45s from its first frame (a version that dropped straight for a moment first read, on a
-  computer, as two animations joined together), then it rocks side
-  to side on an arc (about 40px each way, a swing every ~0.7s), level and fastest through the
-  middle, its outer edge tipping up as it slows at each end, turning a little into each swing
-  and lying back as it drops, until it has left the bottom of the window. Its pivot moves from
+  computer, as two animations joined together), then it rocks side to side on an arc, level and
+  fastest through the middle of each swing, its outer edge tipping up as it slows at each end,
+  turning into each swing and lying back as it drops. **No two falls are alike**: smooth noise
+  (a few slow sines with random rates and phases, so nothing repeats or jumps) varies the swing's
+  rate (about 18%) and width (about 35%, around 30-46px), lets its middle drift off to one side,
+  varies the tip and turn, and adds a quick flutter of a few degrees. At the end of a swing there
+  is a 30% chance, once the first half second is over, of it tipping over further (32-50 degrees
+  toward edge on) for half a second or so, falling faster while it does, then righting itself.
+  It goes on until it has left the bottom of the window. Its pivot moves from
   the clip to its middle as it leaves, with the layer taking up the difference, so there is no
   jump. The clip stays, now showing its whole back loop. (The first fall hopped up, slid off on a straight diagonal
   and tumbled on a fixed spin, which did not read as paper.)

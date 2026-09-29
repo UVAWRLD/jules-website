@@ -171,39 +171,70 @@ export function createPinup(el) {
       falling = { layer };
       return;
     }
+    // No two falls alike. Smooth noise (a few slow sines with random rates and phases, so it
+    // never repeats and never jumps) varies the swing as it goes: its rate and width, where its
+    // middle drifts to, how far the print tips and turns, and a quick flutter on top. Now and
+    // then, at the end of a swing, it tips over further, falls faster for a moment edge on, and
+    // rights itself.
+    const R = (a, b) => a + Math.random() * (b - a);
+    const noise = (rate) => {
+      const w = [R(0.6, 1.1), R(1.3, 2.1), R(2.4, 3.6)].map(v => v * rate), p = w.map(() => R(0, 6.28));
+      return t => (Math.sin(w[0] * t + p[0]) * 0.55 + Math.sin(w[1] * t + p[1]) * 0.3 + Math.sin(w[2] * t + p[2]) * 0.15);
+    };
+    const nRate = noise(1), nAmp = noise(0.8), nDrift = noise(0.6), nTilt = noise(1.1), nTurn = noise(1.3),
+          nBack = noise(0.9), nFlut = noise(5), nFall = noise(0.7);
     const dir = Math.random() < 0.5 ? -1 : 1;
     const f = {
-      t: 0, y: 0, vy: 0,
-      w: 4.4 + Math.random() * 0.8,          // swing rate, rad/s: a swing each ~0.7s
-      amp: 34 + Math.random() * 14,          // px either side
-      tilt: 20 + Math.random() * 8,          // deg, at the ends of the swing
+      t: 0, y: 0, vy: 0, ph: 0, cx: 0, cv: R(-12, 12),
+      w: R(4.2, 5.2),                        // swing rate, rad/s: a swing each ~0.7s
+      amp: R(30, 46),                        // px either side
+      tilt: R(18, 28),                       // deg, at the ends of the swing
       rot0: ang, lift0: lift, rx0: tx, ry0: ty,
+      half: 0, tumble: 0, tumbleT: -1, tumbleDur: 0, tumbleSize: 0,
     };
     let prev = 0;
     const step = now => {
       const dt = Math.min(0.033, (now - (prev || now)) / 1000); prev = now;
-      f.t += dt;
-      const env = Math.min(1, f.t / 0.45);                        // the swing starts as it leaves the clip
+      const t = (f.t += dt);
+      const env = Math.min(1, t / 0.45);                          // the swing starts as it leaves the clip
       const e = env * env * (3 - 2 * env);
-      const ph = f.w * f.t;
-      const s = Math.sin(ph), c = Math.cos(ph);
-      // slower at the ends of the swing, faster through the middle
-      const terminal = 150 + 260 * c * c;
+      f.ph += f.w * (1 + 0.18 * nRate(t)) * dt;                  // the rate wanders, so the swings are uneven
+      const s = Math.sin(f.ph), c = Math.cos(f.ph);
+      const amp = f.amp * (1 + 0.35 * nAmp(t));
+
+      // at the end of each swing, a chance of tipping over further for half a second or so
+      const half = Math.floor(f.ph / Math.PI + 0.5);
+      if (half !== f.half) {
+        f.half = half;
+        if (t > 0.5 && f.tumbleT < 0 && Math.random() < 0.3) { f.tumbleT = 0; f.tumbleDur = R(0.45, 0.7); f.tumbleSize = R(32, 50) * (Math.random() < 0.5 ? -1 : 1); }
+      }
+      let tumble = 0;
+      if (f.tumbleT >= 0) {
+        f.tumbleT += dt;
+        const u = f.tumbleT / f.tumbleDur;
+        if (u >= 1) f.tumbleT = -1; else tumble = Math.sin(Math.PI * u) ** 2;
+      }
+
+      // slower at the ends of the swing, faster through the middle, faster still edge on
+      const terminal = (150 + 260 * c * c) * (1 + 0.15 * nFall(t)) * (1 + 0.8 * tumble);
       f.vy += (G - G * Math.min(4, (f.vy / terminal) ** 2)) * dt;
       f.vy = Math.max(f.vy, 0);
       f.y += f.vy * dt;
-      const x = dir * f.amp * e * s;
-      const vx = dir * f.amp * e * c;                              // sign of travel
-      const tiltZ = (-6 + f.rot0) * (1 - e) - (x / f.amp) * f.tilt;               // on the arc: level mid-swing, outer edge up at the ends
-      const into = Math.min(1, f.t * 3);                                          // out of the hover pose
-      const tiltY = f.ry0 + ((vx / f.amp) * 24 * e - f.ry0) * into;               // turns into the swing
-      const tiltX = f.rx0 + (8 + 14 * e * (0.5 + 0.5 * Math.abs(c)) - f.rx0) * into;   // lies back as it drops
+      f.cv += (nDrift(t) * 40 - f.cv) * Math.min(1, dt * 1.5);   // the middle of the swing wanders off
+      f.cx += f.cv * dt * e;
+
+      const x = f.cx + dir * amp * e * s;
+      const vx = dir * e * c;                                          // -1..1, which way it is travelling
+      const into = Math.min(1, t * 3);                                  // out of the hover pose
+      const tiltZ = (-6 + f.rot0) * (1 - e) - dir * s * e * f.tilt * (1 + 0.25 * nTilt(t)) + 3 * nFlut(t) * e;
+      const tiltY = f.ry0 + ((vx * 24 + 10 * nTurn(t)) * e - f.ry0) * into;
+      const tiltX = f.rx0 + (8 + 14 * e * (0.5 + 0.5 * Math.abs(c)) + 8 * nBack(t) * e + f.tumbleSize * tumble - f.rx0) * into;
       layer.style.transform = `translate(${(x + offX).toFixed(2)}px, ${(f.y + offY).toFixed(2)}px)`;
       print.style.setProperty("--base", "0deg");
       print.style.setProperty("--sw", tiltZ.toFixed(2) + "deg");
       print.style.setProperty("--rx", tiltX.toFixed(2) + "deg");
       print.style.setProperty("--ry", tiltY.toFixed(2) + "deg");
-      print.style.setProperty("--lift", (f.lift0 + (1 - f.lift0) * Math.min(1, f.t * 4)).toFixed(3));
+      print.style.setProperty("--lift", (f.lift0 + (1 - f.lift0) * Math.min(1, t * 4)).toFixed(3));
       if (r.top + f.y > innerHeight + 30) { layer.remove(); falling = null; return; }
       falling.raf = requestAnimationFrame(step);
     };
