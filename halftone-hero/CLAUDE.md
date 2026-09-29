@@ -33,7 +33,7 @@ src/loader.js         the loading screen: hourglass and the dot build into the p
 src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
-src/pinup.js          the photo pinned beside the Timeline title: the swing, and the fall
+src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
@@ -48,7 +48,7 @@ public/img/favicon.svg  the logo mark (Jules's Vector.svg): ink on a light tab, 
                       apple-touch-icon.png (on the paper, 180px) for Safari and the home screen;
                       favicon.ico (16+32) at the root. Rendered from the same path.
 public/img/timeline/  the Timeline page's assets, from Figma (rule, rings, connectors,
-                      certificate dashes, back link icon and underline), and portrait.jpg, the pinned
+                      certificate dashes, back link icon and underline), and portrait.jpg, the clipped
                       photo: Jules's print straightened (it came tilted 5.6 degrees) and cut
                       from its border, which the page draws, 440px wide
 ```
@@ -234,29 +234,32 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   Inconsolata for the meta line and Previous / Next as designed. The certificate's name, issuer
   and year use the page list's sizes, since the card's came out at 7 to 8px. The stray house
   icons beside Close / Previous / Next on cards 4, 7 and 8 were left out as copy leftovers.
-- **The pinned photo** (`src/pinup.js`; Figma: Timeline WIP, the print left of the title). A
-  photo print of Jules held by one pushpin near its top right corner. The print is the photo on
-  a paper-coloured card (the border in CSS, in the source's proportions) with layered shadows;
-  the photo itself is shown exactly as it is, in both themes (a sliding sheen and a shaded corner
-  were tried and dropped: Jules wanted the picture to look the same throughout).
-  **The pin is drawn in dots, like the crow** (`drawPin`, on a small canvas): a sphere, the
-  needle and their shadow, screened on a square lattice at 1.5px (at least 3 device px, so each
-  dot reads as a dot), each cell sampled 3 x 3. The head is in the cursor's red, #F13A0D: small,
-  faint dots where the light (upper left, as for the crow) hits it, full dots on its shadow side,
-  and no dots at the specular highlight. The needle and the shadow are in the ink, the needle
-  fading as it goes into the paper; dot size carries the tone and opacity the depth. It redraws
-  on resize and when the theme changes the ink. (The first pin was a smooth SVG, which did not
-  read as 3D next to the halftone.)
-  Everything turns about the pin (88% across, 2.5% down), so the pin stays put: with a mouse,
-  the print lifts toward you and tips toward the cursor, and brushing past it swings it on the
-  pin (a damped spring). **A click, tap or Enter knocks it down**: the pin shudders, and the
-  print moves to a layer fixed to the window where it was and falls like a leaf. It drops almost
-  straight off the pin; as it gains speed the swing builds over half a second, then it rocks side
+- **The clipped photo** (`src/pinup.js`; Figma: Timeline WIP, the print left of the title). A
+  wallet-size photo print of Jules (64 x 89mm) held by one paperclip over its top edge. The print
+  is the photo on a paper-coloured card (the border in CSS, in the source's proportions) with
+  layered shadows; the photo itself is shown exactly as it is, in both themes (a sliding sheen
+  and a shaded corner were tried and dropped: Jules wanted the picture to look the same
+  throughout).
+  **The paperclip** (`drawClip`) is a 28mm Gem clip in 0.82mm steel wire, to the photo's scale
+  (the print is 64mm wide, so 1mm is about 1.36px on a computer): three bends, one loop inside
+  the other, leaning 2 degrees off square to the edge, 68% across, 8mm of it above the edge. The
+  photo sits between the loops, so the clip is drawn on two canvases in two boxes, one under the
+  print (the outer loop, which the photo hides below its edge) and one over it (the bend over the
+  edge and the inner loop). Each is stroked in layers, lit from the upper left like the rest of
+  the site: a dark edge, a lighter body, bounced light on the shadow side, a thin white highlight
+  on the lit side, and a small shadow cast down and right (further off for the front half, which
+  stands off the photo). Earlier: a red pushpin, first as an SVG, then screened in dots like the
+  crow; both read as too big and not natural enough.
+  Everything turns about the clip (68% across, on the top edge), so the clip stays put: with a
+  mouse, the print lifts toward you and tips toward the cursor, and brushing past it swings it on
+  the clip (a damped spring). **A click, tap or Enter knocks it down**: the clip springs back a
+  touch as the photo slides out, and the print moves to a layer fixed to the window where it was and falls like a leaf. It drops almost
+  straight out of the clip; as it gains speed the swing builds over half a second, then it rocks side
   to side on an arc (about 40px each way, a swing every ~0.7s), level and fastest through the
   middle, its outer edge tipping up as it slows at each end, turning a little into each swing
   and lying back as it drops, until it has left the bottom of the window. Its pivot moves from
-  the pin to its middle as it leaves, with the layer taking up the difference, so there is no
-  jump. The pin stays in the wall. (The first fall hopped up, slid off on a straight diagonal
+  the clip to its middle as it leaves, with the layer taking up the difference, so there is no
+  jump. The clip stays, now showing its whole back loop. (The first fall hopped up, slid off on a straight diagonal
   and tumbled on a fixed spin, which did not read as paper.)
   It comes back only with a new visit: a reload, or returning to the page, including from the
   back/forward cache (`pageshow` with `persisted` restores it). Reduce Motion: no swing, and the
@@ -266,7 +269,7 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   in the frame, 77 x k wide (87px on a computer), its right edge 25 x k short of the column and
   its top 16 x k above the header's. Under 900px that margin is too narrow, so it is floated
   into the top right of the intro instead (70 x k wide, 70px on a phone) and the text wraps
-  round it; after it falls the space stays, with the pin in it.
+  round it; after it falls the space stays, with the clip in it.
 - **Where the design was inconsistent, one choice was made:** Satoshi throughout (the design
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing

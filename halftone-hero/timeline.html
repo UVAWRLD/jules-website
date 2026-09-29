@@ -183,31 +183,35 @@
   .tc-foot{display:flex;justify-content:space-between;
     font-family:"Inconsolata",ui-monospace,monospace;font-size:calc(var(--k) * 9.79px);line-height:1.75}
 
-  /* ---- the pinned photo (src/pinup.js). Figma: Timeline WIP, the print pinned left of the title.
-     On a wide screen it hangs in the margin left of the header: 77 x k wide, its right edge 25 x k
-     short of the column, its top 16 x k above the header's. Where that margin is too narrow for it
-     (under 900px) it is pinned into the top right of the intro instead, and the text wraps round
-     it. It turns about the pin (88% across, 2.5% down), so the pin stays put whatever it does. ---- */
+  /* ---- the clipped photo (src/pinup.js). Figma: Timeline WIP, the print left of the title.
+     A wallet-size print (64 x 89mm) held by a 28mm paperclip over its top edge. On a wide screen
+     it hangs in the margin left of the header: 77 x k wide, its right edge 25 x k short of the
+     column, its top 16 x k above the header's. Where that margin is too narrow for it (under
+     900px) it is clipped into the top right of the intro instead, and the text wraps round it.
+     It turns about the clip (68% across, on its top edge), so the clip stays put. ---- */
   .pinup{position:absolute;z-index:4;display:block;padding:0;border:0;background:none;cursor:pointer;
     width:calc(var(--k) * 77px);aspect-ratio:1004/1527;top:calc(164px - var(--k) * 16px);left:calc(var(--k) * -102px);
     perspective:520px;-webkit-tap-highlight-color:transparent}
   .pinup:focus{outline:none}
   .pinup:focus-visible .pinup-print{outline:1px solid var(--ink);outline-offset:4px}
   .pinup.fallen{cursor:default;pointer-events:none}
-  .pinup-print{position:absolute;inset:0;display:block;box-sizing:border-box;padding:5.5% 4.2% 4.5% 3.8%;
-    background:#F3F2EE;transform-origin:88% 2.5%;
+  .pinup-print{position:absolute;inset:0;z-index:1;display:block;box-sizing:border-box;padding:5.5% 4.2% 4.5% 3.8%;
+    background:#F3F2EE;transform-origin:68% 0;
     transform:rotate(var(--base, -6deg)) rotate(var(--sw, 0deg)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
-      translateZ(calc(var(--lift, 0) * 7px));
+      translateZ(calc(var(--lift, 0) * 3px));
     box-shadow:0 0 0 .5px rgba(0,0,0,.10), .5px 1px 1.5px rgba(0,0,0,.18),
-      calc(2px + var(--lift, 0) * 4px) calc(5px + var(--lift, 0) * 9px) calc(9px + var(--lift, 0) * 12px)
-      rgba(0,0,0,calc(.20 + var(--lift, 0) * .06))}
+      calc(2px + var(--lift, 0) * 3px) calc(5px + var(--lift, 0) * 6px) calc(9px + var(--lift, 0) * 8px)
+      rgba(0,0,0,calc(.20 + var(--lift, 0) * .05))}
   /* the photo itself is left exactly as it is: no sheen, no shading, in either theme */
   .pinup-print img{display:block;width:100%;height:100%;object-fit:cover}
-  .pinup-pin{position:absolute;left:88%;top:2.5%;width:33%;aspect-ratio:32/40;z-index:1;
-    transform:translate(-37.5%, -75%);pointer-events:none}
-  /* the pin is drawn in dots on this canvas (drawPin in src/pinup.js), turning about the point
-     where it enters the paper when it shudders */
-  .pinup-pin canvas{display:block;width:100%;height:100%;transform-origin:37.5% 75%}
+  /* The clip's box is 14 x 36mm at the photo's scale (the print is 64mm wide, so 21.875% of it),
+     its point (7, 9.5)mm on the photo's edge; it leans 2 degrees off square to the edge. The back
+     half is under the print, the front half over it. */
+  .pinup-clip{position:absolute;left:68%;top:0;width:21.875%;aspect-ratio:14/36;pointer-events:none;
+    transform:translate(-50%, -26.39%) rotate(-8deg);transform-origin:50% 26.39%}
+  .pinup-clip canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .pinup-clip:first-child{z-index:0}
+  .pinup-clip:last-child{z-index:2}
   .pinup-fall{position:fixed;z-index:12;perspective:520px;pointer-events:none}
   @media (max-width:899px){
     .pinup{position:relative;float:right;top:auto;left:auto;width:calc(var(--k) * 70px);margin:2px 6px 10px 20px}
@@ -233,7 +237,7 @@
     <a class="tl-back" href="./"><span class="row">← Back<i class="home" aria-hidden="true"></i></span></a>
   </header>
 
-  <p class="tl-intro"><button class="pinup" type="button" aria-label="Photo of Jules, pinned to the page. Click to knock it down"><span class="pinup-print"><img src="public/img/timeline/portrait.jpg" alt="" width="440" height="680" decoding="async"></span><span class="pinup-pin" aria-hidden="true"><canvas></canvas></span></button>An experience is made of things that rarely meet. What a brand wants people to feel. What the numbers allow. What architects, engineers and operators can build and run. My work has always been keeping them together, across product, brand and analysis. For the past two years at 44LLC, a New York studio, I did it for hotel groups and brands, from the first pitch to final delivery.</p>
+  <p class="tl-intro"><button class="pinup" type="button" aria-label="Photo of Jules, clipped to the page. Click to knock it down"><span class="pinup-clip" aria-hidden="true"><canvas class="back"></canvas></span><span class="pinup-print"><img src="public/img/timeline/portrait.jpg" alt="" width="440" height="680" decoding="async"></span><span class="pinup-clip" aria-hidden="true"><canvas class="front"></canvas></span></button>An experience is made of things that rarely meet. What a brand wants people to feel. What the numbers allow. What architects, engineers and operators can build and run. My work has always been keeping them together, across product, brand and analysis. For the past two years at 44LLC, a New York studio, I did it for hotel groups and brands, from the first pitch to final delivery.</p>
 
   <div class="tl-secs">
     <section>
@@ -333,7 +337,7 @@
   // The detail cards: each entry, ring or text, opens its own (src/tlcards.js)
   const cards = createTimelineCards([...document.querySelectorAll(".tl-item")]);
 
-  // The photo pinned beside the title: it swings on its pin, and a click knocks it down (src/pinup.js)
+  // The photo clipped beside the title: it swings on its clip, and a click knocks it down (src/pinup.js)
   const pinup = createPinup(document.querySelector(".pinup"));
   if (/[?&]grab\b/.test(location.search)) window.__pinup = pinup;
   if (/[?&]grab\b/.test(location.search)) window.__cards = cards;
