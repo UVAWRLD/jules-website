@@ -354,22 +354,30 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   cards. To change the page, change the database, run the export, and commit here. A project
   with fewer than three images is cut into prints from its cover: a tall board is sliced at three
   heights (three pages of the deck), a wide or square image gives the whole and two close details.
-- **Cards alternate** between the frame's two: a wide one with the pictures left (a backing sheet
-  (the fourth print, or a plain tint), a supporting print, the main print, a detail print) and a
-  narrower one (698) with the words left and three small prints. Tags are the database's
-  `discipline` and `context`; the year is `year` or `years` (undated projects show none). The
-  heading is `headline` when the database has one (with the project's name above it in small
-  capitals), else the title; then `description`, and CONTRIBUTION when `contribution` (or `role`)
-  is set. Vybe Together carries the frame's headline and contribution. On hover the card lifts
-  3px and its prints spread a little, each away from the middle, and turn a touch further. No
-  "View case study" yet: there are no case studies.
+- **Each card is shaped by its content** (the frame's two cards were an example, not a
+  template). `arrange()` in `src/projects.js` lays the prints out from their own proportions: the
+  main print gets about 98,000px² (at most 470 x 310), so a poster stays tall and a board stays
+  wide; the others, a fifth to a third of its area, overlap its corners (behind at the outer top,
+  in front at the outer bottom, in front at the inner bottom), each turned 2.5 to 6 degrees. The
+  sizes, overlaps and turns come from a small random seeded by the project's slug, so the page
+  varies from card to card but reloads the same. `place()` fits the group: on a wide screen the
+  card's width is its pictures plus its words (260px, 300 for a long description), so a set of
+  posters makes a narrower card than a wide board; below 980 the words go under the pictures,
+  which scale to the card's width. The prints hang up to 14px over the card's outer edge (8 on a
+  phone). Pictures alternate sides down the cards that are showing, and layout reruns on a change
+  of width, a sort or a filter. On hover the card lifts 3px and each print moves 7px away from the
+  middle of the group and turns a touch further.
+- **Text**: tags are the database's `discipline` and `context`; the year is `year` or `years`
+  (undated projects show none). The heading is `headline` when the database has one (with the
+  project's name above it in small capitals), else the title; then `description`, and
+  CONTRIBUTION when `contribution` (or `role`) is set. On a phone the type is a size smaller
+  (heading 18px, text 11.5) and the spacing tighter. No "View case study" yet: there are no case
+  studies.
 - **Controls** (`src/projects.js`): **Search** opens into a field inside the pill and narrows the
   cards to those whose words contain it; **Sort** steps through the database's order ("Sort"),
   newest first and oldest first (undated last); **+ Add Filter** drops a menu of the cards' tags,
   each chosen tag becomes a chip (× to remove), and a card shows only with every chosen tag. The
   count follows. "Nothing matches" when nothing does. Escape closes the menu and clears the search.
-- **The prints** take the frame's layers, in % of a 574 x 300 area so they scale, each turned and
-  shadowed, `object-fit: cover` from the top (where boards put their titles), lazy loaded.
 - **Footer**: a faint rule, the mark, "Have a complicated thing to make clear?",
   hello@julesbockelee.com (a `mailto:`), LinkedIn and Instagram (the addresses from the old Wix
   site) and © 2026.

@@ -42,7 +42,7 @@
   .pj-count{font-size:11px;color:var(--muted);white-space:nowrap}
 
   /* ---- the list's heading and its controls ---- */
-  .pj-sel{margin-top:95px}
+  .pj-sel{margin-top:80px}
   .pj-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
   .pj-bar h2{margin:0;font-weight:900;font-size:16px;line-height:normal;text-transform:uppercase;color:var(--ink)}
   .pj-bar h2 + p{margin:5px 0 0;font-size:10.5px;color:var(--muted)}
@@ -74,38 +74,35 @@
   .pj-menu button:hover{color:var(--muted)}
   .pj-menu button[aria-checked="true"]::after{content:" ✓";color:var(--muted)}
 
-  /* ---- the cards ---- */
-  .pj-list{display:flex;flex-direction:column;align-items:flex-start;gap:31px;margin-top:56px}
-  .pj-card{position:relative;width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;margin:0;
-    padding:22px 28px 27px;overflow:hidden;border-radius:8px;background:var(--surface);box-shadow:var(--lift-shadow);
+  /* ---- the cards ----
+     Each card is shaped by what it holds: src/projects.js lays its prints out from their own
+     proportions and sets the picture area's size, and on a wide screen the card's width, from
+     them. The prints may hang a little over the card's edge. */
+  .pj-list{display:flex;flex-direction:column;align-items:flex-start;gap:26px;margin-top:40px}
+  .pj-card{position:relative;width:100%;max-width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;margin:0;
+    padding:20px 24px 24px;border-radius:8px;background:var(--surface);box-shadow:var(--lift-shadow);
     transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s cubic-bezier(.2,.7,.2,1)}
-  .pj-card.alt{width:698px;max-width:100%}
   .pj-card:hover{transform:translateY(-3px);box-shadow:var(--lift-shadow-hi)}
   .pj-card[hidden]{display:none}
-  .pj-meta{display:flex;justify-content:space-between;align-items:center;min-height:17px}
-  .pj-tags{display:flex;gap:9px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+  .pj-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:17px}
+  .pj-tags{display:flex;gap:7px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
   .pj-tags li{padding:3px 6px;border:.75px solid var(--hairline);border-radius:2px;font-size:9.5px;line-height:normal;color:var(--ink)}
-  .pj-year{font-size:9.5px;color:var(--muted)}
-  .pj-body{display:flex;align-items:center;gap:30px}
-  .pj-card.alt .pj-body{flex-direction:row-reverse;justify-content:flex-end}
+  .pj-year{font-size:9.5px;color:var(--muted);white-space:nowrap}
+  .pj-body{display:flex;align-items:center;gap:28px}
+  .pj-card.flip .pj-body{flex-direction:row-reverse}
 
-  /* The pictures: layered prints, each placed as in the frame (in % of the 574 x 300 area, so
-     they scale with it), turned, with a soft shadow. On hover they spread a little, each away
-     from the middle, and turn a touch further. The colours are the design's placeholders:
-     each layer takes a real image as an <img> inside it when there is one. */
-  .pj-imgs{position:relative;flex:none;width:574px;aspect-ratio:574/300}
-  .pj-layer{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);margin:0;overflow:hidden;
-    border-radius:5px;background:var(--c);opacity:var(--o, 1);box-shadow:var(--layer-shadow);
+  /* The pictures: layered prints, each in its own proportions, turned, with a soft shadow. On
+     hover they spread a little, each away from the middle of the group, and turn a touch further. */
+  .pj-imgs{position:relative;flex:none}
+  .pj-layer{position:absolute;margin:0;overflow:hidden;border-radius:4px;background:var(--pill);box-shadow:var(--layer-shadow);
     transform:rotate(var(--r, 0deg));transition:transform .55s cubic-bezier(.2,.7,.2,1)}
-  .pj-layer.flat{box-shadow:none}
-  .pj-layer.sheet{background:var(--pill)}
   .pj-layer img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0}
   .pj-card:hover .pj-layer{transform:translate(var(--dx, 0px), var(--dy, 0px)) rotate(calc(var(--r, 0deg) * 1.35))}
 
-  .pj-sum{flex:none;width:260px;display:flex;flex-direction:column;gap:18px}
+  .pj-sum{flex:1 1 240px;min-width:220px;max-width:300px;display:flex;flex-direction:column;gap:14px}
   .pj-name{margin:0 0 6px;font-family:"Inconsolata",ui-monospace,monospace;font-weight:700;font-size:8.5px;
     text-transform:uppercase;color:var(--muted)}
-  .pj-sum h3{margin:0 0 10px;font-weight:500;font-size:25px;line-height:1.05;color:var(--ink)}
+  .pj-sum h3{margin:0 0 8px;font-weight:500;font-size:23px;line-height:1.08;color:var(--ink)}
   .pj-sum h3 + p{margin:0;font-size:12px;line-height:1.45;color:var(--body)}
   .pj-contrib{display:flex;flex-direction:column;gap:5px;margin:0}
   .pj-contrib b{font-family:"Inconsolata",ui-monospace,monospace;font-weight:700;font-size:8.5px;line-height:normal;
@@ -132,12 +129,9 @@
 
   /* ---- narrower screens: the card's pictures on top, its words under them ---- */
   @media (max-width:980px){
-    .pj-body,.pj-card.alt .pj-body{flex-direction:column;align-items:stretch;gap:22px}
-    .pj-imgs{width:100%;max-width:574px}
-    .pj-sum{width:auto;max-width:520px}
-    .pj-card.alt{width:100%}
-    /* the narrow card's three prints sit in the left half of their area: centre them when stacked */
-    .pj-card.alt .pj-imgs{translate:16% 0}
+    .pj-body,.pj-card.flip .pj-body{flex-direction:column;align-items:stretch;gap:18px}
+    .pj-imgs{align-self:center}
+    .pj-sum{flex:none;width:auto;max-width:520px}
   }
   @media (max-width:520px){
     .pj-note{width:100%;align-items:flex-start}
@@ -148,12 +142,19 @@
     /* the note goes under the title when the two would touch */
     .pj-head{flex-wrap:wrap;row-gap:10px}
     .pj-intro{flex-direction:column;gap:8px}
-    .pj-sel{margin-top:64px}
+    .pj-sel{margin-top:48px}
+    .pj-intro p{font-size:12px}
     .pj-bar{align-items:flex-start;flex-direction:column}
     .pj-ctl{justify-content:flex-start}
-    .pj-list{margin-top:32px;gap:22px}
-    .pj-card{padding:18px 18px 22px}
-    .pj-sum h3{font-size:22px}
+    /* smaller type and tighter spacing on a phone */
+    .pj-list{margin-top:22px;gap:18px}
+    .pj-card{padding:14px 14px 16px;gap:10px}
+    .pj-body,.pj-card.flip .pj-body{gap:14px}
+    .pj-sum{gap:10px}
+    .pj-sum h3{font-size:18px;margin-bottom:6px}
+    .pj-sum h3 + p{font-size:11.5px;line-height:1.42}
+    .pj-contrib span{font-size:10px}
+    .pj-tags li,.pj-year{font-size:9px}
     .pj-foot{padding:40px 24px 44px;margin-top:72px}
     .pj-contact{align-items:flex-start;gap:14px}
     .pj-contact p{font-size:20px}
