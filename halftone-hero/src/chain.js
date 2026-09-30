@@ -17,7 +17,7 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   document.body.append(handle);
 
   const N = 22;                           // rope points
-  const REST_MAX = fine ? 64 : 84;        // hanging length, px, when there is room for it (longer by touch: 56 read as short on a phone)
+  const REST_MAX = fine ? 64 : 72;        // hanging length, px, when there is room for it (by touch 56 read as short, 84 as a touch long)
   let REST = REST_MAX;
   const MAX_PULL = 30, PULL_AT = 19;      // extra chain a pull can draw out; where it clicks
   const PITCH = 4.4;                      // bead to bead, px: a ball chain, like a lamp pull
@@ -62,7 +62,7 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   if (document.fonts) document.fonts.ready.then(measure);
 
   // ---- interaction ----
-  let dragging = false, px = 0, py = 0, downAt = null, fired = false;
+  let dragging = false, px = 0, py = 0, downAt = null, fired = false, grabOff = 0;
   let feed = 0, feedV = 0, auto = -1;
   let mouse = null, mousePrev = null;
 
@@ -71,6 +71,9 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     e.preventDefault(); e.stopPropagation();
     handle.setPointerCapture(e.pointerId);
     dragging = true; fired = false; auto = -1; pointerTo(e); downAt = [e.clientX, e.clientY, performance.now()];
+    // The whole chain is the grab area. Taken anywhere along it, the drag counts from the end:
+    // the chain still out below the finger is added to the finger's distance from the mount.
+    grabOff = Math.max(0, REST + feed - Math.hypot(px - ax, py - ay));
     handle.classList.add("held");
   });
   handle.addEventListener("pointermove", e => { if (dragging) pointerTo(e); });
@@ -127,9 +130,9 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
       if (auto > 0.34) { auto = -1; fired = false; }
       tx = p[N - 1][0]; ty = ay + REST + feed;
     } else if (dragging) {
-      const dx = px - ax, dy = py - ay, d = Math.hypot(dx, dy) || 1;
+      const dx = px - ax, dy = py - ay, dp = Math.hypot(dx, dy) || 1, d = dp + grabOff;
       const reach = REST + MAX_PULL;
-      const s = Math.min(1, reach / d);
+      const s = Math.min(reach, d) / dp;                   // the end, along the finger's line
       tx = ax + dx * s; ty = ay + dy * s;
       const want = clamp(d - REST, 0, MAX_PULL);
       feed += (want - feed) * Math.min(1, dt * 30);
@@ -273,9 +276,11 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     const top = [prev[0] + ex * (BEAD + 0.2), prev[1] + ey * (BEAD + 0.2)];
     for (let w = 0; w <= Math.hypot(e1[0] - top[0], e1[1] - top[1]); w += 0.4) put(top[0] + ex * w, top[1] + ey * w, 0.45, 0.9);
     const mid = pullKnob(e1[0], e1[1], ex, ey);
-    // the grab area follows the pull
-    const hx = Math.min(mid[0] - 16, innerWidth - 32);
-    handle.style.transform = `translate3d(${hx}px, ${mid[1] - 20}px, 0)`;
+    // the grab area runs the whole chain, from just above the mount to just below the pull
+    const hw = fine ? 32 : 44, gTop = Math.min(ay, mid[1]) - 8, gBottom = mid[1] + 20;
+    const hx = Math.min(Math.min(ax, mid[0]) - hw / 2, innerWidth - hw);
+    handle.style.width = hw + "px"; handle.style.height = Math.round(gBottom - gTop) + "px";
+    handle.style.transform = `translate3d(${hx}px, ${gTop}px, 0)`;
   }
 
   let acc = 0, last = performance.now();

@@ -343,11 +343,15 @@ data will come from the separate database (`~/Developer/prj_jules_projects`).
 light and dark, like a lamp cord. It has no canvas of its own: every frame it hands the renderer
 shaded points, which are splatted into the crow's buffer and screened by the crow's pass, so the
 chain is made of the bird's dots, on the bird's lattice, and takes the ink of the theme the same
-way. An invisible button (`#chainPull`) follows the bead and takes the grab.
+way. An invisible button (`#chainPull`) covers the whole chain, from just above the mount to just
+below the pull (44px wide by touch, 32 with a mouse), and takes the grab: it first covered the
+pull alone, which was hard to catch with a finger. Taken anywhere along the chain, the drag counts
+from the end (the chain still out below the finger is added to its distance from the mount), so
+pulling down 20px from the middle pulls the chain down 20px.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
-stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (84 on
-touch; 56 read as short on a phone), shortened only when a line of text actually reaches under
+stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (72 on
+touch; 56 read as short on a phone, 84 as a touch long), shortened only when a line of text actually reaches under
 it, so that even pulled halfway it stops 30px above that line. It measures the lines themselves
 (a Range over the copy), not the copy's box: on a phone the box runs the full width while its
 top lines, the name and the links, end well short of the chain, and judging by the box cut the

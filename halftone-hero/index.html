@@ -84,7 +84,7 @@
     display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
   .caption .now{color:var(--ink)}
   /* the pull chain (src/chain.js): drawn in the crow's dots by the renderer, grabbed by an
-     invisible button that follows the bead */
+     invisible button over the whole chain, mount to pull (sized every frame by the script) */
   #chainPull{position:fixed;left:0;top:0;width:32px;height:40px;z-index:6;padding:0;margin:0;
     border:0;background:none;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
   #chainPull.held{cursor:grabbing}
