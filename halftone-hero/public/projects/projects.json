@@ -52,8 +52,58 @@
    ]
   },
   {
-   "slug": "caddis",
+   "slug": "mondadori-estate",
    "rank": 2,
+   "tier": "Featured",
+   "title": "Mondadori Estate",
+   "headline": "Selling a Puglian estate to hotel groups",
+   "description": "Masseria Lamacoppa is a 17th century farmhouse on 73 hectares of woodland and olive groves outside Ostuni, in Puglia. Its owners wanted to sell it to a larger hotel group, and this is the book we made to pitch it. The first half sells the place and the region around it. The second half is written for the buyer: the six estates it would compete with, from Borgo Egnazia to Blackberry Farm, and a plan for 49 keys across the old masseria, a new hotel and villas. It closes on Puglia's tourism figures and the tax credits on offer in the region's special economic zone.",
+   "contribution": null,
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": "2024",
+   "yearSort": 2024,
+   "prints": [
+    {
+     "src": "public/projects/mondadori-estate/1.jpg",
+     "w": 840,
+     "h": 594
+    },
+    {
+     "src": "public/projects/mondadori-estate/2.jpg",
+     "w": 400,
+     "h": 283
+    },
+    {
+     "src": "public/projects/mondadori-estate/3.jpg",
+     "w": 400,
+     "h": 283
+    },
+    {
+     "src": "public/projects/mondadori-estate/4.jpg",
+     "w": 400,
+     "h": 283
+    },
+    {
+     "src": "public/projects/mondadori-estate/5.jpg",
+     "w": 400,
+     "h": 283
+    },
+    {
+     "src": "public/projects/mondadori-estate/6.jpg",
+     "w": 400,
+     "h": 283
+    },
+    {
+     "src": "public/projects/mondadori-estate/7.jpg",
+     "w": 400,
+     "h": 283
+    }
+   ]
+  },
+  {
+   "slug": "caddis",
+   "rank": 3,
    "tier": "Featured",
    "title": "Caddis",
    "headline": null,
@@ -103,7 +153,7 @@
   },
   {
    "slug": "eureka",
-   "rank": 3,
+   "rank": 4,
    "tier": "Featured",
    "title": "Eureka",
    "headline": null,
@@ -153,7 +203,7 @@
   },
   {
    "slug": "rebranding-frozen-foods",
-   "rank": 4,
+   "rank": 5,
    "tier": "Featured",
    "title": "Rebranding Frozen Foods",
    "headline": null,
@@ -203,7 +253,7 @@
   },
   {
    "slug": "clay",
-   "rank": 5,
+   "rank": 6,
    "tier": "Featured",
    "title": "Clay",
    "headline": null,
@@ -253,7 +303,7 @@
   },
   {
    "slug": "enzo-ring",
-   "rank": 6,
+   "rank": 7,
    "tier": "Featured",
    "title": "Enzo",
    "headline": null,
@@ -288,7 +338,7 @@
   },
   {
    "slug": "talaria",
-   "rank": 7,
+   "rank": 8,
    "tier": "Featured",
    "title": "Talaria",
    "headline": null,
@@ -338,8 +388,8 @@
   },
   {
    "slug": "cost-plus-drugs",
-   "rank": 8,
-   "tier": "Featured",
+   "rank": 9,
+   "tier": "Selected",
    "title": "Cost Plus Drugs",
    "headline": null,
    "description": "A redesign of how Cost Plus Drugs works. I used design fiction, a futures wheel and SCAMPER to look for ways the service could change, and one of the ideas became a design fiction prototype: generic drugs sold from a vending machine.",
@@ -383,7 +433,7 @@
   },
   {
    "slug": "nycic-annual-sponsorship-proposal",
-   "rank": 9,
+   "rank": 10,
    "tier": "Selected",
    "title": "NYCIC Annual Sponsorship Proposal",
    "headline": null,
@@ -433,7 +483,7 @@
   },
   {
    "slug": "the-surf-helmet",
-   "rank": 10,
+   "rank": 11,
    "tier": "Selected",
    "title": "The Surf Helmet",
    "headline": null,
@@ -483,7 +533,7 @@
   },
   {
    "slug": "scribe",
-   "rank": 11,
+   "rank": 12,
    "tier": "Selected",
    "title": "Scribe",
    "headline": null,
@@ -533,7 +583,7 @@
   },
   {
    "slug": "driven",
-   "rank": 12,
+   "rank": 13,
    "tier": "Selected",
    "title": "Driven",
    "headline": null,
@@ -583,7 +633,7 @@
   },
   {
    "slug": "ikea-frysta",
-   "rank": 13,
+   "rank": 14,
    "tier": "Selected",
    "title": "IKEA Frystä",
    "headline": null,
@@ -618,7 +668,7 @@
   },
   {
    "slug": "nyc-students-in-data",
-   "rank": 14,
+   "rank": 15,
    "tier": "Selected",
    "title": "NYC Students, in Data",
    "headline": null,
@@ -648,7 +698,7 @@
   },
   {
    "slug": "rl-prestige-by-ralph-lauren",
-   "rank": 15,
+   "rank": 16,
    "tier": "Selected",
    "title": "RL Prestige by Ralph Lauren",
    "headline": null,
@@ -698,7 +748,7 @@
   },
   {
    "slug": "cozy",
-   "rank": 16,
+   "rank": 17,
    "tier": "Selected",
    "title": "Cozy",
    "headline": null,
@@ -738,7 +788,7 @@
   },
   {
    "slug": "the-mycelium-project",
-   "rank": 17,
+   "rank": 18,
    "tier": "Selected",
    "title": "The Mycelium Project",
    "headline": null,
@@ -788,7 +838,7 @@
   },
   {
    "slug": "nike-financial-analysis",
-   "rank": 18,
+   "rank": 19,
    "tier": "Selected",
    "title": "Nike Financial Analysis",
    "headline": null,
@@ -838,7 +888,7 @@
   },
   {
    "slug": "the-5th-element-miami",
-   "rank": 19,
+   "rank": 20,
    "tier": "Selected",
    "title": "The 5th Element Miami",
    "headline": null,
@@ -888,7 +938,7 @@
   },
   {
    "slug": "garrett",
-   "rank": 20,
+   "rank": 21,
    "tier": "Selected",
    "title": "Garrett",
    "headline": null,
@@ -933,7 +983,7 @@
   },
   {
    "slug": "ben-sharf",
-   "rank": 21,
+   "rank": 22,
    "tier": "Selected",
    "title": "Ben Sharf",
    "headline": null,
@@ -978,7 +1028,7 @@
   },
   {
    "slug": "new-york-guys",
-   "rank": 22,
+   "rank": 23,
    "tier": "Selected",
    "title": "New York Guys",
    "headline": null,
@@ -1023,7 +1073,7 @@
   },
   {
    "slug": "lvmh-value-chain",
-   "rank": 23,
+   "rank": 24,
    "tier": "Selected",
    "title": "LVMH Value Chain",
    "headline": null,
@@ -1058,7 +1108,7 @@
   },
   {
    "slug": "the-hat-dilemma",
-   "rank": 24,
+   "rank": 25,
    "tier": "Selected",
    "title": "The Hat Dilemma",
    "headline": null,
@@ -1108,7 +1158,7 @@
   },
   {
    "slug": "the-toilet-project",
-   "rank": 25,
+   "rank": 26,
    "tier": "Selected",
    "title": "The Toilet Project",
    "headline": null,
@@ -1158,7 +1208,7 @@
   },
   {
    "slug": "titanic",
-   "rank": 26,
+   "rank": 27,
    "tier": "Selected",
    "title": "Titanic",
    "headline": null,
@@ -1188,7 +1238,7 @@
   },
   {
    "slug": "chilewich-x-hockney",
-   "rank": 27,
+   "rank": 28,
    "tier": "Selected",
    "title": "Chilewich x Hockney",
    "headline": null,
@@ -1223,7 +1273,7 @@
   },
   {
    "slug": "le-cocon",
-   "rank": 28,
+   "rank": 29,
    "tier": "Selected",
    "title": "Le Cocon",
    "headline": null,
@@ -1263,7 +1313,7 @@
   },
   {
    "slug": "lvmh-and-kering-style-guide",
-   "rank": 29,
+   "rank": 30,
    "tier": "Selected",
    "title": "LVMH and Kering Style Guide",
    "headline": null,
@@ -1308,7 +1358,7 @@
   },
   {
    "slug": "zayd-turk-at-jams",
-   "rank": 30,
+   "rank": 31,
    "tier": "Selected",
    "title": "Zayd Turk at Jams",
    "headline": null,
@@ -1358,7 +1408,7 @@
   },
   {
    "slug": "rumble-in-the-jungle",
-   "rank": 31,
+   "rank": 32,
    "tier": "Selected",
    "title": "Rumble in the Jungle",
    "headline": null,
@@ -1398,7 +1448,7 @@
   },
   {
    "slug": "the-palace",
-   "rank": 32,
+   "rank": 33,
    "tier": "Selected",
    "title": "The Palace",
    "headline": null,

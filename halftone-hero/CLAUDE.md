@@ -25,7 +25,7 @@ timeline.html         the Timeline page: static, plus the live crow (src/crowsta
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
 public/projects/      exported by the project database (never edit by hand): projects.json and
-                      each card's prints, <slug>/1-7.jpg (32 projects, 7.7MB)
+                      each card's prints, <slug>/1-7.jpg (33 projects, 8.0MB)
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
