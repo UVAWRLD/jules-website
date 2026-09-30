@@ -42,7 +42,31 @@
      keeps the ratio when a short phone drops the copy to 13px; the nav shares one baseline. */
   .copy nav b{font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:1.15em}
   .copy nav a{color:var(--muted);text-decoration:none}
+  .copy nav > *{white-space:nowrap}
+  /* On a phone the four do not fit one line (the name alone is 143px): the name keeps its own
+     line, the links sit under it, so nothing wraps mid-name. */
+  @media (max-width:520px){
+    .copy nav{flex-wrap:wrap;row-gap:6px}
+    .copy nav b{flex-basis:100%}
+  }
   .copy nav a:hover{color:var(--ink)}
+  /* Other…: a small menu of the rest of the site, to be filled in. Styled as the crow's card
+     (the paper, the hairline, the soft shadow), dropping in under the word. */
+  .copy nav .more{position:relative}
+  .more-btn{font:inherit;line-height:inherit;color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
+  .more-btn:hover,.more-btn[aria-expanded="true"]{color:var(--ink)}
+  .more-btn:focus-visible{outline:1px solid var(--card-line);outline-offset:3px}
+  .more-menu{position:absolute;left:-12px;top:calc(100% + 8px);z-index:8;min-width:148px;
+    display:flex;flex-direction:column;padding:6px 0;background:var(--paper);
+    border:1px solid var(--card-line);box-shadow:var(--card-shadow);
+    opacity:0;transform:translateY(-4px);transition:opacity .16s ease, transform .16s ease}
+  .more-menu.open{opacity:1;transform:none}
+  .more-menu[hidden]{display:none}
+  .more-item{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:4px 12px;
+    color:var(--ink);text-decoration:none;white-space:nowrap}
+  a.more-item:hover{color:var(--muted)}
+  .more-item[aria-disabled="true"]{color:var(--muted);cursor:default}
+  .more-item em{font-style:normal;font-family:"Inconsolata",ui-monospace,monospace;font-size:10px;color:var(--muted)}
   .copy p{margin:21px 0 0}
   .copy nav+p{margin-top:17px}
   .copy .lede{font-weight:500}
@@ -132,7 +156,7 @@
     <div class="mark" aria-hidden="true"></div>
     <div class="band" id="band"><canvas id="c"></canvas></div>
     <div class="copy" id="copy">
-      <nav><b id="name">Jules Bockelee Morvan</b><a href="timeline">Timeline</a><a href="#">Thoughts</a></nav>
+      <nav><b id="name">Jules Bockelee Morvan</b><a href="timeline">Timeline</a><a href="projects">Projects</a><span class="more"><button type="button" class="more-btn" aria-expanded="false" aria-controls="moreMenu" aria-haspopup="true">Other…</button><span class="more-menu" id="moreMenu" role="menu" hidden><span class="more-item" role="menuitem" aria-disabled="true" tabindex="-1">Thoughts<em>soon</em></span></span></span></nav>
       <p class="lede">Product &amp; brand strategist.</p>
       <p class="dim">I've seen good ideas get lost in the handover more often than anywhere else.</p>
       <p class="dim gap">Between the promise and the budget, the brand and the product, the pitch and the people who build it. That's where I work, across hospitality, tech and consumer brands.</p>
@@ -255,6 +279,21 @@
 </div>
 
 <script type="module" src="src/halftone.js"></script>
+<script>
+  // Other…: opens on a click or tap and closes on a second one, a click anywhere else, or Escape
+  (() => {
+    const btn = document.querySelector(".more-btn"), menu = document.getElementById("moreMenu");
+    if (!btn) return;
+    const set = open => {
+      btn.setAttribute("aria-expanded", String(open));
+      if (open) { menu.hidden = false; requestAnimationFrame(() => menu.classList.add("open")); }
+      else { menu.classList.remove("open"); setTimeout(() => { if (btn.getAttribute("aria-expanded") === "false") menu.hidden = true; }, 160); }
+    };
+    btn.addEventListener("click", e => { e.stopPropagation(); set(btn.getAttribute("aria-expanded") !== "true"); });
+    addEventListener("pointerdown", e => { if (!menu.hidden && !e.target.closest(".more")) set(false); });
+    addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { set(false); btn.focus(); } });
+  })();
+</script>
 <!-- Vercel, on a plain static page: no package, no React, just the two scripts Vercel
      serves itself. Cookieless, so there is nothing to consent to. -->
 <script defer src="/_vercel/insights/script.js"></script>

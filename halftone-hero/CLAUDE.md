@@ -22,6 +22,7 @@ npx serve .          # or: python3 -m http.server
 ```
 index.html            the home page: markup and its CSS, plus the tuning panel
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
+projects.html         the Projects page: a first cut, the Timeline's frame and the crow only
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
@@ -304,6 +305,22 @@ light kept at the upper left, so he is lit the same way facing either way.
 `src/halftone.js` so every page with the bird shares them; it adds its own markup if a page
 lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their CSS is in
 `src/site.css`.
+
+## The home page nav, and the Projects page
+
+The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, **Projects** and
+**Other…**. Other… is a button that drops a small menu under itself, styled as the crow's card
+(paper, hairline, soft shadow): a click or tap opens and closes it, and a click elsewhere or
+Escape closes it. It holds what is not built yet: **Thoughts**, which was a dead link in the nav,
+is there as "soon". On a screen under 520px the four do not fit one line (the name alone is
+143px), so the name keeps its own line and the links sit under it rather than the name wrapping.
+
+`projects.html` (served at `/projects`) is a first cut: the Timeline's frame only (logo, the
+"Projects" title, the back link, the rule the crow lands on) at the same sizes and places, so
+nothing shifts between the two pages, and one placeholder line. The project cards come next,
+designed together with Jules from Figma: Projects portfolio. Its header CSS is copied from
+`timeline.html`; when the page grows, move the shared rules into `src/site.css`. The project
+data will come from the separate database (`~/Developer/prj_jules_projects`).
 
 ## The pull chain
 
