@@ -346,8 +346,8 @@ chain is made of the bird's dots, on the bird's lattice, and takes the ink of th
 way. An invisible button (`#chainPull`) follows the bead and takes the grab.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
-stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (56 on
-touch, where 56 read as short), shortened on a short screen so it always stops 30px above the copy. The mount sits
+stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (84 on
+touch; 56 read as short on a phone), shortened on a short screen so it always stops 30px above the copy. The mount sits
 14px right of the caption, whose right edge is where it is pinned, so it does not move when
 the place names change width (it first hung on the left, and slid with every change); if the
 layout moves it, it glides there and the chain swings from the move rather than jumping.
