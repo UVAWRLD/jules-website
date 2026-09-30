@@ -63,6 +63,24 @@ body{margin:0;background:var(--paper);color:var(--ink);
   mask:url(../public/img/logo.svg) no-repeat center/contain}
 @media (max-width:820px){ .mark{left:24px;top:24px} }
 
+/* ---- the page bar, on every page but the home page ----
+   Opposite the logo, on its line: the site's pages, then the way home. The page you are on is
+   dark, bold and underlined (aria-current); the others are muted with a small arrow, and turn
+   dark on hover. The order never changes from page to page. Placed like the logo, absolute at
+   the top, so it scrolls away with it. */
+.pagenav{position:absolute;right:4.86%;top:5.18vh;height:27.4px;z-index:4;
+  display:flex;align-items:center;gap:24px;font-size:13px;line-height:18px}
+.pagenav a{display:inline-flex;align-items:center;gap:5px;color:var(--muted);text-decoration:none;white-space:nowrap}
+.pagenav a:hover{color:var(--ink)}
+.pagenav a[aria-current="page"]{color:var(--ink);font-weight:700;
+  padding-top:2px;border-bottom:1.5px solid var(--ink);padding-bottom:2px}
+.pagenav .go{width:8px;height:8px;flex:none}
+.pagenav .home{width:10px;height:10px;background:currentColor;
+  -webkit-mask:url(../public/img/timeline/home.svg) no-repeat 0 0/100% 100%;
+  mask:url(../public/img/timeline/home.svg) no-repeat 0 0/100% 100%}
+@media (max-width:820px){ .pagenav{right:24px;top:24px;gap:18px} }
+@media (max-width:360px){ .pagenav{gap:13px;font-size:12px} }
+
 /* while the theme changes, everything cross-fades */
 html.theming, html.theming *{transition:color .5s ease, background-color .5s ease,
   border-color .5s ease !important}

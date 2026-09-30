@@ -176,7 +176,7 @@ for phones, where the only way to see these is a screenshot from the visitor.
 
 `timeline.html`, served at `/timeline` (Vercel `cleanUrls`; `tools/devserver.py` does the
 same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home page's
-"Timeline" nav link points to it; the logo and "← Back ⌂" link home. It scrolls.
+"Timeline" nav link points to it; the logo and the page bar's "← Back ⌂" link home. It scrolls.
 
 - **One scale factor.** The frame was scaled up 1.2665x in Figma, uniformly (the column went
   from 537 to 680px, the title from 24 to 30.4px). Every size on the page is the first cut's
@@ -184,8 +184,8 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   (1.26648 read as too big), and 1 on phones, where larger type did not fit the rail and
   date column. The column sits 164px down, as in the frame.
 - **Layout in flow, not at the frame's coordinates.** The header (Libre Caslon Condensed
-  Medium title, the back link on the title's baseline, without an underline and with 4.5 x k
-  between "Back" and the house, the rule), the intro, then the sections in a column 118 x k
+  Medium title and the rule; the back link that sat on the title's baseline moved to the page
+  bar), the intro, then the sections in a column 118 x k
   in and 355 x k wide. At 1440 the header and intro land on the frame's numbers; the sections
   sit ~17px higher, because the browser wraps the intro in 4 lines where Figma wraps it in 5.
 - **The markers are per entry.** Each `.tl-item` draws its own hollow ring and a connector
@@ -306,6 +306,17 @@ light kept at the upper left, so he is lit the same way facing either way.
 lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their CSS is in
 `src/site.css`.
 
+## The page bar, on every page but the home page
+
+Opposite the logo, on its line and at its inset (4.86% on a computer, 24px on a phone): the
+site's pages, **Projects** and **Timeline**, then **← Back ⌂** home (Figma: the page header).
+The page you are on is ink, bold, and underlined with a 1.5px rule (`aria-current="page"`); the
+others are muted with a small ↗ and darken on hover. The order is fixed, so nothing moves between
+pages. It is absolute at the top like the logo and scrolls away with it. The CSS (`.pagenav`) is
+in `src/site.css`; the markup is written into each page. **Every new page other than the home
+page gets it**, with its own entry added to every page's bar. It replaced the "← Back ⌂" that
+sat on the title row of the Timeline and Projects pages.
+
 ## The home page nav, and the Projects page
 
 The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, **Projects** and
@@ -318,8 +329,8 @@ break is an empty element (`.nav-br`) taking a line of its own: the first versio
 name to the full width instead, and since the crow stands 62% of the way along the name's box,
 he landed out in the empty space to its right.
 
-`projects.html` (served at `/projects`) is a first cut: the Timeline's frame only (logo, the
-"Projects" title, the back link, the rule the crow lands on) at the same sizes and places, so
+`projects.html` (served at `/projects`) is a first cut: the Timeline's frame only (logo, page
+bar, the "Projects" title, the rule the crow lands on) at the same sizes and places, so
 nothing shifts between the two pages, and one placeholder line. The project cards come next,
 designed together with Jules from Figma: Projects portfolio. Its header CSS is copied from
 `timeline.html`; when the page grows, move the shared rules into `src/site.css`. The project
