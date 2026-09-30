@@ -25,7 +25,7 @@ timeline.html         the Timeline page: static, plus the live crow (src/crowsta
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
 public/projects/      exported by the project database (never edit by hand): projects.json and
-                      each card's prints, <slug>/1-4.jpg (35 projects, 6.8MB)
+                      each card's prints, <slug>/1-7.jpg (32 projects, 7.3MB)
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
@@ -349,24 +349,32 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   goes under the title.
 - **The cards come from the project database** (`~/Developer/prj_jules_projects`, kept apart
   from this repo). Its `tools/export_site.py` writes `public/projects/projects.json` and web
-  sized prints into this folder: the **Featured and Selected** tiers (35 projects; the Archive is
+  sized prints into this folder: the **Featured and Selected** tiers (32 projects; the Archive is
   left out) in the database's `rank` order. `src/projects.js` fetches that file and builds the
-  cards. To change the page, change the database, run the export, and commit here. A project
-  with fewer than three images is cut into prints from its cover: a tall board is sliced at three
-  heights (three pages of the deck), a wide or square image gives the whole and two close details.
+  cards. To change the page, change the database, run the export, and commit here. Up to seven
+  prints a card. A deck (one board of slides) is cut into whole slides: where each slide sits was
+  found on the board (its columns read off by eye, then the edges between slides) and is saved in
+  the database, and the prints are the first slide plus five or six spread through the first two
+  thirds of the deck, each trimmed by a sliver. App screens keep a phone's proportions (the first
+  screen of a long scroll). The selection leans on product, strategy and UX work; single event
+  flyers are in the Archive (Jules, 2026-09-30).
 - **Each card is shaped by its content** (the frame's two cards were an example, not a
   template). `arrange()` in `src/projects.js` lays the prints out from their own proportions: the
   main print gets about 98,000px² (at most 470 x 310), so a poster stays tall and a board stays
   wide; the others, a fifth to a third of its area, overlap its corners (behind at the outer top,
-  in front at the outer bottom, in front at the inner bottom), each turned 2.5 to 6 degrees. The
+  in front at the outer bottom, in front at the inner bottom; with more, further out: peeking
+  over the inner top, well out past the outer edge, above and below the middle), each turned 2.5
+  to 6 degrees. The
   sizes, overlaps and turns come from a small random seeded by the project's slug, so the page
   varies from card to card but reloads the same. `place()` fits the group: on a wide screen the
   card's width is its pictures plus its words (260px, 300 for a long description), so a set of
   posters makes a narrower card than a wide board; below 980 the words go under the pictures,
   which scale to the card's width. The prints hang up to 14px over the card's outer edge (8 on a
   phone). Pictures alternate sides down the cards that are showing, and layout reruns on a change
-  of width, a sort or a filter. On hover the card lifts 3px and each print moves 7px away from the
-  middle of the group and turns a touch further.
+  of width, a sort or a filter. On hover the card lifts 3px and each print moves 9px away from the
+  middle of the group (16 for the outer ones) and turns a touch further; **a click (or tap) on the
+  pictures fans them right out**, over the card's edges, and a second click, or a click anywhere
+  else, brings them back.
 - **Text**: tags are the database's `discipline` and `context`; the year is `year` or `years`
   (undated projects show none). The heading is `headline` when the database has one (with the
   project's name above it in small capitals), else the title; then `description`, and

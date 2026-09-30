@@ -7,7 +7,7 @@
    "tier": "Featured",
    "title": "Vybe Together",
    "headline": "Making plans feel spontaneous again",
-   "description": "Vybe Together is an app for finding and hosting small get-togethers nearby: a host posts a gathering, guests apply, and the host chooses who comes. I co-founded it in 2020 and led the brand and the app design. Many of the nights elsewhere in this portfolio sent their guests to RSVP through it.",
+   "description": "Vybe Together helps people find and host small get-togethers nearby. A host posts a gathering, guests apply, and the host picks who comes. I co-founded it in 2020 and ran the brand and the app design. A lot of the nights further down this page sent their guests to RSVP in it.",
    "contribution": "Creative direction, brand, UX/UI, launch strategy",
    "discipline": "UX/UI",
    "context": "Professional",
@@ -17,22 +17,27 @@
     {
      "src": "public/projects/vybe-together/1.jpg",
      "w": 840,
-     "h": 1049
+     "h": 1824
     },
     {
      "src": "public/projects/vybe-together/2.jpg",
-     "w": 340,
-     "h": 424
+     "w": 400,
+     "h": 869
     },
     {
      "src": "public/projects/vybe-together/3.jpg",
-     "w": 340,
-     "h": 292
+     "w": 400,
+     "h": 892
     },
     {
      "src": "public/projects/vybe-together/4.jpg",
-     "w": 340,
-     "h": 292
+     "w": 400,
+     "h": 892
+    },
+    {
+     "src": "public/projects/vybe-together/5.jpg",
+     "w": 400,
+     "h": 344
     }
    ]
   },
@@ -42,7 +47,7 @@
    "tier": "Featured",
    "title": "Eureka",
    "headline": null,
-   "description": "Academic research has real barriers to entry. Eureka is a social app meant to lower them, with tools for giving feedback, finding collaborators and tracking projects. I designed it from user research through to a prototype.",
+   "description": "Academic research is hard to break into. Eureka is a social app built to help with that, with tools for getting feedback, finding collaborators and keeping track of projects. I took it from user research to a prototype.",
    "contribution": null,
    "discipline": "UX/UI",
    "context": "Academic",
@@ -52,17 +57,37 @@
     {
      "src": "public/projects/eureka/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 464
     },
     {
      "src": "public/projects/eureka/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 252
     },
     {
      "src": "public/projects/eureka/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 310
+    },
+    {
+     "src": "public/projects/eureka/4.jpg",
+     "w": 400,
+     "h": 312
+    },
+    {
+     "src": "public/projects/eureka/5.jpg",
+     "w": 400,
+     "h": 231
+    },
+    {
+     "src": "public/projects/eureka/6.jpg",
+     "w": 400,
+     "h": 273
+    },
+    {
+     "src": "public/projects/eureka/7.jpg",
+     "w": 400,
+     "h": 220
     }
    ]
   },
@@ -72,7 +97,7 @@
    "tier": "Featured",
    "title": "The Surf Helmet",
    "headline": null,
-   "description": "Surfing carries a real risk of head injury from wipeouts, reef and sea bed, yet very few surfers wear a helmet: in Australia only about 2% do so regularly. The helmets on offer are uncomfortable and look wrong, and surfers care how they look. I designed one they might actually put on, taking its forms from animals such as the armadillo and the jellyfish, then took it through prototypes, an airflow simulation and the changes needed for commercial production.",
+   "description": "Surfers get hurt in wipeouts, on the reef and on the sea bed, and hardly any of them wear a helmet. In Australia it's about 2%. The ones you can buy are uncomfortable and look wrong, and surfers care how they look. So I tried to design one they'd actually wear. The shapes come from animals, an armadillo and a jellyfish among them, and I took it through prototypes, an airflow simulation and the changes it would need to be manufactured.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Academic",
@@ -86,18 +111,33 @@
     },
     {
      "src": "public/projects/the-surf-helmet/2.jpg",
-     "w": 340,
-     "h": 253
+     "w": 400,
+     "h": 297
     },
     {
      "src": "public/projects/the-surf-helmet/3.jpg",
-     "w": 340,
-     "h": 253
+     "w": 400,
+     "h": 297
     },
     {
      "src": "public/projects/the-surf-helmet/4.jpg",
-     "w": 340,
-     "h": 155
+     "w": 400,
+     "h": 183
+    },
+    {
+     "src": "public/projects/the-surf-helmet/5.jpg",
+     "w": 400,
+     "h": 252
+    },
+    {
+     "src": "public/projects/the-surf-helmet/6.jpg",
+     "w": 400,
+     "h": 269
+    },
+    {
+     "src": "public/projects/the-surf-helmet/7.jpg",
+     "w": 400,
+     "h": 276
     }
    ]
   },
@@ -107,7 +147,7 @@
    "tier": "Featured",
    "title": "Rebranding Frozen Foods",
    "headline": null,
-   "description": "Four in five of the students I surveyed disliked frozen meals, and none thought they were healthy. My first capstone asked how frozen food could change to fit what people in cities now expect on taste, health and sustainability. I ran interviews, a focus group, a digital audit and desk research, and prototyped packaging for a range aimed at students.",
+   "description": "Four in five of the students I surveyed didn't like frozen meals, and none of them thought they were healthy. My first capstone asked what frozen food would have to change to match what people in cities now want from taste, health and sustainability. I did interviews, a focus group, a digital audit and desk research, then prototyped packaging for a range aimed at students.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Academic",
@@ -117,17 +157,37 @@
     {
      "src": "public/projects/rebranding-frozen-foods/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 528
     },
     {
      "src": "public/projects/rebranding-frozen-foods/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 206
     },
     {
      "src": "public/projects/rebranding-frozen-foods/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 273
+    },
+    {
+     "src": "public/projects/rebranding-frozen-foods/4.jpg",
+     "w": 400,
+     "h": 300
+    },
+    {
+     "src": "public/projects/rebranding-frozen-foods/5.jpg",
+     "w": 400,
+     "h": 234
+    },
+    {
+     "src": "public/projects/rebranding-frozen-foods/6.jpg",
+     "w": 400,
+     "h": 291
+    },
+    {
+     "src": "public/projects/rebranding-frozen-foods/7.jpg",
+     "w": 400,
+     "h": 247
     }
    ]
   },
@@ -137,7 +197,7 @@
    "tier": "Featured",
    "title": "Caddis",
    "headline": null,
-   "description": "My capstone brand strategy for Caddis, about how the brand could bridge the cultural gap between generations. I worked through competitors, market trends and consumer research before arriving at the strategy.",
+   "description": "My capstone, a brand strategy for Caddis. The question was how the brand could speak to more than one generation at once. I started with competitors, market trends and consumer research, and it ended in AgeWise, a podcast series that pairs youth culture with older voices to bring new people to Caddis.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Academic",
@@ -151,13 +211,33 @@
     },
     {
      "src": "public/projects/caddis/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 303
     },
     {
      "src": "public/projects/caddis/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 243
+    },
+    {
+     "src": "public/projects/caddis/4.jpg",
+     "w": 400,
+     "h": 268
+    },
+    {
+     "src": "public/projects/caddis/5.jpg",
+     "w": 400,
+     "h": 243
+    },
+    {
+     "src": "public/projects/caddis/6.jpg",
+     "w": 400,
+     "h": 223
+    },
+    {
+     "src": "public/projects/caddis/7.jpg",
+     "w": 400,
+     "h": 256
     }
    ]
   },
@@ -167,7 +247,7 @@
    "tier": "Featured",
    "title": "NYC Students, in Data",
    "headline": null,
-   "description": "Three data visualisations built from New School research into how New York students live. The first maps where and how they spend money, the second follows the music they listen to through the day, and the third shows whether they drink coffee, alcohol and sweet drinks alone or with someone.",
+   "description": "I made three charts from New School research into how students in New York live. One maps where and how they spend money. One follows the music they listen to through the day. The last looks at whether they drink coffee, alcohol and sweet drinks alone or with someone.",
    "contribution": null,
    "discipline": "Data & analysis",
    "context": "Academic",
@@ -177,17 +257,17 @@
     {
      "src": "public/projects/nyc-students-in-data/1.jpg",
      "w": 840,
-     "h": 559
+     "h": 836
     },
     {
      "src": "public/projects/nyc-students-in-data/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 368
     },
     {
      "src": "public/projects/nyc-students-in-data/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 295
     }
    ]
   },
@@ -197,7 +277,7 @@
    "tier": "Featured",
    "title": "The Mycelium Project",
    "headline": null,
-   "description": "We set out to make everyday objects from a material that could sit outdoors and feed the plants around it. Mycelium grows through agricultural waste such as flour, cereal or sawdust, so we packed it into moulds and left it for about a week until it had filled them. The first piece was an ashtray, the second an incense holder, and we also tested how the grown material stood up to heat and fire.",
+   "description": "We wanted to make everyday objects out of something that could be left outdoors and would feed the plants around it. Mycelium grows through farm waste like flour, cereal or sawdust, so we packed it into moulds and waited about a week for it to fill them. The first piece was an ashtray, then an incense holder. We also tested how the grown material held up to heat and fire.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Academic",
@@ -211,18 +291,33 @@
     },
     {
      "src": "public/projects/the-mycelium-project/2.jpg",
-     "w": 340,
-     "h": 154
+     "w": 400,
+     "h": 182
     },
     {
      "src": "public/projects/the-mycelium-project/3.jpg",
-     "w": 340,
-     "h": 165
+     "w": 400,
+     "h": 194
     },
     {
      "src": "public/projects/the-mycelium-project/4.jpg",
-     "w": 340,
-     "h": 249
+     "w": 400,
+     "h": 293
+    },
+    {
+     "src": "public/projects/the-mycelium-project/5.jpg",
+     "w": 400,
+     "h": 207
+    },
+    {
+     "src": "public/projects/the-mycelium-project/6.jpg",
+     "w": 400,
+     "h": 284
+    },
+    {
+     "src": "public/projects/the-mycelium-project/7.jpg",
+     "w": 400,
+     "h": 230
     }
    ]
   },
@@ -230,11 +325,11 @@
    "slug": "enzo-ring",
    "rank": 8,
    "tier": "Featured",
-   "title": "Enzo Ring",
+   "title": "Enzo",
    "headline": null,
-   "description": "A signet ring that changes as its owner's wealth grows, from $25K to $5MM in assets, moving through obsidian, ruby, bronze, silver and gold. I designed the ring, the renders and a landing page where people apply for access and read the manifesto. The tagline calls it the ultimate status symbol.",
-   "contribution": null,
-   "discipline": "Product design",
+   "description": "Enzo is a banking app I built with a membership system behind it. Your rank goes up as your wealth grows, and each rank has its own ring, from obsidian at $25K up to gold at $5MM. I designed the app and the rings, built the system around the ranks and wrote the marketing strategy, which uses the ranks as a sign of where you stand. People apply for access through a landing page.",
+   "contribution": "App design, membership system, marketing strategy",
+   "discipline": "UX/UI",
    "context": "Independent",
    "year": null,
    "yearSort": null,
@@ -246,18 +341,23 @@
     },
     {
      "src": "public/projects/enzo-ring/2.jpg",
-     "w": 340,
-     "h": 185
+     "w": 400,
+     "h": 218
     },
     {
      "src": "public/projects/enzo-ring/3.jpg",
-     "w": 340,
-     "h": 191
+     "w": 400,
+     "h": 225
     },
     {
      "src": "public/projects/enzo-ring/4.jpg",
-     "w": 340,
-     "h": 191
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/enzo-ring/5.jpg",
+     "w": 400,
+     "h": 218
     }
    ]
   },
@@ -267,7 +367,7 @@
    "tier": "Selected",
    "title": "Cost Plus Drugs",
    "headline": null,
-   "description": "A redesign of the Cost Plus Drugs system. I worked through design fiction, a futures wheel and SCAMPER to look for ways the service could change.",
+   "description": "A redesign of how Cost Plus Drugs works. I used design fiction, a futures wheel and SCAMPER to look for ways the service could change, and one of the ideas became a design fiction prototype: generic drugs sold from a vending machine.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Academic",
@@ -277,17 +377,32 @@
     {
      "src": "public/projects/cost-plus-drugs/1.jpg",
      "w": 840,
-     "h": 559
+     "h": 466
     },
     {
      "src": "public/projects/cost-plus-drugs/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 256
     },
     {
      "src": "public/projects/cost-plus-drugs/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 200
+    },
+    {
+     "src": "public/projects/cost-plus-drugs/4.jpg",
+     "w": 400,
+     "h": 205
+    },
+    {
+     "src": "public/projects/cost-plus-drugs/5.jpg",
+     "w": 400,
+     "h": 221
+    },
+    {
+     "src": "public/projects/cost-plus-drugs/6.jpg",
+     "w": 400,
+     "h": 204
     }
    ]
   },
@@ -297,7 +412,7 @@
    "tier": "Selected",
    "title": "Talaria",
    "headline": null,
-   "description": "Talaria is a drive-thru medical service. Seeing a doctor is inconvenient, the waiting room is a place to catch something, and the bill is high; Talaria answers all three by bringing care to the car window. The concept and the brand are built around those pain points.",
+   "description": "Seeing a doctor means time you don't have, a waiting room where you can pick something up, and a big bill. Talaria is a drive-thru medical service that deals with all three by bringing care to the car window. I built the concept and the brand around those problems, and the deck goes as far as traction, projections and a $1 million ask.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Academic",
@@ -307,17 +422,37 @@
     {
      "src": "public/projects/talaria/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 464
     },
     {
      "src": "public/projects/talaria/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 253
     },
     {
      "src": "public/projects/talaria/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 239
+    },
+    {
+     "src": "public/projects/talaria/4.jpg",
+     "w": 400,
+     "h": 310
+    },
+    {
+     "src": "public/projects/talaria/5.jpg",
+     "w": 400,
+     "h": 306
+    },
+    {
+     "src": "public/projects/talaria/6.jpg",
+     "w": 400,
+     "h": 316
+    },
+    {
+     "src": "public/projects/talaria/7.jpg",
+     "w": 400,
+     "h": 272
     }
    ]
   },
@@ -327,7 +462,7 @@
    "tier": "Selected",
    "title": "The Hat Dilemma",
    "headline": null,
-   "description": "Most men's hats are a cap or a beanie. I wanted headwear with more character that still sits within menswear, so every design takes its form from one animal: the viper, the sparrow and the crow, the slug. A nine-point brief kept them wearable, from covering at least a quarter of the head to coming in two sizes and doing one job beyond looking good. A target audience and a persona anchored the work, which runs from sketches to technical drawings and renders.",
+   "description": "Most men's hats are a cap or a beanie. I wanted headwear with more character that still reads as menswear, so each design comes from one animal: a viper, a sparrow and a crow, a slug. The brief had nine rules to keep them wearable, like covering at least a quarter of the head, coming in two sizes and doing one job besides looking good. I worked from a target audience and a persona, through sketches and technical drawings, to renders.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Academic",
@@ -341,18 +476,33 @@
     },
     {
      "src": "public/projects/the-hat-dilemma/2.jpg",
-     "w": 340,
-     "h": 238
+     "w": 400,
+     "h": 280
     },
     {
      "src": "public/projects/the-hat-dilemma/3.jpg",
-     "w": 340,
-     "h": 301
+     "w": 400,
+     "h": 355
     },
     {
      "src": "public/projects/the-hat-dilemma/4.jpg",
-     "w": 340,
-     "h": 301
+     "w": 400,
+     "h": 355
+    },
+    {
+     "src": "public/projects/the-hat-dilemma/5.jpg",
+     "w": 400,
+     "h": 279
+    },
+    {
+     "src": "public/projects/the-hat-dilemma/6.jpg",
+     "w": 400,
+     "h": 355
+    },
+    {
+     "src": "public/projects/the-hat-dilemma/7.jpg",
+     "w": 400,
+     "h": 280
     }
    ]
   },
@@ -362,7 +512,7 @@
    "tier": "Selected",
    "title": "IKEA Frystä",
    "headline": null,
-   "description": "A product pitch for FRYSTÄ, a line of frozen meals from IKEA. The brand already stands for efficiency and low prices, so meals that are simple, tasty and easy fit it, especially if they bring IKEA into city centres. The pitch covers the central idea, a map of where else IKEA could go, a positioning statement and a brand essence wheel.",
+   "description": "A pitch for FRYSTÄ, frozen meals from IKEA. IKEA already means cheap and efficient, and meals that are simple, tasty and easy fit that, especially if they bring IKEA into city centres. The deck has the central idea, a map of where else IKEA could go, a positioning statement and a brand essence wheel.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Academic",
@@ -372,17 +522,22 @@
     {
      "src": "public/projects/ikea-frysta/1.jpg",
      "w": 840,
-     "h": 718
+     "h": 486
     },
     {
      "src": "public/projects/ikea-frysta/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 304
     },
     {
      "src": "public/projects/ikea-frysta/3.jpg",
-     "w": 340,
-     "h": 162
+     "w": 400,
+     "h": 271
+    },
+    {
+     "src": "public/projects/ikea-frysta/4.jpg",
+     "w": 400,
+     "h": 258
     }
    ]
   },
@@ -392,7 +547,7 @@
    "tier": "Selected",
    "title": "NYCIC Annual Sponsorship Proposal",
    "headline": null,
-   "description": "The NYC Innovation Collective brings together the people who run the city's accelerators and tech companies. While I was an Associate there, I put together its annual sponsorship proposal: the events on offer and what partners get from backing them.",
+   "description": "The NYC Innovation Collective brings together the people who run New York's accelerators and tech companies. When I was an Associate there I put together its annual sponsorship proposal: which events partners could back, and what they'd get in return.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -402,132 +557,47 @@
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 466
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 257
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/3.jpg",
-     "w": 340,
-     "h": 226
-    }
-   ]
-  },
-  {
-   "slug": "zayd-turk-at-jams",
-   "rank": 14,
-   "tier": "Selected",
-   "title": "Zayd Turk at Jams",
-   "headline": null,
-   "description": "Fifteen flyers for Zayd Turk's vinyl-only sets at Jams, 1414 6th Ave, through 2024. They grew into three families: a typographic card with a found object on top (a vintage car, a kiwi, a fig) recoloured each week, an engraved cowboy on flat colour, and a photographic series with a white brush mark over crowds, sea and street.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Professional",
-   "year": "2024",
-   "yearSort": 2024,
-   "prints": [
-    {
-     "src": "public/projects/zayd-turk-at-jams/1.jpg",
-     "w": 840,
-     "h": 1050
+     "w": 400,
+     "h": 294
     },
     {
-     "src": "public/projects/zayd-turk-at-jams/2.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/nycic-annual-sponsorship-proposal/4.jpg",
+     "w": 400,
+     "h": 284
     },
     {
-     "src": "public/projects/zayd-turk-at-jams/3.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/nycic-annual-sponsorship-proposal/5.jpg",
+     "w": 400,
+     "h": 280
     },
     {
-     "src": "public/projects/zayd-turk-at-jams/4.jpg",
-     "w": 340,
-     "h": 425
-    }
-   ]
-  },
-  {
-   "slug": "rumble-in-the-jungle",
-   "rank": 15,
-   "tier": "Selected",
-   "title": "Rumble in the Jungle",
-   "headline": null,
-   "description": "A party with a boxing theme and a strict rule: no phones. I designed two posters, a child in boxing gloves and a stencilled title under a palm tree, and built a 3D animation of the title rising like a sun over water. The event had its own page in the app.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/rumble-in-the-jungle/1.jpg",
-     "w": 840,
-     "h": 1050
+     "src": "public/projects/nycic-annual-sponsorship-proposal/6.jpg",
+     "w": 400,
+     "h": 251
     },
     {
-     "src": "public/projects/rumble-in-the-jungle/2.jpg",
-     "w": 340,
-     "h": 425
-    },
-    {
-     "src": "public/projects/rumble-in-the-jungle/3.jpg",
-     "w": 340,
-     "h": 191
-    },
-    {
-     "src": "public/projects/rumble-in-the-jungle/4.jpg",
-     "w": 340,
-     "h": 424
-    }
-   ]
-  },
-  {
-   "slug": "the-palace",
-   "rank": 16,
-   "tier": "Selected",
-   "title": "The Palace",
-   "headline": null,
-   "description": "Sixteen flyers for nights at The Palace, at 285 West Broadway and 380 Canal St, for Zack Bia, Jonas Blue, Yung Bae, Young Paris, Michael Simpson and others. Each one gets its own look: a blue duotone, a red collage, an engraved card, a 90s sitcom still, a TV set full of fish.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/the-palace/1.jpg",
-     "w": 840,
-     "h": 1050
-    },
-    {
-     "src": "public/projects/the-palace/2.jpg",
-     "w": 340,
-     "h": 425
-    },
-    {
-     "src": "public/projects/the-palace/3.jpg",
-     "w": 340,
-     "h": 425
-    },
-    {
-     "src": "public/projects/the-palace/4.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/nycic-annual-sponsorship-proposal/7.jpg",
+     "w": 400,
+     "h": 295
     }
    ]
   },
   {
    "slug": "the-toilet-project",
-   "rank": 17,
+   "rank": 14,
    "tier": "Selected",
    "title": "The Toilet Project",
    "headline": null,
-   "description": "Why do toilets all look the same? I started from the most ordinary version, the exposed-trapway toilet, and used Raymond Loewy's MAYA principle (most advanced, yet acceptable) to decide how far it could move. The form borrows long continuous curves and horizontal lines from car design, drops anything that doesn't earn its place, and pairs glass, concrete and steel in toned-down colours. Research into the object's history and into anthropometry came first.",
+   "description": "Why do toilets all look the same? I started from the most ordinary one, the exposed-trapway toilet, and used Raymond Loewy's MAYA rule (most advanced, yet acceptable) to judge how far it could change. The form takes long curves and horizontal lines from car design, drops anything that isn't needed, and mixes glass, concrete and steel in muted colours. I researched the object's history and anthropometry before drawing anything.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Academic",
@@ -541,28 +611,43 @@
     },
     {
      "src": "public/projects/the-toilet-project/2.jpg",
-     "w": 340,
-     "h": 192
+     "w": 400,
+     "h": 226
     },
     {
      "src": "public/projects/the-toilet-project/3.jpg",
-     "w": 340,
-     "h": 198
+     "w": 400,
+     "h": 233
     },
     {
      "src": "public/projects/the-toilet-project/4.jpg",
-     "w": 340,
-     "h": 198
+     "w": 400,
+     "h": 233
+    },
+    {
+     "src": "public/projects/the-toilet-project/5.jpg",
+     "w": 400,
+     "h": 307
+    },
+    {
+     "src": "public/projects/the-toilet-project/6.jpg",
+     "w": 400,
+     "h": 307
+    },
+    {
+     "src": "public/projects/the-toilet-project/7.jpg",
+     "w": 400,
+     "h": 320
     }
    ]
   },
   {
    "slug": "nike-financial-analysis",
-   "rank": 18,
+   "rank": 15,
    "tier": "Selected",
    "title": "Nike Financial Analysis",
    "headline": null,
-   "description": "A financial analysis of Nike: its main shareholders, stock history, bonds and ratios, and what they say about its strategy. It closes with recommendations on where to put resources, including a move further into premium sportswear.",
+   "description": "A financial analysis of Nike: who owns it, how the stock has done, its bonds and ratios, and what all that says about its strategy. I finished with where I'd put the money, including a bigger push into premium sportswear.",
    "contribution": null,
    "discipline": "Data & analysis",
    "context": "Academic",
@@ -572,27 +657,47 @@
     {
      "src": "public/projects/nike-financial-analysis/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 577
     },
     {
      "src": "public/projects/nike-financial-analysis/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 210
     },
     {
      "src": "public/projects/nike-financial-analysis/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 309
+    },
+    {
+     "src": "public/projects/nike-financial-analysis/4.jpg",
+     "w": 400,
+     "h": 229
+    },
+    {
+     "src": "public/projects/nike-financial-analysis/5.jpg",
+     "w": 400,
+     "h": 277
+    },
+    {
+     "src": "public/projects/nike-financial-analysis/6.jpg",
+     "w": 400,
+     "h": 252
+    },
+    {
+     "src": "public/projects/nike-financial-analysis/7.jpg",
+     "w": 400,
+     "h": 294
     }
    ]
   },
   {
    "slug": "lvmh-value-chain",
-   "rank": 19,
+   "rank": 16,
    "tier": "Selected",
    "title": "LVMH Value Chain",
    "headline": null,
-   "description": "An analysis of LVMH's value chain and what a move to a regenerative business model would demand of it. I looked at the supply chain, the stakeholders and the environmental impact, and used a systems map and a causal diagram to work out how the group could balance its commercial goals with its sustainability targets.",
+   "description": "What would LVMH have to change to run a regenerative business? I mapped its value chain, from the supply chain to stakeholders and environmental impact, then used a systems map and a causal diagram to see how the group could balance profit against its sustainability targets.",
    "contribution": null,
    "discipline": "Data & analysis",
    "context": "Academic",
@@ -602,27 +707,32 @@
     {
      "src": "public/projects/lvmh-value-chain/1.jpg",
      "w": 840,
-     "h": 593
+     "h": 520
     },
     {
      "src": "public/projects/lvmh-value-chain/2.jpg",
-     "w": 340,
+     "w": 400,
      "h": 226
     },
     {
      "src": "public/projects/lvmh-value-chain/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 231
+    },
+    {
+     "src": "public/projects/lvmh-value-chain/4.jpg",
+     "w": 400,
+     "h": 208
     }
    ]
   },
   {
    "slug": "titanic",
-   "rank": 20,
+   "rank": 17,
    "tier": "Selected",
    "title": "Titanic",
    "headline": null,
-   "description": "A visualisation of who survived the Titanic. Breaking the passengers down by age, sex and class shows how much wealth and privilege decided who lived.",
+   "description": "Who survived the Titanic, broken down by age, sex and class. Put side by side, the charts show how much money decided who lived.",
    "contribution": null,
    "discipline": "Data & analysis",
    "context": "Academic",
@@ -632,87 +742,27 @@
     {
      "src": "public/projects/titanic/1.jpg",
      "w": 840,
-     "h": 409
+     "h": 1240
     },
     {
      "src": "public/projects/titanic/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 590
     },
     {
      "src": "public/projects/titanic/3.jpg",
-     "w": 340,
-     "h": 226
-    }
-   ]
-  },
-  {
-   "slug": "driven",
-   "rank": 21,
-   "tier": "Selected",
-   "title": "Driven",
-   "headline": null,
-   "description": "Driven is a docuseries about the obstacles women face in motorsport, told through candid interviews and real race footage, produced by Current. The deck introduces the drivers, the team and the production.",
-   "contribution": null,
-   "discipline": "Strategy",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/driven/1.jpg",
-     "w": 840,
-     "h": 953
-    },
-    {
-     "src": "public/projects/driven/2.jpg",
-     "w": 340,
-     "h": 226
-    },
-    {
-     "src": "public/projects/driven/3.jpg",
-     "w": 340,
-     "h": 226
-    }
-   ]
-  },
-  {
-   "slug": "lvmh-and-kering-style-guide",
-   "rank": 22,
-   "tier": "Selected",
-   "title": "LVMH and Kering Style Guide",
-   "headline": null,
-   "description": "A style guide for LVMH and Kering, covering colour, type and layout templates so their communications stay consistent. It keeps the elegance both groups are known for and allows a more playful touch in the graphics and typography.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Academic",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/lvmh-and-kering-style-guide/1.jpg",
-     "w": 840,
-     "h": 710
-    },
-    {
-     "src": "public/projects/lvmh-and-kering-style-guide/2.jpg",
-     "w": 340,
-     "h": 226
-    },
-    {
-     "src": "public/projects/lvmh-and-kering-style-guide/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 590
     }
    ]
   },
   {
    "slug": "chilewich-x-hockney",
-   "rank": 23,
+   "rank": 18,
    "tier": "Selected",
    "title": "Chilewich x Hockney",
    "headline": null,
-   "description": "A collaboration I proposed between Chilewich and David Hockney. Younger, design-minded buyers found Chilewich's classic patterns a little remote from the art they care about, so these placemats carry Hockney's paintings. Against mass-produced placemats like IKEA's, they keep what Chilewich is known for, wiping clean and lasting, and give the table a conversation piece.",
+   "description": "A collaboration I pitched between Chilewich and David Hockney. Chilewich's classic patterns felt far from the art younger, design-minded buyers care about, so these placemats carry Hockney's paintings instead. They still wipe clean and last like any Chilewich, which mass-produced ones from places like IKEA don't, and they give the table something to talk about.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Academic",
@@ -726,28 +776,28 @@
     },
     {
      "src": "public/projects/chilewich-x-hockney/2.jpg",
-     "w": 340,
-     "h": 171
+     "w": 400,
+     "h": 202
     },
     {
      "src": "public/projects/chilewich-x-hockney/3.jpg",
-     "w": 340,
-     "h": 171
+     "w": 400,
+     "h": 202
     },
     {
      "src": "public/projects/chilewich-x-hockney/4.jpg",
-     "w": 340,
-     "h": 116
+     "w": 400,
+     "h": 137
     }
    ]
   },
   {
    "slug": "le-cocon",
-   "rank": 24,
+   "rank": 19,
    "tier": "Selected",
    "title": "Le Cocon",
    "headline": null,
-   "description": "A day bed you lie inside rather than on. I drew the shell as one long, enclosing curve and carried it on a light metal frame. The project runs from loose sketches of the form to a dimensioned drawing and a set of renders.",
+   "description": "A day bed you lie inside instead of on. I drew the shell as one long curve that wraps around you, set it on a light metal frame, and took it from sketches to a dimensioned drawing and renders.",
    "contribution": null,
    "discipline": "Product design",
    "context": "Independent",
@@ -761,28 +811,73 @@
     },
     {
      "src": "public/projects/le-cocon/2.jpg",
-     "w": 340,
-     "h": 184
+     "w": 400,
+     "h": 217
     },
     {
      "src": "public/projects/le-cocon/3.jpg",
-     "w": 340,
-     "h": 262
+     "w": 400,
+     "h": 309
     },
     {
      "src": "public/projects/le-cocon/4.jpg",
-     "w": 340,
-     "h": 245
+     "w": 400,
+     "h": 288
+    },
+    {
+     "src": "public/projects/le-cocon/5.jpg",
+     "w": 400,
+     "h": 372
+    }
+   ]
+  },
+  {
+   "slug": "driven",
+   "rank": 20,
+   "tier": "Selected",
+   "title": "Driven",
+   "headline": null,
+   "description": "Driven is a docuseries about what women are up against in motorsport, told through candid interviews and real race footage, and produced by Current. The deck introduces the drivers, the team and the production.",
+   "contribution": null,
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/driven/1.jpg",
+     "w": 840,
+     "h": 641
+    },
+    {
+     "src": "public/projects/driven/2.jpg",
+     "w": 400,
+     "h": 221
+    },
+    {
+     "src": "public/projects/driven/3.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/driven/4.jpg",
+     "w": 400,
+     "h": 266
+    },
+    {
+     "src": "public/projects/driven/5.jpg",
+     "w": 400,
+     "h": 199
     }
    ]
   },
   {
    "slug": "rl-prestige-by-ralph-lauren",
-   "rank": 25,
+   "rank": 21,
    "tier": "Selected",
    "title": "RL Prestige by Ralph Lauren",
    "headline": null,
-   "description": "RL Prestige imagines a luxury line from Ralph Lauren rooted in polo culture, with aged Scotch whisky at its centre. I developed the concept and its look, keeping the brand's timeless style.",
+   "description": "What if Ralph Lauren had a luxury line built around polo culture, with aged Scotch at the centre? I worked out the concept and how it would look, and kept it recognisably Ralph Lauren.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Independent",
@@ -792,27 +887,47 @@
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 614
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 314
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 219
+    },
+    {
+     "src": "public/projects/rl-prestige-by-ralph-lauren/4.jpg",
+     "w": 400,
+     "h": 255
+    },
+    {
+     "src": "public/projects/rl-prestige-by-ralph-lauren/5.jpg",
+     "w": 400,
+     "h": 200
+    },
+    {
+     "src": "public/projects/rl-prestige-by-ralph-lauren/6.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/rl-prestige-by-ralph-lauren/7.jpg",
+     "w": 400,
+     "h": 311
     }
    ]
   },
   {
    "slug": "cozy",
-   "rank": 26,
+   "rank": 22,
    "tier": "Selected",
    "title": "Cozy",
    "headline": null,
-   "description": "Cozy mixes streetwear, home goods and sportswear with a strong pull of nostalgia. I built the identity around trust, with influencer partnerships and community work as the route into larger retailers such as Urban Outfitters.",
+   "description": "Cozy mixes streetwear, home goods and sportswear, with a lot of nostalgia in it. I built the identity around trust, with influencer partnerships and community work as the way into bigger shops like Urban Outfitters.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Independent",
@@ -822,27 +937,37 @@
     {
      "src": "public/projects/cozy/1.jpg",
      "w": 840,
-     "h": 703
+     "h": 458
     },
     {
      "src": "public/projects/cozy/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 272
     },
     {
      "src": "public/projects/cozy/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 220
+    },
+    {
+     "src": "public/projects/cozy/4.jpg",
+     "w": 400,
+     "h": 191
+    },
+    {
+     "src": "public/projects/cozy/5.jpg",
+     "w": 400,
+     "h": 191
     }
    ]
   },
   {
    "slug": "clay",
-   "rank": 27,
+   "rank": 23,
    "tier": "Selected",
    "title": "Clay",
    "headline": null,
-   "description": "Clay needed more presence online. I proposed two video projects: one to show what the company is like from the inside, and one to reach new audiences with content built to spread.",
+   "description": "Clay wanted more of a presence online. I proposed two video projects, one showing what the company is like on the inside and one made to travel and reach new people.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -852,27 +977,42 @@
     {
      "src": "public/projects/clay/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 464
     },
     {
      "src": "public/projects/clay/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 314
     },
     {
      "src": "public/projects/clay/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 223
+    },
+    {
+     "src": "public/projects/clay/4.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/clay/5.jpg",
+     "w": 400,
+     "h": 251
+    },
+    {
+     "src": "public/projects/clay/6.jpg",
+     "w": 400,
+     "h": 294
     }
    ]
   },
   {
    "slug": "scribe",
-   "rank": 28,
+   "rank": 24,
    "tier": "Selected",
    "title": "Scribe",
    "headline": null,
-   "description": "A content proposal for Scribe covering the whole process, from the first consultation through filming (full-body or at the mic, on professional kit) to adjustments month by month. I set out the equipment, the stages and the team.",
+   "description": "A content proposal for Scribe that runs from the first consultation to filming (full body or at the mic, on proper kit) and the monthly tweaks after. It sets out the equipment, the process and the team.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -882,27 +1022,37 @@
     {
      "src": "public/projects/scribe/1.jpg",
      "w": 840,
-     "h": 940
+     "h": 514
     },
     {
      "src": "public/projects/scribe/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 240
     },
     {
      "src": "public/projects/scribe/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 244
+    },
+    {
+     "src": "public/projects/scribe/4.jpg",
+     "w": 400,
+     "h": 196
+    },
+    {
+     "src": "public/projects/scribe/5.jpg",
+     "w": 400,
+     "h": 248
     }
    ]
   },
   {
    "slug": "the-5th-element-miami",
-   "rank": 29,
+   "rank": 25,
    "tier": "Selected",
    "title": "The 5th Element Miami",
    "headline": null,
-   "description": "A night in Miami for Social Haus built around The Fifth Element, bringing a group of artists, influencers and entrepreneurs into the film's world. The deck covers the concept, the music, art and performance, and how the room would feel.",
+   "description": "A night in Miami for Social Haus based on The Fifth Element, putting artists, influencers and entrepreneurs inside the film's world. The deck covers the concept, the music, art and performance, and how the room should feel.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -912,27 +1062,92 @@
     {
      "src": "public/projects/the-5th-element-miami/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 635
     },
     {
      "src": "public/projects/the-5th-element-miami/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 269
     },
     {
      "src": "public/projects/the-5th-element-miami/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 230
+    },
+    {
+     "src": "public/projects/the-5th-element-miami/4.jpg",
+     "w": 400,
+     "h": 197
+    },
+    {
+     "src": "public/projects/the-5th-element-miami/5.jpg",
+     "w": 400,
+     "h": 204
+    },
+    {
+     "src": "public/projects/the-5th-element-miami/6.jpg",
+     "w": 400,
+     "h": 270
     }
    ]
   },
   {
-   "slug": "eyes-wide-shut-masquerade",
-   "rank": 30,
+   "slug": "zayd-turk-at-jams",
+   "rank": 26,
    "tier": "Selected",
-   "title": "Eyes Wide Shut Masquerade",
+   "title": "Zayd Turk at Jams",
    "headline": null,
-   "description": "A masquerade for Social Haus inspired by Kubrick's Eyes Wide Shut, with NEFT vodka as partner. The invitation is torn kraft paper sealed with red wax, and the cocktails are named after commedia dell'arte masks. A short 3D animation of a floating eye shares the night's name.",
+   "description": "Fifteen flyers for Zayd Turk's vinyl nights at Jams, 1414 6th Ave, all through 2024. They settled into three looks: a type card with a found object on top (a vintage car, a kiwi, a fig) that changes colour every week, an engraved cowboy on flat colour, and a photo series with a white brush mark over crowds, sea and streets.",
+   "contribution": null,
+   "discipline": "Graphic design",
+   "context": "Professional",
+   "year": "2024",
+   "yearSort": 2024,
+   "prints": [
+    {
+     "src": "public/projects/zayd-turk-at-jams/1.jpg",
+     "w": 840,
+     "h": 1050
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/2.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/3.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/4.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/5.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/6.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/zayd-turk-at-jams/7.jpg",
+     "w": 400,
+     "h": 500
+    }
+   ]
+  },
+  {
+   "slug": "rumble-in-the-jungle",
+   "rank": 27,
+   "tier": "Selected",
+   "title": "Rumble in the Jungle",
+   "headline": null,
+   "description": "A boxing party with one rule: no phones. I made two posters, a kid in boxing gloves and a stencilled title under a palm tree, and a 3D animation of the title coming up like a sun over water. The night had its own page in the Vybe app too.",
    "contribution": null,
    "discipline": "Graphic design",
    "context": "Professional",
@@ -940,29 +1155,124 @@
    "yearSort": null,
    "prints": [
     {
-     "src": "public/projects/eyes-wide-shut-masquerade/1.jpg",
+     "src": "public/projects/rumble-in-the-jungle/1.jpg",
      "w": 840,
-     "h": 840
+     "h": 1050
     },
     {
-     "src": "public/projects/eyes-wide-shut-masquerade/2.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/rumble-in-the-jungle/2.jpg",
+     "w": 400,
+     "h": 500
     },
     {
-     "src": "public/projects/eyes-wide-shut-masquerade/3.jpg",
-     "w": 340,
-     "h": 191
+     "src": "public/projects/rumble-in-the-jungle/3.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/rumble-in-the-jungle/4.jpg",
+     "w": 400,
+     "h": 869
+    }
+   ]
+  },
+  {
+   "slug": "the-palace",
+   "rank": 28,
+   "tier": "Selected",
+   "title": "The Palace",
+   "headline": null,
+   "description": "Sixteen flyers for The Palace, on West Broadway and on Canal St, for Zack Bia, Jonas Blue, Yung Bae, Young Paris, Michael Simpson and others. No two look alike: a blue duotone, a red collage, an engraved card, a 90s sitcom still, a TV set full of fish.",
+   "contribution": null,
+   "discipline": "Graphic design",
+   "context": "Professional",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/the-palace/1.jpg",
+     "w": 840,
+     "h": 1050
+    },
+    {
+     "src": "public/projects/the-palace/2.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/the-palace/3.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/the-palace/4.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/the-palace/5.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/the-palace/6.jpg",
+     "w": 400,
+     "h": 500
+    },
+    {
+     "src": "public/projects/the-palace/7.jpg",
+     "w": 400,
+     "h": 500
+    }
+   ]
+  },
+  {
+   "slug": "lvmh-and-kering-style-guide",
+   "rank": 29,
+   "tier": "Selected",
+   "title": "LVMH and Kering Style Guide",
+   "headline": null,
+   "description": "A style guide for LVMH and Kering: colours, type and layout templates so everything they put out looks consistent. It keeps the elegance both are known for and lets the graphics and type play a little more.",
+   "contribution": null,
+   "discipline": "Graphic design",
+   "context": "Academic",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/1.jpg",
+     "w": 840,
+     "h": 460
+    },
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/2.jpg",
+     "w": 400,
+     "h": 279
+    },
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/3.jpg",
+     "w": 400,
+     "h": 234
+    },
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/4.jpg",
+     "w": 400,
+     "h": 237
+    },
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/5.jpg",
+     "w": 400,
+     "h": 199
     }
    ]
   },
   {
    "slug": "garrett",
-   "rank": 31,
+   "rank": 30,
    "tier": "Selected",
    "title": "Garrett",
    "headline": null,
-   "description": "A media kit for Garrett, a New York creator with more than 365,000 followers who has worked with MrBeast and Cam Newton. It sets out his audience, his past collaborations and what a brand gets from working with him.",
+   "description": "A media kit for Garrett, a New York creator with more than 365,000 followers who has worked with MrBeast and Cam Newton. It shows his audience, the collaborations he's done and what a brand gets from working with him.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -972,27 +1282,42 @@
     {
      "src": "public/projects/garrett/1.jpg",
      "w": 840,
-     "h": 704
+     "h": 461
     },
     {
      "src": "public/projects/garrett/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 216
     },
     {
      "src": "public/projects/garrett/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 249
+    },
+    {
+     "src": "public/projects/garrett/4.jpg",
+     "w": 400,
+     "h": 218
+    },
+    {
+     "src": "public/projects/garrett/5.jpg",
+     "w": 400,
+     "h": 191
+    },
+    {
+     "src": "public/projects/garrett/6.jpg",
+     "w": 400,
+     "h": 191
     }
    ]
   },
   {
    "slug": "ben-sharf",
-   "rank": 32,
+   "rank": 31,
    "tier": "Selected",
    "title": "Ben Sharf",
    "headline": null,
-   "description": "A media kit for Ben Sharf, a podcaster and creator who works with established influencers and brands. It covers his entrepreneurial podcasts and the user-generated content he makes for niche audiences.",
+   "description": "A media kit for Ben Sharf, a podcaster and creator who works with bigger influencers and brands. It covers his entrepreneur podcasts and the user-generated content he makes for niche audiences.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -1002,27 +1327,42 @@
     {
      "src": "public/projects/ben-sharf/1.jpg",
      "w": 840,
-     "h": 705
+     "h": 502
     },
     {
      "src": "public/projects/ben-sharf/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 206
     },
     {
      "src": "public/projects/ben-sharf/3.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 240
+    },
+    {
+     "src": "public/projects/ben-sharf/4.jpg",
+     "w": 400,
+     "h": 217
+    },
+    {
+     "src": "public/projects/ben-sharf/5.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/ben-sharf/6.jpg",
+     "w": 400,
+     "h": 183
     }
    ]
   },
   {
    "slug": "new-york-guys",
-   "rank": 33,
+   "rank": 32,
    "tier": "Selected",
    "title": "New York Guys",
    "headline": null,
-   "description": "A media kit for New York Guys: Garrett, Brendon, Bill and Phillip, four creators who talk about life in the city with a mix of comedy, satire and more serious conversation. I laid out who each of them is and what the group offers brands.",
+   "description": "A media kit for New York Guys, four creators (Garrett, Brendon, Bill and Phillip) who talk about life in the city, some of it comedy, some satire, some serious. I introduced each of them and set out what the group offers brands.",
    "contribution": null,
    "discipline": "Strategy",
    "context": "Professional",
@@ -1032,87 +1372,32 @@
     {
      "src": "public/projects/new-york-guys/1.jpg",
      "w": 840,
-     "h": 709
+     "h": 462
     },
     {
      "src": "public/projects/new-york-guys/2.jpg",
-     "w": 340,
-     "h": 226
+     "w": 400,
+     "h": 216
     },
     {
      "src": "public/projects/new-york-guys/3.jpg",
-     "w": 340,
-     "h": 226
-    }
-   ]
-  },
-  {
-   "slug": "kind-regards",
-   "rank": 34,
-   "tier": "Selected",
-   "title": "Kind Regards",
-   "headline": null,
-   "description": "Kind Regards was a late night at 152 Ludlow St, usually a Tuesday, from 10pm to 4am. Across six flyers the script title stays and the image changes: a screaming mask, a chess king, a pair of lovers, figures in the street, always in one colour with an engraved feel. UVA was on the bill for at least two of them.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/kind-regards/1.jpg",
-     "w": 840,
-     "h": 1050
+     "w": 400,
+     "h": 221
     },
     {
-     "src": "public/projects/kind-regards/2.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/new-york-guys/4.jpg",
+     "w": 400,
+     "h": 277
     },
     {
-     "src": "public/projects/kind-regards/3.jpg",
-     "w": 340,
-     "h": 386
+     "src": "public/projects/new-york-guys/5.jpg",
+     "w": 400,
+     "h": 221
     },
     {
-     "src": "public/projects/kind-regards/4.jpg",
-     "w": 340,
-     "h": 425
-    }
-   ]
-  },
-  {
-   "slug": "catalyst-01",
-   "rank": 35,
-   "tier": "Selected",
-   "title": "Catalyst 01",
-   "headline": null,
-   "description": "Catalyst 01 was a Wednesday night at 161 W 23rd St, presented by Dylan Meyerson and Gabe Trokel. The flyer comes in three colourways of the same layout, built on paired cut-out heads, alongside two photographic versions for other dates.",
-   "contribution": null,
-   "discipline": "Graphic design",
-   "context": "Professional",
-   "year": "2022",
-   "yearSort": 2022,
-   "prints": [
-    {
-     "src": "public/projects/catalyst-01/1.jpg",
-     "w": 840,
-     "h": 1050
-    },
-    {
-     "src": "public/projects/catalyst-01/2.jpg",
-     "w": 340,
-     "h": 425
-    },
-    {
-     "src": "public/projects/catalyst-01/3.jpg",
-     "w": 340,
-     "h": 425
-    },
-    {
-     "src": "public/projects/catalyst-01/4.jpg",
-     "w": 340,
-     "h": 425
+     "src": "public/projects/new-york-guys/6.jpg",
+     "w": 400,
+     "h": 167
     }
    ]
   }

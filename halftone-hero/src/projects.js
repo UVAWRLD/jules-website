@@ -45,14 +45,23 @@ function arrange(p) {
   const small = (n) => { const [w, h] = size(pr[n], MAIN_AREA * fit * fit * (0.2 + R() * 0.14)); return [Math.min(w, mw * 0.7), Math.min(h, mh * 0.8)]; };
   const turn = (sign) => sign * (2.5 + R() * 3.5);
   // where each other print goes, in order: behind, over the outer top corner; in front, over the
-  // outer bottom corner; in front, over the inner bottom corner
+  // outer bottom corner; in front, over the inner bottom corner; then, when there are more, further
+  // out: behind, peeking over the inner top; in front, well out past the outer edge; behind, above
+  // the middle; in front, below the middle
   const spots = [
     (w, h) => ({ x: -w * (0.42 + R() * 0.18), y: -h * (0.08 + R() * 0.22), z: 1, r: turn(-1) }),
-    (w, h) => ({ x: -w * (0.36 + R() * 0.18), y: mh - h * (0.62 + R() * 0.22), z: 3, r: turn(1) }),
-    (w, h) => ({ x: mw - w * (0.5 + R() * 0.18), y: mh - h * (0.5 + R() * 0.25), z: 4, r: turn(-1) }),
+    (w, h) => ({ x: -w * (0.36 + R() * 0.18), y: mh - h * (0.62 + R() * 0.22), z: 5, r: turn(1) }),
+    (w, h) => ({ x: mw - w * (0.5 + R() * 0.18), y: mh - h * (0.5 + R() * 0.25), z: 6, r: turn(-1) }),
+    (w, h) => ({ x: mw - w * (0.62 + R() * 0.2), y: -h * (0.3 + R() * 0.2), z: 0, r: turn(1) }),
+    (w, h) => ({ x: -w * (0.78 + R() * 0.15), y: mh * (0.3 + R() * 0.2) - h / 2, z: 4, r: turn(-1), far: 1 }),
+    (w, h) => ({ x: mw * (0.3 + R() * 0.2) - w / 2, y: -h * (0.55 + R() * 0.15), z: 0, r: turn(-1), far: 1 }),
+    (w, h) => ({ x: mw * (0.45 + R() * 0.2) - w / 2, y: mh - h * (0.3 + R() * 0.15), z: 7, r: turn(1), far: 1 }),
   ];
-  const order = pr.length === 2 ? [1] : [0, 1, 2];
-  pr.slice(1, 4).forEach((_, n) => { const [w, h] = small(n + 1); out.push({ i: n + 1, w, h, ...spots[order[n] ?? n](w, h) }); });
+  const order = pr.length === 2 ? [1] : [0, 1, 2, 3, 4, 5, 6];
+  pr.slice(1, 7).forEach((_, n) => {
+    const [w, h] = small(n + 1), f = n >= 3 ? 0.8 : 1;              // the further ones a little smaller
+    out.push({ i: n + 1, w: w * f, h: h * f, ...spots[order[n] ?? n](w * f, h * f) });
+  });
   const pad = 8;                                         // room for the turns and shadows
   const x0 = Math.min(...out.map(o => o.x)) - pad, y0 = Math.min(...out.map(o => o.y)) - pad;
   const x1 = Math.max(...out.map(o => o.x + o.w)) + pad, y1 = Math.max(...out.map(o => o.y + o.h)) + pad;
@@ -115,7 +124,7 @@ function place(c, g, listW) {
     const w = o.w * k, h = o.h * k, x = flip ? W - (o.x * k) - w : o.x * k, y = o.y * k;
     const mx = x + w / 2 - cx, my = y + h / 2 - cy, d = Math.hypot(mx, my) || 1;
     el.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;z-index:${o.z};`
-      + `--r:${(flip ? -o.r : o.r).toFixed(2)}deg;--dx:${(mx / d * 7).toFixed(1)}px;--dy:${(my / d * 7).toFixed(1)}px`;
+      + `--r:${(flip ? -o.r : o.r).toFixed(2)}deg;--dx:${(mx / d * (o.far ? 16 : 9)).toFixed(1)}px;--dy:${(my / d * (o.far ? 16 : 9)).toFixed(1)}px`;
   }
 }
 
@@ -163,6 +172,15 @@ export async function createProjectControls() {
     reflip();
     count.textContent = String(shown).padStart(2, "0") + (shown === 1 ? " project" : " projects");
   }
+
+  // ---- a click on a card's pictures fans them out; again, or anywhere else, brings them back ----
+  list.addEventListener("click", e => {
+    const box = e.target.closest(".pj-imgs"); if (!box) return;
+    const c = box.closest(".pj-card"), on = !c.classList.contains("fan");
+    cards.forEach(x => x.classList.remove("fan"));
+    c.classList.toggle("fan", on);
+  });
+  addEventListener("pointerdown", e => { if (!e.target.closest(".pj-imgs")) cards.forEach(x => x.classList.remove("fan")); });
 
   // ---- search ----
   search.addEventListener("click", e => { if (e.target !== input) { search.classList.add("open"); input.focus(); } });
