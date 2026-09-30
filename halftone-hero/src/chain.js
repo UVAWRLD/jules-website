@@ -17,7 +17,7 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   document.body.append(handle);
 
   const N = 22;                           // rope points
-  const REST_MAX = fine ? 64 : 56;        // hanging length, px, when there is room for it
+  const REST_MAX = fine ? 64 : 84;        // hanging length, px, when there is room for it (longer by touch: 56 read as short on a phone)
   let REST = REST_MAX;
   const MAX_PULL = 30, PULL_AT = 19;      // extra chain a pull can draw out; where it clicks
   const PITCH = 4.4;                      // bead to bead, px: a ball chain, like a lamp pull

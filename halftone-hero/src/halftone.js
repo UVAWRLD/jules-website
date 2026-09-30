@@ -413,8 +413,10 @@ const CROW_MIN_CELL=0.8;
 // Only when the copy cannot climb any higher does the picture give way.
 // Every place is sized from the tallest aspect, so the three stay the same size through the
 // morph and none can reach the text.
-const GAP_ABOVE=20, GAP_BELOW=18, COPY_TOP_MIN=68;   // the logo ends at 51
-const PHONE_W=0.94, PHONE_W_MIN=0.80, PHONE_H=0.32, PHONE_TOP=0.20;
+const GAP_ABOVE=16, GAP_BELOW=16, COPY_TOP_MIN=68;   // the logo ends at 51
+// The picture was allowed to give way to 80% of the width, and on a tall copy in Safari it
+// did: the cities read as small. It now holds 92% at least, and the copy climbs sooner.
+const PHONE_W=0.96, PHONE_W_MIN=0.92, PHONE_H=0.34, PHONE_TOP=0.20;
 const TALLEST=Math.min(...PLACES.map(p=>p.aspect));
 let phoneW=0;
 function layoutPhone(){

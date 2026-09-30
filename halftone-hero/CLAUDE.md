@@ -347,7 +347,7 @@ way. An invisible button (`#chainPull`) follows the bead and takes the grab.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (56 on
-touch), shortened on a short screen so it always stops 30px above the copy. The mount sits
+touch, where 56 read as short), shortened on a short screen so it always stops 30px above the copy. The mount sits
 14px right of the caption, whose right edge is where it is pinned, so it does not move when
 the place names change width (it first hung on the left, and slid with every change); if the
 layout moves it, it glides there and the chain swings from the move rather than jumping.
@@ -590,7 +590,7 @@ Reference frame is 1440 x 1024.
 
 | | value |
 |---|---|
-| Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is 94% of the screen width** (capped at 32% of the visible height, for the tallest place), sits 18px off the bottom, and the copy is placed above it by `layoutPhone()`. See below |
+| Band | on a desktop, centred, width `min(0.96 × viewport height, viewport width)`: height-driven, so the picture keeps the same vertical composition at any window shape (was 14.31% to 85.26% of width), and never wider than the screen, so the landscape is never cropped. **Below 820px the picture is 96% of the screen width** (never less than 92% unless the copy has nowhere left to climb; capped at 34% of the visible height, for the tallest place), sits 16px off the bottom, and the copy is placed above it by `layoutPhone()`. See below |
 | Text column | centred on the window, 420px wide, 14 / 21px. On a tablet (`navigator.maxTouchPoints > 1`, or `?tablet`) `layoutTablet()` lifts it so the tallest place reaches at most 45% of the way up the copy (`TABLET_REACH`): a landscape iPad went from Paris covering 244px of the copy to 141, and moved the copy up 82px. Portrait iPads never overlap that much and are unchanged; so are laptops. The narrow breakpoint pins it left and must clear the centring transform, or the block slides off screen |
 | Logo | `public/img/logo.svg` (from `public/img/Logo 1 B/Vector.svg`), 27px at 4.86% / 5.18vh. Drawn as a CSS mask filled with `--ink`, so one file serves light and dark; the source art is off-white, which would be invisible on paper if used as an image |
 | Page | `#ECECEC` paper, near `#0A0A0A` ink. The site is light whatever the browser prefers: `prefers-color-scheme` is deliberately not followed; dark only happens with `data-theme="dark"`, which the pull chain sets and remembers |
@@ -650,11 +650,12 @@ Copy config emits that object as JSON.
   appearing under the sticky screen: there is nothing to scroll, so there is no end to
   scroll past. Scroll mode survives for tablets and for desktop scroll mode.
 - **On a phone the picture is the fixed element and the copy is the one that moves.**
-  `layoutPhone()` (run from `resize()`) gives the picture 94% of the screen width, capped at
-  32% of the visible height, 18px off the bottom, and puts the copy 20% of the way down the
-  visible height. If they would come within 20px, the picture gives way first, down to 80% of
-  the width (`PHONE_W_MIN`); only then does the copy climb, never above 68px (the logo ends at
-  51), and after that the picture shrinks again. The copy holding its share of the height is
+  `layoutPhone()` (run from `resize()`) gives the picture 96% of the screen width, capped at
+  34% of the visible height, 16px off the bottom, and puts the copy 20% of the way down the
+  visible height. If they would come within 16px, the picture gives way first, but only down to
+  92% of the width (`PHONE_W_MIN`; it was 80%, and on a tall copy in Safari the cities read as
+  small); then the copy climbs, never above 68px (the logo ends at 51), and after that the picture
+  shrinks again. On a 393 x 745 iPhone view the picture is 362px, where it was about 315. The copy holding its share of the height is
   what makes browsers look alike: when the copy climbed first, Comet's shorter screen squeezed
   it up toward the logo (17.7% down against Safari's 20%). All three
   places are sized from the tallest aspect (Paris), so they stay the same size through the
