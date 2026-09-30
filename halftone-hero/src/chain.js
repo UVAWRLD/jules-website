@@ -36,10 +36,16 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   function measure() {
     const r = caption.getBoundingClientRect();
     axT = r.right + 14; ayT = r.top + r.height / 2 - 1;
-    // never down into the copy: on a short screen the chain is shortened to stop above it
-    const c = document.getElementById("copy").getBoundingClientRect();
-    const over = axT > c.left - 20 && axT < c.right + 20;
-    REST = over ? clamp(c.top - ayT - 30, 30, REST_MAX) : REST_MAX;
+    // Never down into the copy: the chain stops 30px above the first line of text that actually
+    // reaches under it. Lines, not the copy's box: on a phone the box runs the full width, but
+    // its top lines (the name, the links) end well short of the chain, and judging by the box
+    // cut the chain to its 30px minimum whenever the copy sat high.
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById("copy"));
+    let under = Infinity;
+    for (const r of range.getClientRects())
+      if (r.width && r.right > axT - 12 && r.left < axT + 12) under = Math.min(under, r.top);
+    REST = clamp(under - ayT - 30 - MAX_PULL * 0.5, 30, REST_MAX);
     if (!ready) { ax = axT; ay = ayT; hang(); ready = true; }
   }
   function hang() {
@@ -50,6 +56,10 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   // the caption changes width with the place names, and moves when the layout does
   new ResizeObserver(measure).observe(caption);
   new ResizeObserver(measure).observe(document.getElementById("copy"));
+  // the copy is placed by the phone layout after load, and the browser's bars settle late
+  if (window.visualViewport) visualViewport.addEventListener("resize", measure);
+  [150, 600, 1500, 3000].forEach(t => setTimeout(measure, t));
+  if (document.fonts) document.fonts.ready.then(measure);
 
   // ---- interaction ----
   let dragging = false, px = 0, py = 0, downAt = null, fired = false;

@@ -347,7 +347,13 @@ way. An invisible button (`#chainPull`) follows the bead and takes the grab.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (84 on
-touch; 56 read as short on a phone), shortened on a short screen so it always stops 30px above the copy. The mount sits
+touch; 56 read as short on a phone), shortened only when a line of text actually reaches under
+it, so that even pulled halfway it stops 30px above that line. It measures the lines themselves
+(a Range over the copy), not the copy's box: on a phone the box runs the full width while its
+top lines, the name and the links, end well short of the chain, and judging by the box cut the
+chain to its 30px minimum whenever the copy sat high. It re-measures on resize, on the visual
+viewport's resize, when the fonts arrive and a few times in the first seconds, since the phone
+layout places the copy after load. The mount sits
 14px right of the caption, whose right edge is where it is pinned, so it does not move when
 the place names change width (it first hung on the left, and slid with every change); if the
 layout moves it, it glides there and the chain swings from the move rather than jumping.
