@@ -98,10 +98,13 @@
     border-radius:5px;background:var(--c);opacity:var(--o, 1);box-shadow:var(--layer-shadow);
     transform:rotate(var(--r, 0deg));transition:transform .55s cubic-bezier(.2,.7,.2,1)}
   .pj-layer.flat{box-shadow:none}
-  .pj-layer img{display:block;width:100%;height:100%;object-fit:cover}
+  .pj-layer.sheet{background:var(--pill)}
+  .pj-layer img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0}
   .pj-card:hover .pj-layer{transform:translate(var(--dx, 0px), var(--dy, 0px)) rotate(calc(var(--r, 0deg) * 1.35))}
 
   .pj-sum{flex:none;width:260px;display:flex;flex-direction:column;gap:18px}
+  .pj-name{margin:0 0 6px;font-family:"Inconsolata",ui-monospace,monospace;font-weight:700;font-size:8.5px;
+    text-transform:uppercase;color:var(--muted)}
   .pj-sum h3{margin:0 0 10px;font-weight:500;font-size:25px;line-height:1.05;color:var(--ink)}
   .pj-sum h3 + p{margin:0;font-size:12px;line-height:1.45;color:var(--body)}
   .pj-contrib{display:flex;flex-direction:column;gap:5px;margin:0}
@@ -133,6 +136,8 @@
     .pj-imgs{width:100%;max-width:574px}
     .pj-sum{width:auto;max-width:520px}
     .pj-card.alt{width:100%}
+    /* the narrow card's three prints sit in the left half of their area: centre them when stacked */
+    .pj-card.alt .pj-imgs{translate:16% 0}
   }
   @media (max-width:520px){
     .pj-note{width:100%;align-items:flex-start}
@@ -167,7 +172,7 @@
   </header>
   <div class="pj-intro">
     <p>A selection of product, brand and strategy work shaped between research and delivery. Each project joins an idea to the system, image or experience needed to make it real.</p>
-    <span class="pj-count" id="pjCount">02 projects</span>
+    <span class="pj-count" id="pjCount"></span>
   </div>
 
   <section class="pj-sel" aria-labelledby="pjSelTitle">
@@ -178,56 +183,14 @@
       </div>
       <div class="pj-ctl">
         <label class="pj-pill pj-search" id="pjSearch"><i class="ic search" aria-hidden="true"></i><span class="label">Search</span><input type="search" aria-label="Search projects" placeholder="Search"></label>
-        <button class="pj-pill" type="button" id="pjSort"><i class="ic sort" aria-hidden="true"></i><span>Sort</span></button>
+        <button class="pj-pill" type="button" id="pjSort"><i class="ic sort" aria-hidden="true"></i><span class="label">Sort</span></button>
         <span class="pj-chips" id="pjChips"></span>
         <span class="pj-ctlwrap"><button class="pj-add" type="button" id="pjAdd" aria-haspopup="true" aria-expanded="false" aria-controls="pjMenu">+ Add Filter</button><span class="pj-menu" id="pjMenu" role="menu" hidden></span></span>
       </div>
     </div>
 
-    <div class="pj-list" id="pjList">
-      <article class="pj-card" data-year="2025">
-        <div class="pj-meta">
-          <ul class="pj-tags"><li>Graphic Design</li><li>Strategy</li></ul>
-          <span class="pj-year">2025</span>
-        </div>
-        <div class="pj-body">
-          <div class="pj-imgs" aria-hidden="true">
-            <figure class="pj-layer flat" style="--x:16.035%;--y:8.053%;--w:74.913%;--h:83.333%;--r:2.2deg;--c:#617F3A;--o:.68;--dx:2px;--dy:-2px"></figure>
-            <figure class="pj-layer" style="--x:2.852%;--y:6.437%;--w:28.92%;--h:39.333%;--r:-4.5deg;--c:#201B1B;--dx:-8px;--dy:-5px"></figure>
-            <figure class="pj-layer" style="--x:20.557%;--y:10.333%;--w:73.171%;--h:78.667%;--c:#935D5D;--dx:4px"></figure>
-            <figure class="pj-layer" style="--x:-.765%;--y:54.903%;--w:29.268%;--h:40%;--r:4deg;--c:#351E52;--dx:-9px;--dy:6px"></figure>
-          </div>
-          <div class="pj-sum">
-            <div>
-              <h3>Turning a network into a useful product</h3>
-              <p>Membership analysis and a focused website redesign for New York’s innovation community, organised around people, events and useful introductions.</p>
-            </div>
-            <p class="pj-contrib"><b>Contribution</b><span>Segmentation, information architecture, UX/UI</span></p>
-          </div>
-        </div>
-      </article>
-
-      <article class="pj-card alt" data-year="2023">
-        <div class="pj-meta">
-          <ul class="pj-tags"></ul>
-          <span class="pj-year">2023</span>
-        </div>
-        <div class="pj-body">
-          <div class="pj-imgs" aria-hidden="true">
-            <figure class="pj-layer" style="--x:11.04%;--y:10.11%;--w:28.92%;--h:39.333%;--r:4.5deg;--c:#397167;--dx:-6px;--dy:-5px"></figure>
-            <figure class="pj-layer" style="--x:12.76%;--y:50.33%;--w:29.268%;--h:40%;--r:-4deg;--c:#AFAFAF;--dx:-5px;--dy:5px"></figure>
-            <figure class="pj-layer" style="--x:26.129%;--y:29.903%;--w:29.268%;--h:40%;--r:-4deg;--c:#B41818;--dx:8px"></figure>
-          </div>
-          <div class="pj-sum">
-            <div>
-              <h3>Making plans feel spontaneous again</h3>
-              <p>A social events app designed around small, real-world gatherings—from the first naming system to launch flows and the go-to-market story.</p>
-            </div>
-            <p class="pj-contrib"><b>Contribution</b><span>Creative direction, brand, UX/UI, launch strategy</span></p>
-            <p class="pj-case"><b>View case study</b><i aria-hidden="true">↗</i></p>
-          </div>
-        </div>
-      </article>
+    <div class="pj-list" id="pjList" aria-live="polite">
+      <noscript><p class="pj-empty">The projects need JavaScript to show.</p></noscript>
       <p class="pj-empty" id="pjEmpty" hidden>Nothing matches. Clear the search or a filter to see the projects again.</p>
     </div>
   </section>

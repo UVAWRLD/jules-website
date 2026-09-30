@@ -23,7 +23,9 @@ npx serve .          # or: python3 -m http.server
 index.html            the home page: markup and its CSS, plus the tuning panel
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
-src/projects.js       the Projects page's Search, Sort and filter controls
+src/projects.js       the Projects page: builds the cards from public/projects, and its controls
+public/projects/      exported by the project database (never edit by hand): projects.json and
+                      each card's prints, <slug>/1-4.jpg (35 projects, 6.8MB)
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
@@ -345,22 +347,29 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   450 wide where the frame says 535: the frame sets it in Inter and Satoshi is narrower, so 450
   keeps its three lines and everything below it where the frame has it. Under 520px the note
   goes under the title.
-- **Selected projects** heading and its controls (`src/projects.js`): **Search** opens into a
-  field inside the pill and narrows the cards to those whose words contain it; **Sort** flips
-  the order by year (newest first as written, or oldest first); **+ Add Filter** drops a menu of
-  the cards' own tags, each chosen tag becomes a chip (× to remove), and a card shows only with
-  every chosen tag. "Nothing matches" when nothing does. Escape closes the menu and clears the
-  search.
-- **The cards** are written in the page (two for now, from the frame: NYC Innovation
-  Collective, 2025, and Vybe Together, 2023). Surface a shade lighter than the paper, 8px radius,
-  a soft shadow; the second is narrower (698) with its words on the left. Tags, year, the title
-  (Satoshi Medium 25px), the description, CONTRIBUTION (Inconsolata), and "View case study ↗" on
-  the second, not yet a link since there are no case studies. On hover the card lifts 3px and its
-  shadow deepens.
-- **The pictures** are layered prints placed as in the frame, in % of a 574 x 300 area so they
-  scale, each turned and shadowed; on hover they spread a little, each away from the middle,
-  and turn a touch further. **They are still the design's coloured placeholders**: each layer is
-  a `<figure>` that takes a real image as an `<img>` inside it (`object-fit: cover`).
+- **The cards come from the project database** (`~/Developer/prj_jules_projects`, kept apart
+  from this repo). Its `tools/export_site.py` writes `public/projects/projects.json` and web
+  sized prints into this folder: the **Featured and Selected** tiers (35 projects; the Archive is
+  left out) in the database's `rank` order. `src/projects.js` fetches that file and builds the
+  cards. To change the page, change the database, run the export, and commit here. A project
+  with fewer than three images is cut into prints from its cover: a tall board is sliced at three
+  heights (three pages of the deck), a wide or square image gives the whole and two close details.
+- **Cards alternate** between the frame's two: a wide one with the pictures left (a backing sheet
+  (the fourth print, or a plain tint), a supporting print, the main print, a detail print) and a
+  narrower one (698) with the words left and three small prints. Tags are the database's
+  `discipline` and `context`; the year is `year` or `years` (undated projects show none). The
+  heading is `headline` when the database has one (with the project's name above it in small
+  capitals), else the title; then `description`, and CONTRIBUTION when `contribution` (or `role`)
+  is set. Vybe Together carries the frame's headline and contribution. On hover the card lifts
+  3px and its prints spread a little, each away from the middle, and turn a touch further. No
+  "View case study" yet: there are no case studies.
+- **Controls** (`src/projects.js`): **Search** opens into a field inside the pill and narrows the
+  cards to those whose words contain it; **Sort** steps through the database's order ("Sort"),
+  newest first and oldest first (undated last); **+ Add Filter** drops a menu of the cards' tags,
+  each chosen tag becomes a chip (× to remove), and a card shows only with every chosen tag. The
+  count follows. "Nothing matches" when nothing does. Escape closes the menu and clears the search.
+- **The prints** take the frame's layers, in % of a 574 x 300 area so they scale, each turned and
+  shadowed, `object-fit: cover` from the top (where boards put their titles), lazy loaded.
 - **Footer**: a faint rule, the mark, "Have a complicated thing to make clear?",
   hello@julesbockelee.com (a `mailto:`), LinkedIn and Instagram (the addresses from the old Wix
   site) and © 2026.
