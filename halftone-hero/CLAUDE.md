@@ -362,7 +362,7 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   ends and the next begins (saved as `screens` on its media, e.g. Vybe's discover feed after
   Suggested Friends), each part shown once. `sips` silently returns the whole image for a crop
   that reaches its right or bottom edge, so the export keeps every crop a pixel short and checks
-  the result. The selection leans on product, strategy and UX work; single event
+  the result. The selection leans on strategy and UX work, alternating near the top, with product design after and graphic design last; single event
   flyers are in the Archive (Jules, 2026-09-30).
 - **Each card is shaped by its content** (the frame's two cards were an example, not a
   template). `arrange()` in `src/projects.js` lays the prints out from their own proportions: the
@@ -375,9 +375,10 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   varies from card to card but reloads the same. `place()` fits the group: on a wide screen the
   card's width is its pictures plus its words (260px, 300 for a long description), so a set of
   posters makes a narrower card than a wide board; below 980 the words go under the pictures,
-  which scale to the card's width. A set that is mostly phone screens (Vybe) is a row instead:
-  every screen at the same height, each a little apart and barely turned, a logo or board among
-  them at half height, with the words under the row. The prints hang up to 14px over the card's outer edge (8 on a
+  which scale to the card's width. A set that is mostly phone screens (Vybe) is stacked like a hand of
+  cards instead: every screen at the same height, each overlapping the next by about a third,
+  turned more the further it is from the middle, the middle one on top, a logo among them at half
+  height. The prints hang up to 14px over the card's outer edge (8 on a
   phone). Pictures alternate sides down the cards that are showing, and layout reruns on a change
   of width, a sort or a filter. On hover the card lifts 3px and each print moves 9px away from the
   middle of the group (16 for the outer ones) and turns a touch further; **a click (or tap) on the
