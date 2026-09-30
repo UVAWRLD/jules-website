@@ -401,6 +401,10 @@ addEventListener("resize",()=>{measureViewport();resize();labels();});   // zone
 // The picture keeps its own centred band inside the full width canvas, never wider than the
 // screen: the whole landscape stays visible, edge to edge, and is never cropped.
 const NARROW=820, MIN_CELL=1.1;   // css px
+// The crow's pitch has a floor of its own. It is the band over 593, which on a phone is about
+// 0.6px, a single device pixel a dot: too fine to be dots at all, and the bird smeared into a
+// few blotches. 0.8px is what he had there before he was made a quarter smaller.
+const CROW_MIN_CELL=0.8;
 // On a phone the picture is the fixed element and the copy is the one that moves. Sizing the
 // picture from whatever room the copy left over made it depend on the browser: the width is
 // that room times the aspect, so Comet's taller toolbar turned into a picture half the width
@@ -819,7 +823,7 @@ function frame(){
     gl.uniform1f(U.uCrowOn,crowOn||chainN?1:0);
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
     gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
-    gl.uniform1f(U.uCellCrow,bandW()/+ctl.crowCells.value);
+    gl.uniform1f(U.uCellCrow,Math.max(bandW()/+ctl.crowCells.value, CROW_MIN_CELL));
     gl.uniform1f(U.uCellChain,Math.max(1.05,2/dpr));      // about a pixel, two device pixels at least
     gl.uniform3fv(U.uHueA,hueFor(A,ink)); gl.uniform3fv(U.uHueB,hueFor(B,ink));
     gl.uniform3fv(U.uInk,ink);

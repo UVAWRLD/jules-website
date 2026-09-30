@@ -181,7 +181,7 @@ export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" })
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(U.uCrow, 0);
       gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, lut); gl.uniform1i(U.uLut, 1);
       gl.uniform2f(U.uRes, W, H); gl.uniform1f(U.uDpr, dpr);
-      gl.uniform1f(U.uCell, band / DOTS_ACROSS);
+      gl.uniform1f(U.uCell, Math.max(band / DOTS_ACROSS, 0.8));   // the home page's floor, CROW_MIN_CELL
       gl.uniform1f(U.uInkK, CROW_INK); gl.uniform1f(U.uFog, CROW_FOG);
       gl.uniform1f(U.uRelief, RELIEF); gl.uniform1f(U.uOpacity, OPACITY);
       gl.uniform3fv(U.uInk, ink());

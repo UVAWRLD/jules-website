@@ -313,7 +313,10 @@ The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, 
 (paper, hairline, soft shadow): a click or tap opens and closes it, and a click elsewhere or
 Escape closes it. It holds what is not built yet: **Thoughts**, which was a dead link in the nav,
 is there as "soon". On a screen under 520px the four do not fit one line (the name alone is
-143px), so the name keeps its own line and the links sit under it rather than the name wrapping.
+143px), so the links go under the name, 2px below it, with the usual 17px before the copy. The
+break is an empty element (`.nav-br`) taking a line of its own: the first version stretched the
+name to the full width instead, and since the crow stands 62% of the way along the name's box,
+he landed out in the empty space to its right.
 
 `projects.html` (served at `/projects`) is a first cut: the Timeline's frame only (logo, the
 "Projects" title, the back link, the rule the crow lands on) at the same sizes and places, so
@@ -538,6 +541,12 @@ would stand exactly as tall as Satoshi Bold's beside it (0.762 em against 0.731,
 the browser), which read as too small. The nav is aligned on its baseline. It is 143px wide,
 where Satoshi at 14px was 150; the crow perches on it all the same. Only Inconsolata, for the
 pronunciation line, still comes from Google.
+
+**His dot pitch has a floor too**, `CROW_MIN_CELL` = 0.8px (and the same in
+`src/crowstage.js`). The pitch is the band over 593, which on a phone is about 0.6px, a single
+device pixel a dot: too fine to draw as dots, and the bird smeared into a few blotches. 0.8px is
+what he had there before he was made a quarter smaller. At his phone size (35px) that is fewer
+dots across him than before, which is the cost of the smaller bird.
 
 **His size is held between a floor and a ceiling.** It follows the band, which runs away on
 a large monitor and collapses on a phone, so it is clamped: `clamp(35px, band × 0.048, 56px)`.
