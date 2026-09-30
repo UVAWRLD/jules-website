@@ -17,25 +17,35 @@
     {
      "src": "public/projects/vybe-together/1.jpg",
      "w": 840,
-     "h": 1824
+     "h": 2217
     },
     {
      "src": "public/projects/vybe-together/2.jpg",
      "w": 400,
-     "h": 869
+     "h": 830
     },
     {
      "src": "public/projects/vybe-together/3.jpg",
      "w": 400,
-     "h": 892
+     "h": 776
     },
     {
      "src": "public/projects/vybe-together/4.jpg",
      "w": 400,
-     "h": 892
+     "h": 1213
     },
     {
      "src": "public/projects/vybe-together/5.jpg",
+     "w": 400,
+     "h": 892
+    },
+    {
+     "src": "public/projects/vybe-together/6.jpg",
+     "w": 400,
+     "h": 892
+    },
+    {
+     "src": "public/projects/vybe-together/7.jpg",
      "w": 400,
      "h": 344
     }
@@ -57,37 +67,37 @@
     {
      "src": "public/projects/eureka/1.jpg",
      "w": 840,
-     "h": 464
+     "h": 466
     },
     {
      "src": "public/projects/eureka/2.jpg",
      "w": 400,
-     "h": 252
+     "h": 222
     },
     {
      "src": "public/projects/eureka/3.jpg",
      "w": 400,
-     "h": 310
+     "h": 222
     },
     {
      "src": "public/projects/eureka/4.jpg",
      "w": 400,
-     "h": 312
+     "h": 222
     },
     {
      "src": "public/projects/eureka/5.jpg",
      "w": 400,
-     "h": 231
+     "h": 222
     },
     {
      "src": "public/projects/eureka/6.jpg",
      "w": 400,
-     "h": 273
+     "h": 222
     },
     {
      "src": "public/projects/eureka/7.jpg",
      "w": 400,
-     "h": 220
+     "h": 222
     }
    ]
   },
@@ -157,37 +167,37 @@
     {
      "src": "public/projects/rebranding-frozen-foods/1.jpg",
      "w": 840,
-     "h": 528
+     "h": 466
     },
     {
      "src": "public/projects/rebranding-frozen-foods/2.jpg",
      "w": 400,
-     "h": 206
+     "h": 222
     },
     {
      "src": "public/projects/rebranding-frozen-foods/3.jpg",
      "w": 400,
-     "h": 273
+     "h": 222
     },
     {
      "src": "public/projects/rebranding-frozen-foods/4.jpg",
      "w": 400,
-     "h": 300
+     "h": 222
     },
     {
      "src": "public/projects/rebranding-frozen-foods/5.jpg",
      "w": 400,
-     "h": 234
+     "h": 222
     },
     {
      "src": "public/projects/rebranding-frozen-foods/6.jpg",
      "w": 400,
-     "h": 291
+     "h": 222
     },
     {
      "src": "public/projects/rebranding-frozen-foods/7.jpg",
      "w": 400,
-     "h": 247
+     "h": 222
     }
    ]
   },
@@ -207,37 +217,37 @@
     {
      "src": "public/projects/caddis/1.jpg",
      "w": 840,
-     "h": 560
+     "h": 466
     },
     {
      "src": "public/projects/caddis/2.jpg",
      "w": 400,
-     "h": 303
+     "h": 222
     },
     {
      "src": "public/projects/caddis/3.jpg",
      "w": 400,
-     "h": 243
+     "h": 222
     },
     {
      "src": "public/projects/caddis/4.jpg",
      "w": 400,
-     "h": 268
+     "h": 222
     },
     {
      "src": "public/projects/caddis/5.jpg",
      "w": 400,
-     "h": 243
+     "h": 222
     },
     {
      "src": "public/projects/caddis/6.jpg",
      "w": 400,
-     "h": 223
+     "h": 222
     },
     {
      "src": "public/projects/caddis/7.jpg",
      "w": 400,
-     "h": 256
+     "h": 222
     }
    ]
   },
@@ -353,11 +363,6 @@
      "src": "public/projects/enzo-ring/4.jpg",
      "w": 400,
      "h": 225
-    },
-    {
-     "src": "public/projects/enzo-ring/5.jpg",
-     "w": 400,
-     "h": 218
     }
    ]
   },
@@ -382,27 +387,27 @@
     {
      "src": "public/projects/cost-plus-drugs/2.jpg",
      "w": 400,
-     "h": 256
+     "h": 222
     },
     {
      "src": "public/projects/cost-plus-drugs/3.jpg",
      "w": 400,
-     "h": 200
+     "h": 222
     },
     {
      "src": "public/projects/cost-plus-drugs/4.jpg",
      "w": 400,
-     "h": 205
+     "h": 222
     },
     {
      "src": "public/projects/cost-plus-drugs/5.jpg",
      "w": 400,
-     "h": 221
+     "h": 222
     },
     {
      "src": "public/projects/cost-plus-drugs/6.jpg",
      "w": 400,
-     "h": 204
+     "h": 222
     }
    ]
   },
@@ -422,37 +427,37 @@
     {
      "src": "public/projects/talaria/1.jpg",
      "w": 840,
-     "h": 464
+     "h": 466
     },
     {
      "src": "public/projects/talaria/2.jpg",
      "w": 400,
-     "h": 253
+     "h": 222
     },
     {
      "src": "public/projects/talaria/3.jpg",
      "w": 400,
-     "h": 239
+     "h": 222
     },
     {
      "src": "public/projects/talaria/4.jpg",
      "w": 400,
-     "h": 310
+     "h": 222
     },
     {
      "src": "public/projects/talaria/5.jpg",
      "w": 400,
-     "h": 306
+     "h": 222
     },
     {
      "src": "public/projects/talaria/6.jpg",
      "w": 400,
-     "h": 316
+     "h": 222
     },
     {
      "src": "public/projects/talaria/7.jpg",
      "w": 400,
-     "h": 272
+     "h": 222
     }
    ]
   },
@@ -522,22 +527,22 @@
     {
      "src": "public/projects/ikea-frysta/1.jpg",
      "w": 840,
-     "h": 486
+     "h": 803
     },
     {
      "src": "public/projects/ikea-frysta/2.jpg",
      "w": 400,
-     "h": 304
+     "h": 382
     },
     {
      "src": "public/projects/ikea-frysta/3.jpg",
      "w": 400,
-     "h": 271
+     "h": 299
     },
     {
      "src": "public/projects/ikea-frysta/4.jpg",
      "w": 400,
-     "h": 258
+     "h": 299
     }
    ]
   },
@@ -562,32 +567,32 @@
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/2.jpg",
      "w": 400,
-     "h": 257
+     "h": 222
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/3.jpg",
      "w": 400,
-     "h": 294
+     "h": 222
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/4.jpg",
      "w": 400,
-     "h": 284
+     "h": 222
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/5.jpg",
      "w": 400,
-     "h": 280
+     "h": 222
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/6.jpg",
      "w": 400,
-     "h": 251
+     "h": 222
     },
     {
      "src": "public/projects/nycic-annual-sponsorship-proposal/7.jpg",
      "w": 400,
-     "h": 295
+     "h": 222
     }
    ]
   },
@@ -657,37 +662,37 @@
     {
      "src": "public/projects/nike-financial-analysis/1.jpg",
      "w": 840,
-     "h": 577
+     "h": 466
     },
     {
      "src": "public/projects/nike-financial-analysis/2.jpg",
      "w": 400,
-     "h": 210
+     "h": 222
     },
     {
      "src": "public/projects/nike-financial-analysis/3.jpg",
      "w": 400,
-     "h": 309
+     "h": 222
     },
     {
      "src": "public/projects/nike-financial-analysis/4.jpg",
      "w": 400,
-     "h": 229
+     "h": 222
     },
     {
      "src": "public/projects/nike-financial-analysis/5.jpg",
      "w": 400,
-     "h": 277
+     "h": 222
     },
     {
      "src": "public/projects/nike-financial-analysis/6.jpg",
      "w": 400,
-     "h": 252
+     "h": 222
     },
     {
      "src": "public/projects/nike-financial-analysis/7.jpg",
      "w": 400,
-     "h": 294
+     "h": 222
     }
    ]
   },
@@ -707,22 +712,22 @@
     {
      "src": "public/projects/lvmh-value-chain/1.jpg",
      "w": 840,
-     "h": 520
+     "h": 588
     },
     {
      "src": "public/projects/lvmh-value-chain/2.jpg",
      "w": 400,
-     "h": 226
+     "h": 280
     },
     {
      "src": "public/projects/lvmh-value-chain/3.jpg",
      "w": 400,
-     "h": 231
+     "h": 280
     },
     {
      "src": "public/projects/lvmh-value-chain/4.jpg",
      "w": 400,
-     "h": 208
+     "h": 280
     }
    ]
   },
@@ -847,12 +852,12 @@
     {
      "src": "public/projects/driven/1.jpg",
      "w": 840,
-     "h": 641
+     "h": 466
     },
     {
      "src": "public/projects/driven/2.jpg",
      "w": 400,
-     "h": 221
+     "h": 222
     },
     {
      "src": "public/projects/driven/3.jpg",
@@ -862,12 +867,22 @@
     {
      "src": "public/projects/driven/4.jpg",
      "w": 400,
-     "h": 266
+     "h": 222
     },
     {
      "src": "public/projects/driven/5.jpg",
      "w": 400,
-     "h": 199
+     "h": 222
+    },
+    {
+     "src": "public/projects/driven/6.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/driven/7.jpg",
+     "w": 400,
+     "h": 222
     }
    ]
   },
@@ -887,27 +902,27 @@
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/1.jpg",
      "w": 840,
-     "h": 614
+     "h": 466
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/2.jpg",
      "w": 400,
-     "h": 314
+     "h": 222
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/3.jpg",
      "w": 400,
-     "h": 219
+     "h": 222
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/4.jpg",
      "w": 400,
-     "h": 255
+     "h": 222
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/5.jpg",
      "w": 400,
-     "h": 200
+     "h": 222
     },
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/6.jpg",
@@ -917,7 +932,7 @@
     {
      "src": "public/projects/rl-prestige-by-ralph-lauren/7.jpg",
      "w": 400,
-     "h": 311
+     "h": 222
     }
    ]
   },
@@ -937,27 +952,27 @@
     {
      "src": "public/projects/cozy/1.jpg",
      "w": 840,
-     "h": 458
+     "h": 466
     },
     {
      "src": "public/projects/cozy/2.jpg",
      "w": 400,
-     "h": 272
+     "h": 222
     },
     {
      "src": "public/projects/cozy/3.jpg",
      "w": 400,
-     "h": 220
+     "h": 222
     },
     {
      "src": "public/projects/cozy/4.jpg",
      "w": 400,
-     "h": 191
+     "h": 222
     },
     {
      "src": "public/projects/cozy/5.jpg",
      "w": 400,
-     "h": 191
+     "h": 222
     }
    ]
   },
@@ -977,17 +992,17 @@
     {
      "src": "public/projects/clay/1.jpg",
      "w": 840,
-     "h": 464
+     "h": 466
     },
     {
      "src": "public/projects/clay/2.jpg",
      "w": 400,
-     "h": 314
+     "h": 222
     },
     {
      "src": "public/projects/clay/3.jpg",
      "w": 400,
-     "h": 223
+     "h": 222
     },
     {
      "src": "public/projects/clay/4.jpg",
@@ -997,12 +1012,17 @@
     {
      "src": "public/projects/clay/5.jpg",
      "w": 400,
-     "h": 251
+     "h": 222
     },
     {
      "src": "public/projects/clay/6.jpg",
      "w": 400,
-     "h": 294
+     "h": 222
+    },
+    {
+     "src": "public/projects/clay/7.jpg",
+     "w": 400,
+     "h": 222
     }
    ]
   },
@@ -1022,27 +1042,37 @@
     {
      "src": "public/projects/scribe/1.jpg",
      "w": 840,
-     "h": 514
+     "h": 466
     },
     {
      "src": "public/projects/scribe/2.jpg",
      "w": 400,
-     "h": 240
+     "h": 222
     },
     {
      "src": "public/projects/scribe/3.jpg",
      "w": 400,
-     "h": 244
+     "h": 222
     },
     {
      "src": "public/projects/scribe/4.jpg",
      "w": 400,
-     "h": 196
+     "h": 222
     },
     {
      "src": "public/projects/scribe/5.jpg",
      "w": 400,
-     "h": 248
+     "h": 222
+    },
+    {
+     "src": "public/projects/scribe/6.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/scribe/7.jpg",
+     "w": 400,
+     "h": 222
     }
    ]
   },
@@ -1062,32 +1092,37 @@
     {
      "src": "public/projects/the-5th-element-miami/1.jpg",
      "w": 840,
-     "h": 635
+     "h": 466
     },
     {
      "src": "public/projects/the-5th-element-miami/2.jpg",
      "w": 400,
-     "h": 269
+     "h": 222
     },
     {
      "src": "public/projects/the-5th-element-miami/3.jpg",
      "w": 400,
-     "h": 230
+     "h": 222
     },
     {
      "src": "public/projects/the-5th-element-miami/4.jpg",
      "w": 400,
-     "h": 197
+     "h": 222
     },
     {
      "src": "public/projects/the-5th-element-miami/5.jpg",
      "w": 400,
-     "h": 204
+     "h": 222
     },
     {
      "src": "public/projects/the-5th-element-miami/6.jpg",
      "w": 400,
-     "h": 270
+     "h": 222
+    },
+    {
+     "src": "public/projects/the-5th-element-miami/7.jpg",
+     "w": 400,
+     "h": 222
     }
    ]
   },
@@ -1107,7 +1142,7 @@
     {
      "src": "public/projects/zayd-turk-at-jams/1.jpg",
      "w": 840,
-     "h": 1050
+     "h": 1051
     },
     {
      "src": "public/projects/zayd-turk-at-jams/2.jpg",
@@ -1172,7 +1207,12 @@
     {
      "src": "public/projects/rumble-in-the-jungle/4.jpg",
      "w": 400,
-     "h": 869
+     "h": 1114
+    },
+    {
+     "src": "public/projects/rumble-in-the-jungle/5.jpg",
+     "w": 400,
+     "h": 1113
     }
    ]
   },
@@ -1242,27 +1282,32 @@
     {
      "src": "public/projects/lvmh-and-kering-style-guide/1.jpg",
      "w": 840,
-     "h": 460
+     "h": 466
     },
     {
      "src": "public/projects/lvmh-and-kering-style-guide/2.jpg",
      "w": 400,
-     "h": 279
+     "h": 222
     },
     {
      "src": "public/projects/lvmh-and-kering-style-guide/3.jpg",
      "w": 400,
-     "h": 234
+     "h": 222
     },
     {
      "src": "public/projects/lvmh-and-kering-style-guide/4.jpg",
      "w": 400,
-     "h": 237
+     "h": 222
     },
     {
      "src": "public/projects/lvmh-and-kering-style-guide/5.jpg",
      "w": 400,
-     "h": 199
+     "h": 222
+    },
+    {
+     "src": "public/projects/lvmh-and-kering-style-guide/6.jpg",
+     "w": 400,
+     "h": 222
     }
    ]
   },
@@ -1282,32 +1327,32 @@
     {
      "src": "public/projects/garrett/1.jpg",
      "w": 840,
-     "h": 461
+     "h": 466
     },
     {
      "src": "public/projects/garrett/2.jpg",
      "w": 400,
-     "h": 216
+     "h": 222
     },
     {
      "src": "public/projects/garrett/3.jpg",
      "w": 400,
-     "h": 249
+     "h": 222
     },
     {
      "src": "public/projects/garrett/4.jpg",
      "w": 400,
-     "h": 218
+     "h": 222
     },
     {
      "src": "public/projects/garrett/5.jpg",
      "w": 400,
-     "h": 191
+     "h": 222
     },
     {
      "src": "public/projects/garrett/6.jpg",
      "w": 400,
-     "h": 191
+     "h": 222
     }
    ]
   },
@@ -1327,22 +1372,22 @@
     {
      "src": "public/projects/ben-sharf/1.jpg",
      "w": 840,
-     "h": 502
+     "h": 466
     },
     {
      "src": "public/projects/ben-sharf/2.jpg",
      "w": 400,
-     "h": 206
+     "h": 222
     },
     {
      "src": "public/projects/ben-sharf/3.jpg",
      "w": 400,
-     "h": 240
+     "h": 222
     },
     {
      "src": "public/projects/ben-sharf/4.jpg",
      "w": 400,
-     "h": 217
+     "h": 222
     },
     {
      "src": "public/projects/ben-sharf/5.jpg",
@@ -1352,7 +1397,7 @@
     {
      "src": "public/projects/ben-sharf/6.jpg",
      "w": 400,
-     "h": 183
+     "h": 222
     }
    ]
   },
@@ -1372,32 +1417,32 @@
     {
      "src": "public/projects/new-york-guys/1.jpg",
      "w": 840,
-     "h": 462
+     "h": 466
     },
     {
      "src": "public/projects/new-york-guys/2.jpg",
      "w": 400,
-     "h": 216
+     "h": 222
     },
     {
      "src": "public/projects/new-york-guys/3.jpg",
      "w": 400,
-     "h": 221
+     "h": 222
     },
     {
      "src": "public/projects/new-york-guys/4.jpg",
      "w": 400,
-     "h": 277
+     "h": 222
     },
     {
      "src": "public/projects/new-york-guys/5.jpg",
      "w": 400,
-     "h": 221
+     "h": 222
     },
     {
      "src": "public/projects/new-york-guys/6.jpg",
      "w": 400,
-     "h": 167
+     "h": 222
     }
    ]
   }

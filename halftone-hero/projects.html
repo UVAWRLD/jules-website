@@ -90,6 +90,10 @@
   .pj-year{font-size:9.5px;color:var(--muted);white-space:nowrap}
   .pj-body{display:flex;align-items:center;gap:28px}
   .pj-card.flip .pj-body{flex-direction:row-reverse}
+  /* a row of phone screens runs the card's width, the words under it */
+  .pj-card.rowpics .pj-body{flex-direction:column;align-items:stretch;gap:20px}
+  .pj-card.rowpics .pj-imgs{align-self:center}
+  .pj-card.rowpics .pj-sum{flex:none;width:auto !important;max-width:560px}
 
   /* The pictures: layered prints, each in its own proportions, turned, with a soft shadow. On
      hover they spread a little, each away from the middle of the group, and turn a touch further. */

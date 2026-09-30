@@ -38,6 +38,23 @@ function rng(seed) {
 function arrange(p) {
   const R = rng(p.slug), pr = p.prints;
   if (!pr.length) return null;
+  // A set that is mostly phone screens is laid out as a row of whole screens, a little apart,
+  // across the card, rather than piled over one main print: every screen stays readable.
+  const tall = pr.filter(t => t.w / t.h < 0.62).length;
+  if (pr.length >= 3 && tall >= pr.length * 0.6) {
+    const mid = (pr.length - 1) / 2, items = [];
+    let x = 0;
+    pr.forEach((t, i) => {
+      const screen = t.w / t.h < 0.62;                     // a logo or a board sits smaller, mid height
+      const h = (screen ? 340 : 170) * (0.92 + R() * 0.08), w = h * t.w / t.h;
+      items.push({ i, x, y: (screen ? 0 : 85) + (R() - 0.5) * 30, w, h, r: (R() - 0.5) * 6, z: 10 - Math.round(Math.abs(i - mid)) });
+      x += w * (1.04 + R() * 0.08);                        // a little apart, not piled up
+    });
+    const pad = 10, y0 = Math.min(...items.map(o => o.y)) - pad, x1 = Math.max(...items.map(o => o.x + o.w)) + pad;
+    const y1 = Math.max(...items.map(o => o.y + o.h)) + pad;
+    items.forEach(o => { o.x += pad; o.y -= y0; });
+    return { items, W: x1 + pad, H: y1 - y0, row: true };
+  }
   const size = (pt, area) => { const a = pt.w / pt.h; return [Math.sqrt(area * a), Math.sqrt(area / a)]; };
   let [mw, mh] = size(pr[0], MAIN_AREA);
   const fit = Math.min(1, MAIN_MAX_W / mw, MAIN_MAX_H / mh); mw *= fit; mh *= fit;
@@ -98,14 +115,15 @@ function card(p, i) {
 // Fits one card's group to the room it has, and on a wide screen sizes the card to fit it.
 function place(c, g, listW) {
   const box = c.querySelector(".pj-imgs"), sum = c.querySelector(".pj-sum");
-  const flip = c.classList.contains("flip"), stacked = innerWidth <= STACK;
+  c.classList.toggle("rowpics", !!g.row);
+  const flip = c.classList.contains("flip") && !g.row, stacked = innerWidth <= STACK || g.row;
   const cs = getComputedStyle(c), padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
   const gap = parseFloat(getComputedStyle(c.querySelector(".pj-body")).columnGap) || 28;
   let k, over;
   if (stacked) {
     over = innerWidth <= 820 ? OVER_PHONE : OVER;
     const room = listW - padX + over * 2;
-    k = Math.min(1.1, room / g.W, (innerWidth <= 820 ? 300 : 340) / g.H);
+    k = Math.min(g.row ? 1.2 : 1.1, room / g.W, (innerWidth <= 820 ? 300 : g.row ? 400 : 340) / g.H);
     c.style.width = ""; sum.style.width = "";
     box.style.margin = `0 -${over}px`;
   } else {
