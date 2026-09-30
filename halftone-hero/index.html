@@ -46,12 +46,13 @@
   /* On a phone the four do not fit one line (the name alone is 143px): the links go under the
      name. The break is an empty element taking a line of its own, not the name stretched to the
      full width, because the crow stands 62% of the way along the name's box: stretched, he
-     landed out in the empty space to its right. The links sit close under the name, as one nav,
-     with the usual gap before the copy. */
+     landed out in the empty space to its right. Spaced by baseline: name to links and links to the
+     first line of the copy are both about 35px, an even rhythm. */
   .nav-br{display:none}
   @media (max-width:520px){
     .copy nav{flex-wrap:wrap;row-gap:0}
-    .copy nav .nav-br{display:block;flex-basis:100%;height:2px}
+    .copy nav .nav-br{display:block;flex-basis:100%;height:15px}
+    .copy nav+p.lede{margin-top:12px}   /* more specific: the general 17px rule comes later */
   }
   .copy nav a:hover{color:var(--ink)}
   /* Other…: a small menu of the rest of the site, to be filled in. Styled as the crow's card

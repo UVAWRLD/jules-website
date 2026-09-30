@@ -309,7 +309,7 @@ lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their
 ## The page bar, on every page but the home page
 
 Opposite the logo, on its line and at its inset (4.86% on a computer, 24px on a phone): the
-site's pages, **Projects** and **Timeline**, then **← Back ⌂** home (Figma: the page header).
+site's pages, **Timeline** then **Projects**, then **← Back ⌂** home (Figma: the page header).
 The page you are on is ink, bold, and underlined with a 1.5px rule (`aria-current="page"`); the
 others are muted with a small ↗ and darken on hover. The order is fixed, so nothing moves between
 pages. It is absolute at the top like the logo and scrolls away with it. The CSS (`.pagenav`) is
@@ -324,7 +324,8 @@ The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, 
 (paper, hairline, soft shadow): a click or tap opens and closes it, and a click elsewhere or
 Escape closes it. It holds what is not built yet: **Thoughts**, which was a dead link in the nav,
 is there as "soon". On a screen under 520px the four do not fit one line (the name alone is
-143px), so the links go under the name, 2px below it, with the usual 17px before the copy. The
+143px), so the links go under the name, spaced by baseline so that name to links and links to
+the first line of the copy are about the same (35px and 33px on a 375px phone). The
 break is an empty element (`.nav-br`) taking a line of its own: the first version stretched the
 name to the full width instead, and since the crow stands 62% of the way along the name's box,
 he landed out in the empty space to its right.
