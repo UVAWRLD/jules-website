@@ -32,10 +32,10 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   // The mount sits just right of the caption. The caption is pinned by its right edge, so the
   // mount stays put when the place names change width; if the layout moves it, it glides
   // there (in step()) and the chain swings from the move, rather than jumping.
-  let axT = 0, ayT = 0, ready = false;
+  let axT = 0, ayT = 0, ready = false, capR = 0, capB = 0;
   function measure() {
     const r = caption.getBoundingClientRect();
-    axT = r.right + 14; ayT = r.top + r.height / 2 - 1;
+    capR = r.right; capB = r.bottom; axT = r.right + 14; ayT = r.top + r.height / 2 - 1;
     // Never down into the copy: the chain stops 30px above the first line of text that actually
     // reaches under it. Lines, not the copy's box: on a phone the box runs the full width, but
     // its top lines (the name, the links) end well short of the chain, and judging by the box
@@ -280,6 +280,12 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     const hw = fine ? 32 : 44, gTop = Math.min(ay, mid[1]) - 8, gBottom = mid[1] + 20;
     const hx = Math.min(Math.min(ax, mid[0]) - hw / 2, innerWidth - hw);
     handle.style.width = hw + "px"; handle.style.height = Math.round(gBottom - gTop) + "px";
+    // Never over the caption: a tap on the place names steps the places, and on a phone the
+    // grab area reached over the end of the caption and took those taps as pulls. A notch is
+    // cut out of its top left corner where the caption is (clip-path also clips the hit area),
+    // so it keeps its full width below the caption.
+    const nw = Math.max(0, Math.round(capR + 4 - hx)), nh = Math.max(0, Math.round(capB + 4 - gTop));
+    handle.style.clipPath = nw && nh ? `polygon(${nw}px 0, 100% 0, 100% 100%, 0 100%, 0 ${nh}px, ${nw}px ${nh}px)` : "";
     handle.style.transform = `translate3d(${hx}px, ${gTop}px, 0)`;
   }
 

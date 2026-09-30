@@ -347,7 +347,10 @@ way. An invisible button (`#chainPull`) covers the whole chain, from just above 
 below the pull (44px wide by touch, 32 with a mouse), and takes the grab: it first covered the
 pull alone, which was hard to catch with a finger. Taken anywhere along the chain, the drag counts
 from the end (the chain still out below the finger is added to its distance from the mount), so
-pulling down 20px from the middle pulls the chain down 20px.
+pulling down 20px from the middle pulls the chain down 20px. The grab area never covers the caption: tapping the
+place names steps the places, and the widened area reached over the end of the caption on a
+phone and took those taps as pulls. A notch is cut from its top left corner where the caption
+is (`clip-path`, which clips the hit area too), so below the caption it keeps its full width.
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (72 on
