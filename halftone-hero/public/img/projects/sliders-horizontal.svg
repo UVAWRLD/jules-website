@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="sliders-horizontal" clip-path="url(#clip0_0_5)">
+<path id="Vector" d="M3.75 1.875H1.125M4.5 7.125H1.125M5.25 1.125V2.625M6 6.375V7.875M7.875 4.5H4.5M7.875 7.125H6M7.875 1.875H5.25M3 3.75V5.25M3 4.5H1.125" stroke="#85847E" stroke-linecap="round"/>
+</g>
+<defs>
+<clipPath id="clip0_0_5">
+<rect width="9" height="9" fill="white"/>
+</clipPath>
+</defs>
+</svg>

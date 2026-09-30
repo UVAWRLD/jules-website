@@ -29,6 +29,11 @@
   --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
   /* the three greys of the timeline's type: headings, body, dates */
   --strong:#1A1A1A; --body:#555555; --faint:#888888;
+  /* the Projects page's surfaces: a card a shade lighter than the paper, the pills a shade
+     darker, and the hairline round a tag */
+  --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
+  --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
+  --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
   /* band width follows the viewport height so the picture keeps the same vertical
      composition at every window size; it only gives way when the window is too narrow */
   --band-k:0.96;
@@ -41,12 +46,18 @@
   --rule:rgba(237,237,235,.2); --panel:rgba(20,20,19,.88);
   --card-line:#4A4A46; --card-shadow:0 2px 32px 2px rgba(0,0,0,.45);
   --strong:#E4E4E0; --body:#A6A6A0; --faint:#7C7C75;
+  --surface:#1A1A18; --pill:#262624; --hairline:#4A4A46;
+  --lift-shadow:0 14px 38px rgba(0,0,0,.35); --lift-shadow-hi:0 22px 48px rgba(0,0,0,.5);
+  --layer-shadow:6px 9px 20px rgba(0,0,0,.4);
 }
 :root[data-theme="light"]{
   --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
   --rule:rgba(10,10,10,.18); --panel:rgba(255,255,255,.88);
   --card-line:#D9D4D4; --card-shadow:0 2px 32px 2px rgba(0,0,0,.05);
   --strong:#1A1A1A; --body:#555555; --faint:#888888;
+  --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
+  --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
+  --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
 }
 *{box-sizing:border-box}
 /* the paper belongs on the root, so Safari's rubber band area is paper too, not a void;

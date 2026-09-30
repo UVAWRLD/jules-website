@@ -22,7 +22,8 @@ npx serve .          # or: python3 -m http.server
 ```
 index.html            the home page: markup and its CSS, plus the tuning panel
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
-projects.html         the Projects page: a first cut, the Timeline's frame and the crow only
+projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
+src/projects.js       the Projects page's Search, Sort and filter controls
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
@@ -34,6 +35,7 @@ src/loader.js         the loading screen: hourglass and the dot build into the p
 src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
+public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
 src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
                       plus the model licence. The .glb/.gltf itself is not committed.
@@ -330,12 +332,45 @@ break is an empty element (`.nav-br`) taking a line of its own: the first versio
 name to the full width instead, and since the crow stands 62% of the way along the name's box,
 he landed out in the empty space to its right.
 
-`projects.html` (served at `/projects`) is a first cut: the Timeline's frame only (logo, page
-bar, the "Projects" title, the rule the crow lands on) at the same sizes and places, so
-nothing shifts between the two pages, and one placeholder line. The project cards come next,
-designed together with Jules from Figma: Projects portfolio. Its header CSS is copied from
-`timeline.html`; when the page grows, move the shared rules into `src/site.css`. The project
-data will come from the separate database (`~/Developer/prj_jules_projects`).
+## The Projects page
+
+`projects.html`, served at `/projects`. Built from Figma: **Projects portfolio** (node 2315:386),
+a 1440 frame, at the frame's own sizes (no `--k`): the header column and the list are 920 wide
+and centred; the logo and the page bar are the site's (the frame's logo is the same mark; its
+bar has Projects first, but the site keeps Timeline first, as Jules asked).
+
+- **Header.** "Projects" in Libre Caslon Condensed Medium at 38px (30 on a phone), the note on
+  the right (SELECTED WORK, 2022—2026 · New York / Paris), the rule under both, which the crow
+  lands on, then the intro and the count ("02 projects", which follows the filters). The intro is
+  450 wide where the frame says 535: the frame sets it in Inter and Satoshi is narrower, so 450
+  keeps its three lines and everything below it where the frame has it. Under 520px the note
+  goes under the title.
+- **Selected projects** heading and its controls (`src/projects.js`): **Search** opens into a
+  field inside the pill and narrows the cards to those whose words contain it; **Sort** flips
+  the order by year (newest first as written, or oldest first); **+ Add Filter** drops a menu of
+  the cards' own tags, each chosen tag becomes a chip (× to remove), and a card shows only with
+  every chosen tag. "Nothing matches" when nothing does. Escape closes the menu and clears the
+  search.
+- **The cards** are written in the page (two for now, from the frame: NYC Innovation
+  Collective, 2025, and Vybe Together, 2023). Surface a shade lighter than the paper, 8px radius,
+  a soft shadow; the second is narrower (698) with its words on the left. Tags, year, the title
+  (Satoshi Medium 25px), the description, CONTRIBUTION (Inconsolata), and "View case study ↗" on
+  the second, not yet a link since there are no case studies. On hover the card lifts 3px and its
+  shadow deepens.
+- **The pictures** are layered prints placed as in the frame, in % of a 574 x 300 area so they
+  scale, each turned and shadowed; on hover they spread a little, each away from the middle,
+  and turn a touch further. **They are still the design's coloured placeholders**: each layer is
+  a `<figure>` that takes a real image as an `<img>` inside it (`object-fit: cover`).
+- **Footer**: a faint rule, the mark, "Have a complicated thing to make clear?",
+  hello@julesbockelee.com (a `mailto:`), LinkedIn and Instagram (the addresses from the old Wix
+  site) and © 2026.
+- **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
+  `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
+  muted), so the page takes the dark theme.
+- **Under 980px** a card's pictures go on top (no wider than 574) and its words under them; under
+  820 the page takes the phone sizes.
+- Verified against the frame with a headless Chromium screenshot at 1440 (the preview pane scales
+  wide viewports badly): title, rule, intro, heading and cards land on the frame's positions.
 
 ## The pull chain
 
