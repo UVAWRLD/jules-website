@@ -350,7 +350,10 @@ from the end (the chain still out below the finger is added to its distance from
 pulling down 20px from the middle pulls the chain down 20px. The grab area never covers the caption: tapping the
 place names steps the places, and the widened area reached over the end of the caption on a
 phone and took those taps as pulls. A notch is cut from its top left corner where the caption
-is (`clip-path`, which clips the hit area too), so below the caption it keeps its full width.
+is (`clip-path`, which clips the hit area too), so below the caption it keeps its full width. And for half a second after a pull ends, the chain catches
+the click the browser sends when the finger lifts (a capture listener on the window): that click
+goes to whatever is under the finger by then, often the caption, and every pull on a phone also
+stepped to the next city (Jules's screen recording, 2026-09-30).
 
 **Physics.** A verlet rope: 22 points, gravity, and distance constraints that only resist
 stretching, so the chain can go slack and bunch the way a chain does. It hangs 64px (72 on

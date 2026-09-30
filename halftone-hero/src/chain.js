@@ -62,7 +62,7 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
   if (document.fonts) document.fonts.ready.then(measure);
 
   // ---- interaction ----
-  let dragging = false, px = 0, py = 0, downAt = null, fired = false, grabOff = 0;
+  let dragging = false, px = 0, py = 0, downAt = null, fired = false, grabOff = 0, swallowUntil = 0;
   let feed = 0, feedV = 0, auto = -1;
   let mouse = null, mousePrev = null;
 
@@ -86,7 +86,14 @@ export function createChain({ fine, reduce, getLean, onPull, dot }) {
     // a tap, not a pull: do the pull for them
     if (downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 6 && performance.now() - downAt[2] < 350 && !fired) auto = 0;
     downAt = null;
+    swallowUntil = performance.now() + 500;
   };
+  // After a finger lets go, the browser still sends a click, to whatever is under it by then:
+  // on a phone that was often the place caption, so every pull also stepped to the next city.
+  // The click that follows a pull is caught here, before anything else sees it.
+  addEventListener("click", e => {
+    if (performance.now() < swallowUntil) { e.stopPropagation(); e.preventDefault(); swallowUntil = 0; }
+  }, true);
   handle.addEventListener("pointerup", release);
   handle.addEventListener("pointercancel", release);
   handle.addEventListener("lostpointercapture", release);    // a press the browser dropped
