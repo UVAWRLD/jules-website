@@ -393,12 +393,14 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   dot per screen pixel, up to two a CSS pixel, after a light unsharp mask so small type survives;
   first tried at one dot per CSS pixel, which Jules found too coarse; the tones stretched between the 1st and 99th percentiles, in the darker and
   lighter of `--ink` and `--surface`), made when its card comes within a screen of the viewport,
-  from the picture at the size it is shown, and remade when that size changes. With a mouse, hover
-  wipes the dither away in 2px cells in a seeded random order (a 64px tile; each step is one
-  `destination-out` pattern fill), the prints 55ms apart over 620ms, and it comes back when the
-  mouse leaves; a fanned-out card stays in colour. A touch screen has no hover, so the wipe
-  follows the scroll: none with the pictures' top at 92% of the screen's height, all of it by
-  42%. The picture is hidden (`.pj-dither`) until its dither is ready, so it never flashes in
+  from the picture at the size it is shown, and remade when that size changes. Looking at a card brings the colour back once, for the rest of the visit
+  (Jules: it should stay until you come back to the site; a page restored by the back button
+  starts over): the dither is wiped away in 2px cells in a seeded random order (a 64px tile; each
+  step is one `destination-out` pattern fill). With a mouse it happens on the first hover, the
+  prints 620ms each and 55ms apart. A touch screen has no hover, so it happens when the middle of
+  a card's pictures comes up to the middle of the screen (55% of its height), in about half a
+  second (420ms a print, 12ms apart); a first try that followed the scroll felt too quick and
+  too gradual. Fanning a card out shows its colours too. The picture is hidden (`.pj-dither`) until its dither is ready, so it never flashes in
   colour first. A soft shadow (`.pj-more`, `--more-shade`) sits along the bottom of the screen
   while more projects are below and fades out at the end of the list.
 - **Text**: tags are the database's `discipline` and `context`; the year is `year` or `years`

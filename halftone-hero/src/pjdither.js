@@ -3,11 +3,11 @@
 // Each print gets a canvas over its picture holding a one-bit ordered dither of it (Bayer 8 x 8,
 // one dot per screen pixel, up to two a CSS pixel, the picture lightly sharpened first so fine
 // detail survives; in the page's ink and the card's paper), so the page reads as black and
-// white. Looking at a card brings the colour back: the dither is wiped away dot by dot in a
-// random order, cell by cell (2px cells, the order a seeded shuffle over a 64px tile), the prints
-// a few frames apart. With a mouse that happens on hover (and stays while the prints are fanned
-// out); on a touch screen there is no hover, so it follows the scroll instead, the colour coming
-// in as a card rises into view and going back if you scroll it down again.
+// white. Looking at a card brings the colour back, once, for the rest of the visit: the dither is
+// wiped away dot by dot in a random order, cell by cell (2px cells, the order a seeded shuffle
+// over a 64px tile), the prints a few frames apart. With a mouse that happens on the first hover;
+// on a touch screen there is no hover, so it happens in about half a second when the card's
+// pictures reach the middle of the screen.
 //
 // The dithers are made only when a card comes near the viewport, from the picture at the size it
 // is shown, and remade when that size changes. The theme swaps the two colours (light dots on
@@ -178,65 +178,50 @@ export function ditherPrints(list, cards) {
   new MutationObserver(() => { pal = colours(); prints.forEach(pr => { if (pr.bits) { paint(pr); pr.level = -1; draw(pr); } }); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-  // ---- the wipe: hover with a mouse, the scroll on a touch screen ----
-  const DUR = 620, STAGGER = 55;
+  // ---- the wipe: once per visit, on the first hover with a mouse, or on a touch screen when a
+  // card's pictures reach the middle of the screen; after that the card stays in colour until
+  // the page is loaded again ----
   let raf = 0, last = 0;
   function tick(now) {
     raf = 0;
     const dt = Math.min(64, now - (last || now)); last = now;
     let moving = false;
     for (const pr of prints) {
-      if (pr.p === pr.target) continue;
-      if (reduce) pr.p = pr.target;
-      else {
-        if (pr.wait > 0) { pr.wait -= dt; moving = true; continue; }
-        pr.lin = Math.min(1, Math.max(0, (pr.lin ?? pr.p) + (pr.target > pr.p ? 1 : -1) * dt / DUR));
-        pr.p = ease(pr.lin);
-        if (Math.abs(pr.lin - pr.target) < 1e-3) { pr.lin = pr.target; pr.p = pr.target; }
-      }
+      if (pr.p >= 1 || !pr.target) continue;
+      if (reduce) pr.p = 1;
+      else if (pr.wait > 0) { pr.wait -= dt; moving = true; continue; }
+      else { pr.lin = Math.min(1, (pr.lin || 0) + dt / pr.dur); pr.p = ease(pr.lin); }
       draw(pr);
-      if (pr.p !== pr.target) moving = true;
+      if (pr.p < 1) moving = true;
     }
     if (moving) raf = requestAnimationFrame(tick); else last = 0;
   }
-  const run = () => { if (!raf) raf = requestAnimationFrame(tick); };
-  function want(card, on) {
-    for (const pr of prints) if (pr.card === card && pr.target !== (on ? 1 : 0)) {
-      pr.target = on ? 1 : 0; pr.wait = (on ? pr.n : 0) * STAGGER;
+  // with a mouse: 620ms a print, 55ms apart; on a touch screen about half a second in all
+  function reveal(card, touch) {
+    if (card.dataset.seen) return;
+    card.dataset.seen = "1";
+    for (const pr of prints) if (pr.card === card) {
+      pr.target = 1; pr.dur = touch ? 420 : 620; pr.wait = pr.n * (touch ? 12 : 55);
     }
-    run();
+    if (!raf) raf = requestAnimationFrame(tick);
   }
 
-  // with a mouse
-  for (const c of cards) {
-    c.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") want(c, true); });
-    c.addEventListener("pointerleave", e => { if (e.pointerType === "mouse" && !c.classList.contains("fan")) want(c, false); });
-  }
-  // fanned out, a card stays in colour; folded back without the mouse on it, it goes back
-  new MutationObserver(ms => {
-    for (const m of ms) {
-      const c = m.target;
-      if (c.classList.contains("fan")) want(c, true);
-      else if (mouse.matches && !c.matches(":hover")) want(c, false);
-    }
-  }).observe(list, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  for (const c of cards) c.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") reveal(c, false); });
+  // fanned out (a click or a tap on the pictures), a card shows its colours at once
+  new MutationObserver(ms => { for (const m of ms) if (m.target.classList?.contains("fan")) reveal(m.target, !mouse.matches); })
+    .observe(list, { subtree: true, attributes: true, attributeFilter: ["class"] });
 
-  // on a touch screen, with the scroll: no colour with the pictures' top at 92% of the
-  // screen's height, all of it by 42%, each print a little after the one before
+  // on a touch screen: when the middle of a card's pictures comes up to the middle of the screen
+  // (or past it)
   let sraf = 0;
   function onScroll() {
     sraf = 0;
     if (mouse.matches) return;
     const vh = innerHeight;
     for (const c of cards) {
-      if (c.hidden || c.classList.contains("fan")) continue;
+      if (c.hidden || c.dataset.seen) continue;
       const box = c.querySelector(".pj-imgs").getBoundingClientRect();
-      if (box.bottom < -vh || box.top > vh * 2) continue;
-      const k = Math.min(1, Math.max(0, (vh * .92 - box.top) / (vh * .5)));
-      for (const pr of prints) if (pr.card === c) {
-        const t = reduce ? (k > .5 ? 1 : 0) : Math.min(1, Math.max(0, k * 1.25 - pr.n * .035));
-        if (Math.abs(t - pr.p) > .002) { pr.p = pr.lin = pr.target = t; draw(pr); }
-      }
+      if (box.bottom > 0 && (box.top + box.bottom) / 2 <= vh * .55) reveal(c, true);
     }
   }
   const scrolled = () => { if (!sraf) sraf = requestAnimationFrame(onScroll); };
@@ -244,6 +229,13 @@ export function ditherPrints(list, cards) {
   addEventListener("resize", scrolled);
   mouse.addEventListener?.("change", scrolled);
   scrolled();
+  // coming back to the page (the back button can restore it as it was left) starts it over
+  addEventListener("pageshow", e => {
+    if (!e.persisted) return;
+    for (const c of cards) delete c.dataset.seen;
+    for (const pr of prints) { pr.p = pr.lin = pr.target = 0; pr.level = -1; draw(pr); }
+    scrolled();
+  });
   return { prints };
 }
 
