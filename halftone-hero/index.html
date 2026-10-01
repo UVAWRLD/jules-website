@@ -69,7 +69,8 @@
   .more-menu[hidden]{display:none}
   .more-item{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:4px 12px;
     color:var(--ink);text-decoration:none;white-space:nowrap}
-  a.more-item:hover{color:var(--muted)}
+  .copy nav a.more-item{color:var(--ink)}
+  .copy nav a.more-item:hover{color:var(--muted)}
   .more-item[aria-disabled="true"]{color:var(--muted);cursor:default}
   .more-item em{font-style:normal;font-family:"Inconsolata",ui-monospace,monospace;font-size:10px;color:var(--muted)}
   .copy p{margin:21px 0 0}
@@ -161,7 +162,7 @@
     <div class="mark" aria-hidden="true"></div>
     <div class="band" id="band"><canvas id="c"></canvas></div>
     <div class="copy" id="copy">
-      <nav><b id="name">Jules Bockelee Morvan</b><i class="nav-br" aria-hidden="true"></i><a href="timeline">Timeline</a><a href="projects">Projects</a><span class="more"><button type="button" class="more-btn" aria-expanded="false" aria-controls="moreMenu" aria-haspopup="true">Other…</button><span class="more-menu" id="moreMenu" role="menu" hidden><span class="more-item" role="menuitem" aria-disabled="true" tabindex="-1">Thoughts<em>soon</em></span></span></span></nav>
+      <nav><b id="name">Jules Bockelee Morvan</b><i class="nav-br" aria-hidden="true"></i><a href="timeline">Timeline</a><a href="projects">Projects</a><span class="more"><button type="button" class="more-btn" aria-expanded="false" aria-controls="moreMenu" aria-haspopup="true">Other…</button><span class="more-menu" id="moreMenu" role="menu" hidden><a class="more-item" role="menuitem" href="bookshelf">Bookshelf</a><span class="more-item" role="menuitem" aria-disabled="true" tabindex="-1">Thoughts<em>soon</em></span></span></span></nav>
       <p class="lede">Product &amp; brand strategist.</p>
       <p class="dim">I've seen good ideas get lost in the handover more often than anywhere else.</p>
       <p class="dim gap">Between the promise and the budget, the brand and the product, the pitch and the people who build it. That's where I work, across hospitality, tech and consumer brands.</p>

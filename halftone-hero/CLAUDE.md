@@ -23,6 +23,8 @@ npx serve .          # or: python3 -m http.server
 index.html            the home page: markup and its CSS, plus the tuning panel
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
+bookshelf.html        the Bookshelf page (in Other… on the home page): my books as 3D books on a
+                      thin shelf (src/bookshelf.js, public/books/books.json, public/img/books/)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
 public/projects/      exported by the project database (never edit by hand): projects.json and
                       each card's prints, <slug>/1-7.jpg (34 projects, 8.3MB)
@@ -793,3 +795,22 @@ Copy config emits that object as JSON.
 Straight lift. `index.html` becomes a page or layout, the `<script>` becomes
 `client:visible`, `public/img` stays as it is. The renderer has no dependencies and no build
 step. Do not reach for three.js: it is 150KB to draw one triangle.
+
+
+## Bookshelf (bookshelf.html, src/bookshelf.js)
+
+Jules's Goodreads books (2026-10-01: the Read shelf, 18 books, from a screenshot; his rating is
+the stars he gave), as CSS 3D books on a thin floating shelf, linked from Other… on the home page.
+`public/books/books.json` holds them, newest added first, with each book's `status` ("read" or
+"reading"), `rating`, `read` (the month, where Goodreads has it), page count and format; covers and
+page counts come from Open Library (covers saved in `public/img/books/`, 520px tall at most), the
+spine colour is the median of the cover's left edge, its text dark or light to suit. A book is a box
+W x H x D: W from the page count, H from the format (hardback 172, trade 156, small 140, pocket
+132, times the shelf's scale), D the cover's width at that height. The spine faces you, the cover
+is the right-hand face, page edges on top; the shelf is seen from a little above (perspective
+origin 50% -30%). The books are scaled to fill about 88% of each shelf (as many shelves as they need
+at their smallest, 0.78 on a phone, up to 1.55x) and shared out evenly between shelves. Hover
+slides a book out 18px; a click or tap takes it out (forward, turned to show its cover, scaled
+1.18, nudged to stay on screen) and shows its title, author, rating (five dots) and pages under the
+shelf; a click elsewhere or Escape puts it back. A "reading" book stands at the end, leaning 9
+degrees, with a red ribbon out of the top. The crow lands on the rule under the title.

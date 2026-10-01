@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookshelf · Jules B. M.</title>
+<link rel="icon" href="public/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="public/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="public/img/apple-touch-icon.png">
+<meta name="description" content="Jules Bockelee Morvan: the books I have read and am reading.">
+<script>
+  // the visitor's own choice of dark, from the pull chain on the home page
+  try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
+<link rel="preload" href="public/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/site.css">
+<style>
+  /* The Bookshelf: the books I have read, and the one I am reading, as 3D books standing on a
+     thin floating shelf, spines out. Same header, page bar and footer as the Projects page; the
+     shelf and its books are drawn by src/bookshelf.js. */
+  .bk{width:920px;max-width:calc(100% - 48px);margin:0 auto;padding:163px 0 0}
+  #crowStage{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+
+  .bk-head{position:relative;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:17px}
+  .bk-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)}
+  .bk-head h1{margin:0;font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:38px;line-height:.95;color:var(--ink)}
+  .bk-note{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin:0;font-size:9px;line-height:normal;white-space:nowrap}
+  .bk-note b{font-weight:700;text-transform:uppercase;color:var(--ink)}
+  .bk-note span{color:var(--muted)}
+  .bk-intro{margin:17px 0 0;max-width:450px;font-size:13px;line-height:1.35;color:var(--body)}
+
+  /* ---- the shelf ---- */
+  .bk-shelf{margin-top:96px;perspective:1700px;perspective-origin:50% -30%}
+  .bk-row{position:relative;transform-style:preserve-3d;margin-bottom:64px}
+  .bk-books{position:relative;display:flex;align-items:flex-end;gap:1px;padding:0 18px;transform-style:preserve-3d}
+  /* the plank: a slim slab, its top a little deeper than the deepest book, its front edge 7px */
+  .bk-plank{position:relative;height:7px;transform-style:preserve-3d}
+  .bk-plank .front{position:absolute;inset:0;background:var(--pill);transform:translateZ(var(--pz, 12px));
+    box-shadow:0 18px 26px -14px rgba(0,0,0,.28)}
+  .bk-plank .top{position:absolute;left:0;right:0;top:0;height:var(--pd, 140px);transform-origin:50% 0;
+    transform:translateZ(var(--pz, 12px)) rotateX(-90deg);
+    background:linear-gradient(to bottom, color-mix(in srgb, var(--surface) 92%, var(--ink)), var(--surface))}
+  .bk-wall{position:absolute;left:4%;right:4%;top:100%;height:30px;pointer-events:none;
+    background:radial-gradient(50% 100% at 50% 0, rgba(0,0,0,.10), transparent);filter:blur(4px)}
+
+  /* ---- a book: a box W (thickness) x H x D (the cover's width), its spine to the front ---- */
+  .book{position:relative;flex:none;width:var(--w);height:var(--h);padding:0;border:0;background:none;cursor:pointer;
+    transform-style:preserve-3d;-webkit-tap-highlight-color:transparent}
+  .book:focus-visible{outline:none}
+  .book .b3{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 100%;
+    transform:translateZ(calc(var(--d) / -2)) rotateZ(var(--lean, 0deg));
+    transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .book .f{position:absolute;backface-visibility:hidden}
+  .book .spine{inset:0;transform:translateZ(calc(var(--d) / 2));background:var(--spine);color:var(--ink-s);
+    display:flex;align-items:center;justify-content:space-between;flex-direction:column;padding:8px 0;overflow:hidden;
+    writing-mode:vertical-rl;text-orientation:mixed;
+    box-shadow:inset 2px 0 2px rgba(255,255,255,.12), inset -3px 0 4px rgba(0,0,0,.22)}
+  .book .spine b{font-weight:600;font-size:var(--fs);letter-spacing:.02em;line-height:1;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-height:72%}
+  .book .spine i{font-style:normal;font-size:calc(var(--fs) * .78);opacity:.75;line-height:1;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-height:26%}
+  .book .cover{top:0;height:100%;width:var(--d);left:calc((var(--w) - var(--d)) / 2);
+    transform:rotateY(90deg) translateZ(calc(var(--w) / 2));background:var(--spine) center/100% 100% no-repeat;
+    box-shadow:inset 3px 0 6px rgba(0,0,0,.25)}
+  .book .back{top:0;height:100%;width:var(--d);left:calc((var(--w) - var(--d)) / 2);
+    transform:rotateY(-90deg) translateZ(calc(var(--w) / 2));background:color-mix(in srgb, var(--spine) 80%, #000)}
+  .book .top{left:0;width:100%;height:var(--d);top:calc((var(--h) - var(--d)) / 2);
+    transform:rotateX(90deg) translateZ(calc(var(--h) / 2));
+    background:repeating-linear-gradient(90deg, #efe9dc 0 1px, #e2dccd 1px 2px);
+    border-left:1.5px solid var(--spine);border-right:1.5px solid var(--spine);border-top:1.5px solid var(--spine)}
+  .book .rib{position:absolute;left:40%;top:-16px;width:4px;height:30px;background:#e8452c;
+    transform:translateZ(calc(var(--d) / 2 - 6px));border-radius:0 0 1px 1px}
+
+  /* hover, or focus: it slides out a little; pulled out: it comes forward and turns to show its cover */
+  @media (hover:hover){ .book:hover .b3{transform:translateZ(calc(var(--d) / -2 + 18px)) translateY(-4px) rotateZ(var(--lean, 0deg))} }
+  .book:focus-visible .b3{transform:translateZ(calc(var(--d) / -2 + 18px)) translateY(-4px) rotateZ(var(--lean, 0deg))}
+  .book.out{z-index:3}
+  .book.out .b3,.book.out:hover .b3{transform:translateZ(calc(var(--d) / 2 + 60px)) translateY(-5%) translateX(var(--ox, 0px)) rotateY(-78deg) scale(1.18)}
+  .bk-shelf.has-out .book:not(.out) .b3{opacity:.9}
+
+  /* ---- what you are holding ---- */
+  .bk-info{min-height:94px;margin-top:-20px;display:flex;flex-direction:column;gap:4px}
+  .bk-info .hint{font-size:11px;color:var(--muted)}
+  .bk-info h2{margin:0;font-weight:500;font-size:23px;line-height:1.1;color:var(--ink)}
+  .bk-info p{margin:0;font-size:12.5px;color:var(--body)}
+  .bk-info .meta{display:flex;align-items:center;gap:12px;margin-top:6px;font-family:"Inconsolata",ui-monospace,monospace;
+    font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .bk-stars{display:inline-flex;gap:3px}
+  .bk-stars i{width:7px;height:7px;border-radius:50%;border:1px solid var(--ink)}
+  .bk-stars i.on{background:var(--ink)}
+
+  /* ---- footer, as on the Projects page ---- */
+  .pj-foot{margin-top:98px;padding:46px 4.86% 54px}
+  .pj-foot::before{content:"";display:block;height:1px;background:var(--ink);opacity:.22;margin-bottom:42px}
+  .pj-foot-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .pj-contact{display:flex;align-items:center;gap:22px}
+  .pj-contact .mk{width:23px;height:23.4px;flex:none;background:var(--ink);
+    -webkit-mask:url(public/img/logo.svg) no-repeat center/contain;mask:url(public/img/logo.svg) no-repeat center/contain}
+  .pj-contact p{margin:0;font-weight:500;font-size:26px;line-height:normal;color:var(--ink)}
+  .pj-contact a{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--body);text-decoration:none}
+  .pj-links{display:flex;align-items:center;gap:24px;font-size:10px;white-space:nowrap}
+  .pj-links a{color:var(--body);text-decoration:none}
+  .pj-contact a:hover,.pj-links a:hover{color:var(--ink)}
+  .pj-links small{font-size:9.5px;color:var(--muted)}
+
+  @media (prefers-reduced-motion: reduce){ .book .b3{transition-duration:.01s} }
+  @media (max-width:820px){
+    .bk{padding-top:118px}
+    .bk-head h1{font-size:30px}
+    .bk-shelf{margin-top:64px}
+    .bk-row{margin-bottom:46px}
+    .bk-books{padding:0 8px}
+    .pj-foot{padding:40px 24px 44px;margin-top:72px}
+    .pj-contact{align-items:flex-start;gap:14px}
+    .pj-contact p{font-size:20px}
+  }
+  @media (max-width:520px){ .bk-head{flex-direction:column;align-items:flex-start;gap:10px} .bk-note{align-items:flex-start} }
+</style>
+</head>
+<body>
+
+<a class="mark" href="./" aria-label="Home"></a>
+<nav class="pagenav" aria-label="Pages"><a href="timeline">Timeline</a><a href="projects">Projects</a><a href="./">← Back<i class="home" aria-hidden="true"></i></a></nav>
+
+<main class="bk">
+  <header class="bk-head">
+    <h1>Bookshelf</h1>
+    <p class="bk-note"><b>Read &amp; reading</b><span id="bkCount">From my Goodreads</span></p>
+  </header>
+  <p class="bk-intro">The books I have read lately. Take one off the shelf to see its cover and what I gave it.</p>
+
+  <section class="bk-shelf" id="bkShelf" aria-label="Bookshelf">
+    <noscript><p class="bk-intro">The shelf needs JavaScript to show.</p></noscript>
+  </section>
+  <div class="bk-info" id="bkInfo" aria-live="polite"><span class="hint">Tap or click a book to take it out.</span></div>
+</main>
+
+<footer class="pj-foot">
+  <div class="pj-foot-row">
+    <div class="pj-contact">
+      <i class="mk" aria-hidden="true"></i>
+      <div>
+        <p>Have a complicated thing to make clear?</p>
+        <a href="mailto:hello@julesbockelee.com">hello@julesbockelee.com ↗</a>
+      </div>
+    </div>
+    <div class="pj-links">
+      <a href="https://www.linkedin.com/in/julesbockelee/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://www.instagram.com/thejulesbockelee/" target="_blank" rel="noopener">Instagram ↗</a>
+      <small>© 2026</small>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  // The crow, as on the other pages: in from the right, down onto the rule under the title
+  import { createCrowStage } from "./src/crowstage.js";
+  import { createBookshelf } from "./src/bookshelf.js";
+  createCrowStage({ perchOn: document.querySelector(".bk-head"), perchAt: 0.5, dir: -1 });
+  createBookshelf();
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
