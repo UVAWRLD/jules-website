@@ -1,7 +1,8 @@
 // The Projects page's prints, in halftone until you look at them.
 //
 // Each print gets a canvas over its picture holding a one-bit ordered dither of it (Bayer 8 x 8,
-// one dot per CSS pixel, in the page's ink and the card's paper), so the page reads as black and
+// one dot per screen pixel, up to two a CSS pixel, the picture lightly sharpened first so fine
+// detail survives; in the page's ink and the card's paper), so the page reads as black and
 // white. Looking at a card brings the colour back: the dither is wiped away dot by dot in a
 // random order, cell by cell (2px cells, the order a seeded shuffle over a 64px tile), the prints
 // a few frames apart. With a mouse that happens on hover (and stays while the prints are fanned
@@ -26,7 +27,8 @@ const BAYER = (() => {                       // 8 x 8 ordered-dither thresholds,
   return b.flat();
 })();
 
-const CELL = 2, CELLS = 32, TILE = CELL * CELLS;   // the wipe: 2px cells on a 64px tile
+const CELL = 2, CELLS = 32;                          // the wipe: 2px cells (CSS) on a 64px tile
+const RES = () => Math.min(2, Math.max(1, Math.round(devicePixelRatio || 1)));   // dots per CSS pixel
 const LEVELS = 160;                                  // steps the wipe is drawn in
 const RANK = (() => {                                // a seeded shuffle of the tile's cells
   let s = 1234567;
@@ -38,14 +40,15 @@ const RANK = (() => {                                // a seeded shuffle of the 
   return rank;
 })();
 const tiles = new Map();                             // level -> pattern tile: the cells wiped so far
-function tile(level) {
-  let t = tiles.get(level);
+function tile(level, k) {                            // k: canvas pixels per CSS pixel
+  let t = tiles.get(k + ":" + level);
   if (t) return t;
-  const c = document.createElement("canvas"); c.width = c.height = TILE;
+  const cell = CELL * k;
+  const c = document.createElement("canvas"); c.width = c.height = cell * CELLS;
   const g = c.getContext("2d"), cut = level / LEVELS * RANK.length;
   g.fillStyle = "#000";
-  for (let i = 0; i < RANK.length; i++) if (RANK[i] < cut) g.fillRect((i % CELLS) * CELL, Math.floor(i / CELLS) * CELL, CELL, CELL);
-  t = c; tiles.set(level, t);
+  for (let i = 0; i < RANK.length; i++) if (RANK[i] < cut) g.fillRect((i % CELLS) * cell, Math.floor(i / CELLS) * cell, cell, cell);
+  t = c; tiles.set(k + ":" + level, t);
   return t;
 }
 
@@ -92,7 +95,7 @@ export function ditherPrints(list, cards) {
   }
 
   function make(pr) {                                 // dither the picture as it is shown (object-fit: cover, top)
-    const w = Math.round(pr.fig.clientWidth), h = Math.round(pr.fig.clientHeight);
+    const k = RES(), w = Math.round(pr.fig.clientWidth * k), h = Math.round(pr.fig.clientHeight * k);
     if (w < 4 || h < 4 || !pr.img.naturalWidth) return false;
     const src = document.createElement("canvas"); src.width = w; src.height = h;
     const g = src.getContext("2d", { willReadFrequently: true });
@@ -101,7 +104,17 @@ export function ditherPrints(list, cards) {
     g.drawImage(pr.img, (iw - sw) / 2, 0, sw, sh, 0, 0, w, h);
     const px = g.getImageData(0, 0, w, h).data, n = w * h, L = new Float32Array(n);
     const hist = new Uint32Array(256);
-    for (let i = 0, j = 0; i < n; i++, j += 4) { const v = px[j] * .299 + px[j + 1] * .587 + px[j + 2] * .114; L[i] = v; hist[v | 0]++; }
+    for (let i = 0, j = 0; i < n; i++, j += 4) L[i] = px[j] * .299 + px[j + 1] * .587 + px[j + 2] * .114;
+    // a light unsharp mask (against a 3 x 3 box blur) so edges and small type hold up in the dots
+    const S = new Float32Array(n);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      let sum = 0, c = 0;
+      for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= h) continue;
+        for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= w) continue; sum += L[yy * w + xx]; c++; } }
+      const i = y * w + x, v = Math.min(255, Math.max(0, L[i] + .7 * (L[i] - sum / c)));
+      S[i] = v; hist[v | 0]++;
+    }
+    L.set(S);
     // stretch the tones between the 1st and 99th percentiles, so flat pictures still hold detail
     let lo = 0, hi = 255, acc = 0;
     for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc > n * .01) { lo = v; break; } }
@@ -112,7 +125,7 @@ export function ditherPrints(list, cards) {
       const t = Math.min(1, Math.max(0, (L[i] - lo) / span)) ** 1.1;
       bits[i] = t * 64 > BAYER[(y & 7) * 8 + (x & 7)] + .5 ? 1 : 0;
     }
-    Object.assign(pr, { w, h, bits });
+    Object.assign(pr, { w, h, k, bits });
     paint(pr);
     pr.cv.width = w; pr.cv.height = h;
     pr.level = -1; draw(pr);
@@ -132,7 +145,7 @@ export function ditherPrints(list, cards) {
     g.drawImage(pr.off, 0, 0);
     if (level > 0) {
       g.globalCompositeOperation = "destination-out";
-      g.fillStyle = g.createPattern(tile(level), "repeat");
+      g.fillStyle = g.createPattern(tile(level, pr.k), "repeat");
       g.fillRect(0, 0, pr.w, pr.h);
     }
   }
@@ -157,7 +170,7 @@ export function ditherPrints(list, cards) {
   let resizeT = 0;
   const sized = new ResizeObserver(() => {
     clearTimeout(resizeT);
-    resizeT = setTimeout(() => prints.forEach(pr => { if (pr.done && (Math.abs(pr.fig.clientWidth - pr.w) > 1 || Math.abs(pr.fig.clientHeight - pr.h) > 1)) make(pr); }), 160);
+    resizeT = setTimeout(() => prints.forEach(pr => { if (pr.done && (Math.abs(pr.fig.clientWidth * pr.k - pr.w) > 2 || Math.abs(pr.fig.clientHeight * pr.k - pr.h) > 2 || RES() !== pr.k)) make(pr); }), 160);
   });
   prints.forEach(pr => sized.observe(pr.fig));
 

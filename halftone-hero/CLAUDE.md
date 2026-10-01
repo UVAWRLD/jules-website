@@ -390,7 +390,8 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   else, brings them back.
 - **The prints are in halftone until looked at** (`src/pjdither.js`, Jules's test of 2026-10-01).
   Each print has a canvas over its picture with a one-bit ordered dither of it (Bayer 8 x 8, one
-  dot per CSS pixel, the tones stretched between the 1st and 99th percentiles, in the darker and
+  dot per screen pixel, up to two a CSS pixel, after a light unsharp mask so small type survives;
+  first tried at one dot per CSS pixel, which Jules found too coarse; the tones stretched between the 1st and 99th percentiles, in the darker and
   lighter of `--ink` and `--surface`), made when its card comes within a screen of the viewport,
   from the picture at the size it is shown, and remade when that size changes. With a mouse, hover
   wipes the dither away in 2px cells in a seeded random order (a 64px tile; each step is one
