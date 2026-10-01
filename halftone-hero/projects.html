@@ -98,6 +98,15 @@
   .pj-layer{position:absolute;margin:0;overflow:hidden;border-radius:4px;background:var(--pill);box-shadow:var(--layer-shadow);
     transform:rotate(var(--r, 0deg));transition:transform .55s cubic-bezier(.2,.7,.2,1)}
   .pj-layer img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0}
+  /* in halftone until looked at (src/pjdither.js): a one-bit dither over each picture, wiped away
+     dot by dot on hover, or with the scroll on a touch screen; the picture waits under it */
+  .pj-dither .pj-layer img{opacity:0}
+  .pj-dither .pj-layer.dz img{opacity:1}
+  .pj-layer .pj-dot{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+  /* a soft shadow at the foot of the screen while there are more projects below */
+  .pj-more{position:fixed;left:0;right:0;bottom:0;height:110px;z-index:3;pointer-events:none;
+    background:linear-gradient(to bottom, transparent, var(--more-shade));transition:opacity .5s ease}
+  .pj-more.off{opacity:0}
   .pj-card:hover .pj-layer{transform:translate(var(--dx, 0px), var(--dy, 0px)) rotate(calc(var(--r, 0deg) * 1.35))}
   /* a click fans them right out, over the card's edges and past it */
   .pj-imgs{cursor:pointer}

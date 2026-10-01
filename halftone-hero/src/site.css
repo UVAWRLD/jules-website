@@ -34,6 +34,7 @@
   --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
   --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
   --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
+  --more-shade:rgba(25,24,17,.13);
   /* band width follows the viewport height so the picture keeps the same vertical
      composition at every window size; it only gives way when the window is too narrow */
   --band-k:0.96;
@@ -49,6 +50,7 @@
   --surface:#1A1A18; --pill:#262624; --hairline:#4A4A46;
   --lift-shadow:0 14px 38px rgba(0,0,0,.35); --lift-shadow-hi:0 22px 48px rgba(0,0,0,.5);
   --layer-shadow:6px 9px 20px rgba(0,0,0,.4);
+  --more-shade:rgba(0,0,0,.55);
 }
 :root[data-theme="light"]{
   --paper:#ECECEC; --ink:#0A0A0A; --muted:#8A8A88;
@@ -58,6 +60,7 @@
   --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
   --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
   --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
+  --more-shade:rgba(25,24,17,.13);
 }
 *{box-sizing:border-box}
 /* the paper belongs on the root, so Safari's rubber band area is paper too, not a void;

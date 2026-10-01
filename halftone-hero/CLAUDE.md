@@ -388,6 +388,18 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   middle of the group (16 for the outer ones) and turns a touch further; **a click (or tap) on the
   pictures fans them right out**, over the card's edges, and a second click, or a click anywhere
   else, brings them back.
+- **The prints are in halftone until looked at** (`src/pjdither.js`, Jules's test of 2026-10-01).
+  Each print has a canvas over its picture with a one-bit ordered dither of it (Bayer 8 x 8, one
+  dot per CSS pixel, the tones stretched between the 1st and 99th percentiles, in the darker and
+  lighter of `--ink` and `--surface`), made when its card comes within a screen of the viewport,
+  from the picture at the size it is shown, and remade when that size changes. With a mouse, hover
+  wipes the dither away in 2px cells in a seeded random order (a 64px tile; each step is one
+  `destination-out` pattern fill), the prints 55ms apart over 620ms, and it comes back when the
+  mouse leaves; a fanned-out card stays in colour. A touch screen has no hover, so the wipe
+  follows the scroll: none with the pictures' top at 92% of the screen's height, all of it by
+  42%. The picture is hidden (`.pj-dither`) until its dither is ready, so it never flashes in
+  colour first. A soft shadow (`.pj-more`, `--more-shade`) sits along the bottom of the screen
+  while more projects are below and fades out at the end of the list.
 - **Text**: tags are the database's `discipline` and `context`; the year is `year` or `years`
   (undated projects show none). The heading is `headline` when the database has one (with the
   project's name above it in small capitals), else the title; then `description`, and

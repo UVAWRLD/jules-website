@@ -19,6 +19,8 @@
 //   + Add Filter  a menu of the cards' tags (discipline and context); each one chosen becomes a
 //                 chip, and a card shows only with every chosen tag. A chip's × removes it
 
+import { ditherPrints, moreShade } from "./pjdither.js";
+
 const DATA = "public/projects/projects.json";
 
 const MAIN_AREA = 98000;                 // px², the main print's area before fitting
@@ -169,6 +171,8 @@ export async function createProjectControls() {
   layout();
   let lastW = list.clientWidth;
   new ResizeObserver(() => { if (list.clientWidth !== lastW) { lastW = list.clientWidth; layout(); } }).observe(list);
+  ditherPrints(list, cards);
+  moreShade(list);
   const search = document.getElementById("pjSearch"), input = search.querySelector("input");
   const sortBtn = document.getElementById("pjSort"), sortLabel = sortBtn.querySelector(".label");
   const add = document.getElementById("pjAdd"), menu = document.getElementById("pjMenu");
