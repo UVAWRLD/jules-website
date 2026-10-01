@@ -547,8 +547,143 @@
    ]
   },
   {
-   "slug": "the-surf-helmet",
+   "slug": "garrett",
    "rank": 12,
+   "tier": "Selected",
+   "title": "Garrett",
+   "headline": null,
+   "description": "A media kit for Garrett, a New York creator with more than 365,000 followers who has worked with MrBeast and Cam Newton. It shows his audience, the collaborations he's done and what a brand gets from working with him.",
+   "contribution": null,
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/garrett/1.jpg",
+     "w": 840,
+     "h": 466
+    },
+    {
+     "src": "public/projects/garrett/2.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/garrett/3.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/garrett/4.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/garrett/5.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/garrett/6.jpg",
+     "w": 400,
+     "h": 222
+    }
+   ]
+  },
+  {
+   "slug": "ben-sharf",
+   "rank": 13,
+   "tier": "Selected",
+   "title": "Ben Sharf",
+   "headline": null,
+   "description": "A media kit for Ben Sharf, a podcaster and creator who works with bigger influencers and brands. It covers his entrepreneur podcasts and the user-generated content he makes for niche audiences.",
+   "contribution": null,
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/ben-sharf/1.jpg",
+     "w": 840,
+     "h": 466
+    },
+    {
+     "src": "public/projects/ben-sharf/2.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/ben-sharf/3.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/ben-sharf/4.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/ben-sharf/5.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/ben-sharf/6.jpg",
+     "w": 400,
+     "h": 222
+    }
+   ]
+  },
+  {
+   "slug": "new-york-guys",
+   "rank": 14,
+   "tier": "Selected",
+   "title": "New York Guys",
+   "headline": null,
+   "description": "A media kit for New York Guys, four creators (Garrett, Brendon, Bill and Phillip) who talk about life in the city, some of it comedy, some satire, some serious. I introduced each of them and set out what the group offers brands.",
+   "contribution": null,
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/new-york-guys/1.jpg",
+     "w": 840,
+     "h": 466
+    },
+    {
+     "src": "public/projects/new-york-guys/2.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/new-york-guys/3.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/new-york-guys/4.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/new-york-guys/5.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/new-york-guys/6.jpg",
+     "w": 400,
+     "h": 222
+    }
+   ]
+  },
+  {
+   "slug": "the-surf-helmet",
+   "rank": 15,
    "tier": "Selected",
    "title": "The Surf Helmet",
    "headline": null,
@@ -598,7 +733,7 @@
   },
   {
    "slug": "scribe",
-   "rank": 13,
+   "rank": 16,
    "tier": "Selected",
    "title": "Scribe",
    "headline": null,
@@ -648,7 +783,7 @@
   },
   {
    "slug": "driven",
-   "rank": 14,
+   "rank": 17,
    "tier": "Selected",
    "title": "Driven",
    "headline": null,
@@ -698,7 +833,7 @@
   },
   {
    "slug": "ikea-frysta",
-   "rank": 15,
+   "rank": 18,
    "tier": "Selected",
    "title": "IKEA Frystä",
    "headline": null,
@@ -733,7 +868,7 @@
   },
   {
    "slug": "nyc-students-in-data",
-   "rank": 16,
+   "rank": 19,
    "tier": "Selected",
    "title": "NYC Students, in Data",
    "headline": null,
@@ -762,58 +897,8 @@
    ]
   },
   {
-   "slug": "rl-prestige-by-ralph-lauren",
-   "rank": 17,
-   "tier": "Selected",
-   "title": "RL Prestige by Ralph Lauren",
-   "headline": null,
-   "description": "What if Ralph Lauren had a luxury line built around polo culture, with aged Scotch at the centre? I worked out the concept and how it would look, and kept it recognisably Ralph Lauren.",
-   "contribution": null,
-   "discipline": "Strategy",
-   "context": "Independent",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/1.jpg",
-     "w": 840,
-     "h": 466
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/2.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/3.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/4.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/5.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/6.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/rl-prestige-by-ralph-lauren/7.jpg",
-     "w": 400,
-     "h": 222
-    }
-   ]
-  },
-  {
    "slug": "cozy",
-   "rank": 18,
+   "rank": 20,
    "tier": "Selected",
    "title": "Cozy",
    "headline": null,
@@ -853,7 +938,7 @@
   },
   {
    "slug": "the-mycelium-project",
-   "rank": 19,
+   "rank": 21,
    "tier": "Selected",
    "title": "The Mycelium Project",
    "headline": null,
@@ -903,7 +988,7 @@
   },
   {
    "slug": "nike-financial-analysis",
-   "rank": 20,
+   "rank": 22,
    "tier": "Selected",
    "title": "Nike Financial Analysis",
    "headline": null,
@@ -953,7 +1038,7 @@
   },
   {
    "slug": "the-5th-element-miami",
-   "rank": 21,
+   "rank": 23,
    "tier": "Selected",
    "title": "The 5th Element Miami",
    "headline": null,
@@ -1002,135 +1087,50 @@
    ]
   },
   {
-   "slug": "garrett",
-   "rank": 22,
-   "tier": "Selected",
-   "title": "Garrett",
-   "headline": null,
-   "description": "A media kit for Garrett, a New York creator with more than 365,000 followers who has worked with MrBeast and Cam Newton. It shows his audience, the collaborations he's done and what a brand gets from working with him.",
-   "contribution": null,
-   "discipline": "Strategy",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/garrett/1.jpg",
-     "w": 840,
-     "h": 466
-    },
-    {
-     "src": "public/projects/garrett/2.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/garrett/3.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/garrett/4.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/garrett/5.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/garrett/6.jpg",
-     "w": 400,
-     "h": 222
-    }
-   ]
-  },
-  {
-   "slug": "ben-sharf",
-   "rank": 23,
-   "tier": "Selected",
-   "title": "Ben Sharf",
-   "headline": null,
-   "description": "A media kit for Ben Sharf, a podcaster and creator who works with bigger influencers and brands. It covers his entrepreneur podcasts and the user-generated content he makes for niche audiences.",
-   "contribution": null,
-   "discipline": "Strategy",
-   "context": "Professional",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/ben-sharf/1.jpg",
-     "w": 840,
-     "h": 466
-    },
-    {
-     "src": "public/projects/ben-sharf/2.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/ben-sharf/3.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/ben-sharf/4.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/ben-sharf/5.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/ben-sharf/6.jpg",
-     "w": 400,
-     "h": 222
-    }
-   ]
-  },
-  {
-   "slug": "new-york-guys",
+   "slug": "rl-prestige-by-ralph-lauren",
    "rank": 24,
    "tier": "Selected",
-   "title": "New York Guys",
+   "title": "RL Prestige by Ralph Lauren",
    "headline": null,
-   "description": "A media kit for New York Guys, four creators (Garrett, Brendon, Bill and Phillip) who talk about life in the city, some of it comedy, some satire, some serious. I introduced each of them and set out what the group offers brands.",
+   "description": "What if Ralph Lauren had a luxury line built around polo culture, with aged Scotch at the centre? I worked out the concept and how it would look, and kept it recognisably Ralph Lauren.",
    "contribution": null,
    "discipline": "Strategy",
-   "context": "Professional",
+   "context": "Independent",
    "year": null,
    "yearSort": null,
    "prints": [
     {
-     "src": "public/projects/new-york-guys/1.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/1.jpg",
      "w": 840,
      "h": 466
     },
     {
-     "src": "public/projects/new-york-guys/2.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/2.jpg",
      "w": 400,
      "h": 222
     },
     {
-     "src": "public/projects/new-york-guys/3.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/3.jpg",
      "w": 400,
      "h": 222
     },
     {
-     "src": "public/projects/new-york-guys/4.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/4.jpg",
      "w": 400,
      "h": 222
     },
     {
-     "src": "public/projects/new-york-guys/5.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/5.jpg",
      "w": 400,
      "h": 222
     },
     {
-     "src": "public/projects/new-york-guys/6.jpg",
+     "src": "public/projects/rl-prestige-by-ralph-lauren/6.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/rl-prestige-by-ralph-lauren/7.jpg",
      "w": 400,
      "h": 222
     }
