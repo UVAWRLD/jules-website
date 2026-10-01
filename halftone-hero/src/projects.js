@@ -75,10 +75,15 @@ function arrange(p) {
     (w, h) => ({ x: -w * (0.78 + R() * 0.15), y: mh * (0.3 + R() * 0.2) - h / 2, z: 4, r: turn(-1), far: 1 }),
     (w, h) => ({ x: mw * (0.3 + R() * 0.2) - w / 2, y: -h * (0.55 + R() * 0.15), z: 0, r: turn(-1), far: 1 }),
     (w, h) => ({ x: mw * (0.45 + R() * 0.2) - w / 2, y: mh - h * (0.3 + R() * 0.15), z: 7, r: turn(1), far: 1 }),
+    // for the few cards with up to ten: behind, out past the inner edge; below the outer bottom
+    // corner; in front, high on the inner edge
+    (w, h) => ({ x: mw - w * (0.28 + R() * 0.12), y: mh * (0.42 + R() * 0.12) - h / 2, z: 1, r: turn(1), far: 1 }),
+    (w, h) => ({ x: -w * (0.25 + R() * 0.2), y: mh - h * (0.12 + R() * 0.12), z: 3, r: turn(-1), far: 1 }),
+    (w, h) => ({ x: mw - w * (0.42 + R() * 0.12), y: mh * 0.12 - h * (0.2 + R() * 0.1), z: 8, r: turn(-1), far: 1 }),
   ];
-  const order = pr.length === 2 ? [1] : [0, 1, 2, 3, 4, 5, 6];
-  pr.slice(1, 7).forEach((_, n) => {
-    const [w, h] = small(n + 1), f = n >= 3 ? 0.8 : 1;              // the further ones a little smaller
+  const order = pr.length === 2 ? [1] : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  pr.slice(1, 10).forEach((_, n) => {
+    const [w, h] = small(n + 1), f = n >= 6 ? 0.72 : n >= 3 ? 0.8 : 1;   // the further ones a little smaller
     out.push({ i: n + 1, w: w * f, h: h * f, ...spots[order[n] ?? n](w * f, h * f) });
   });
   const pad = 8;                                         // room for the turns and shadows

@@ -25,7 +25,7 @@ timeline.html         the Timeline page: static, plus the live crow (src/crowsta
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
 public/projects/      exported by the project database (never edit by hand): projects.json and
-                      each card's prints, <slug>/1-7.jpg (33 projects, 8.0MB)
+                      each card's prints, <slug>/1-7.jpg (34 projects, 8.3MB)
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
                       the logo, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
@@ -352,7 +352,11 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   sized prints into this folder: the **Featured and Selected** tiers (32 projects; the Archive is
   left out) in the database's `rank` order. `src/projects.js` fetches that file and builds the
   cards. To change the page, change the database, run the export, and commit here. Up to seven
-  prints a card. A deck (one board of slides) is cut into whole slides: where each slide sits is
+  prints a card (ten when the database gives the project `max_prints`; Cape has ten, and three
+  extra slots in `arrange()` take them: behind past the inner edge, below the outer bottom corner,
+  in front high on the inner edge). Cape's client is not to be named on the site: every mention
+  of it, "Confidential" and the club's brand name is blurred in the database's images, found from
+  the PDF's text and by OCR (macOS Vision) and checked by OCR again. A deck (one board of slides) is cut into whole slides: where each slide sits is
   saved in the database. Most boards are an even grid of 16:9 slides (the columns read off by
   eye, the rows spaced evenly down the board), so the cuts follow that grid; the few that are not
   (NYC Students, the LVMH value chain, Titanic, IKEA) have hand set quadrants. Edge detection

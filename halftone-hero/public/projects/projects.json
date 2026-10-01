@@ -52,8 +52,123 @@
    ]
   },
   {
-   "slug": "mondadori-estate",
+   "slug": "cape",
    "rank": 2,
+   "tier": "Featured",
+   "title": "Cape",
+   "headline": "Finding who a new resort is for",
+   "description": "Cape is a new resort on the coast, built for a luxury hotel group. I worked on who it is for and what it should feel like. The market data pointed to couples travelling from the USA, Europe and the Middle East, mostly for wellness, so I built the identity around them and carried it into the members' club, the spa and the restaurants.",
+   "contribution": "Segmentation, market data, strategic analysis, brand identity",
+   "discipline": "Strategy",
+   "context": "Professional",
+   "year": "2024",
+   "yearSort": 2024,
+   "prints": [
+    {
+     "src": "public/projects/cape/1.jpg",
+     "w": 840,
+     "h": 472
+    },
+    {
+     "src": "public/projects/cape/2.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/3.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/4.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/5.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/6.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/7.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/8.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/9.jpg",
+     "w": 400,
+     "h": 225
+    },
+    {
+     "src": "public/projects/cape/10.jpg",
+     "w": 400,
+     "h": 225
+    }
+   ]
+  },
+  {
+   "slug": "eureka",
+   "rank": 3,
+   "tier": "Featured",
+   "title": "Eureka",
+   "headline": null,
+   "description": "Academic research is hard to break into. Eureka is a social app built to help with that, with tools for getting feedback, finding collaborators and keeping track of projects. I took it from user research to a prototype.",
+   "contribution": null,
+   "discipline": "UX/UI",
+   "context": "Academic",
+   "year": null,
+   "yearSort": null,
+   "prints": [
+    {
+     "src": "public/projects/eureka/1.jpg",
+     "w": 840,
+     "h": 466
+    },
+    {
+     "src": "public/projects/eureka/2.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/eureka/3.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/eureka/4.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/eureka/5.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/eureka/6.jpg",
+     "w": 400,
+     "h": 222
+    },
+    {
+     "src": "public/projects/eureka/7.jpg",
+     "w": 400,
+     "h": 222
+    }
+   ]
+  },
+  {
+   "slug": "mondadori-estate",
+   "rank": 4,
    "tier": "Featured",
    "title": "Mondadori Estate",
    "headline": "Selling a Puglian estate to hotel groups",
@@ -103,7 +218,7 @@
   },
   {
    "slug": "caddis",
-   "rank": 3,
+   "rank": 5,
    "tier": "Featured",
    "title": "Caddis",
    "headline": null,
@@ -152,58 +267,43 @@
    ]
   },
   {
-   "slug": "eureka",
-   "rank": 4,
+   "slug": "enzo-ring",
+   "rank": 6,
    "tier": "Featured",
-   "title": "Eureka",
+   "title": "Enzo",
    "headline": null,
-   "description": "Academic research is hard to break into. Eureka is a social app built to help with that, with tools for getting feedback, finding collaborators and keeping track of projects. I took it from user research to a prototype.",
-   "contribution": null,
+   "description": "Enzo is a banking app I built with a membership system behind it. Your rank goes up as your wealth grows, and each rank has its own ring, from obsidian at $25K up to gold at $5MM. I designed the app and the rings, built the system around the ranks and wrote the marketing strategy, which uses the ranks as a sign of where you stand. People apply for access through a landing page.",
+   "contribution": "App design, membership system, marketing strategy",
    "discipline": "UX/UI",
-   "context": "Academic",
+   "context": "Independent",
    "year": null,
    "yearSort": null,
    "prints": [
     {
-     "src": "public/projects/eureka/1.jpg",
+     "src": "public/projects/enzo-ring/1.jpg",
      "w": 840,
-     "h": 466
+     "h": 472
     },
     {
-     "src": "public/projects/eureka/2.jpg",
+     "src": "public/projects/enzo-ring/2.jpg",
      "w": 400,
-     "h": 222
+     "h": 218
     },
     {
-     "src": "public/projects/eureka/3.jpg",
+     "src": "public/projects/enzo-ring/3.jpg",
      "w": 400,
-     "h": 222
+     "h": 225
     },
     {
-     "src": "public/projects/eureka/4.jpg",
+     "src": "public/projects/enzo-ring/4.jpg",
      "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/eureka/5.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/eureka/6.jpg",
-     "w": 400,
-     "h": 222
-    },
-    {
-     "src": "public/projects/eureka/7.jpg",
-     "w": 400,
-     "h": 222
+     "h": 225
     }
    ]
   },
   {
    "slug": "rebranding-frozen-foods",
-   "rank": 5,
+   "rank": 7,
    "tier": "Featured",
    "title": "Rebranding Frozen Foods",
    "headline": null,
@@ -253,7 +353,7 @@
   },
   {
    "slug": "clay",
-   "rank": 6,
+   "rank": 8,
    "tier": "Featured",
    "title": "Clay",
    "headline": null,
@@ -302,44 +402,9 @@
    ]
   },
   {
-   "slug": "enzo-ring",
-   "rank": 7,
-   "tier": "Featured",
-   "title": "Enzo",
-   "headline": null,
-   "description": "Enzo is a banking app I built with a membership system behind it. Your rank goes up as your wealth grows, and each rank has its own ring, from obsidian at $25K up to gold at $5MM. I designed the app and the rings, built the system around the ranks and wrote the marketing strategy, which uses the ranks as a sign of where you stand. People apply for access through a landing page.",
-   "contribution": "App design, membership system, marketing strategy",
-   "discipline": "UX/UI",
-   "context": "Independent",
-   "year": null,
-   "yearSort": null,
-   "prints": [
-    {
-     "src": "public/projects/enzo-ring/1.jpg",
-     "w": 840,
-     "h": 472
-    },
-    {
-     "src": "public/projects/enzo-ring/2.jpg",
-     "w": 400,
-     "h": 218
-    },
-    {
-     "src": "public/projects/enzo-ring/3.jpg",
-     "w": 400,
-     "h": 225
-    },
-    {
-     "src": "public/projects/enzo-ring/4.jpg",
-     "w": 400,
-     "h": 225
-    }
-   ]
-  },
-  {
    "slug": "talaria",
-   "rank": 8,
-   "tier": "Featured",
+   "rank": 9,
+   "tier": "Selected",
    "title": "Talaria",
    "headline": null,
    "description": "Seeing a doctor means time you don't have, a waiting room where you can pick something up, and a big bill. Talaria is a drive-thru medical service that deals with all three by bringing care to the car window. I built the concept and the brand around those problems, and the deck goes as far as traction, projections and a $1 million ask.",
@@ -388,7 +453,7 @@
   },
   {
    "slug": "cost-plus-drugs",
-   "rank": 9,
+   "rank": 10,
    "tier": "Selected",
    "title": "Cost Plus Drugs",
    "headline": null,
@@ -433,7 +498,7 @@
   },
   {
    "slug": "nycic-annual-sponsorship-proposal",
-   "rank": 10,
+   "rank": 11,
    "tier": "Selected",
    "title": "NYCIC Annual Sponsorship Proposal",
    "headline": null,
@@ -483,7 +548,7 @@
   },
   {
    "slug": "the-surf-helmet",
-   "rank": 11,
+   "rank": 12,
    "tier": "Selected",
    "title": "The Surf Helmet",
    "headline": null,
@@ -533,7 +598,7 @@
   },
   {
    "slug": "scribe",
-   "rank": 12,
+   "rank": 13,
    "tier": "Selected",
    "title": "Scribe",
    "headline": null,
@@ -583,7 +648,7 @@
   },
   {
    "slug": "driven",
-   "rank": 13,
+   "rank": 14,
    "tier": "Selected",
    "title": "Driven",
    "headline": null,
@@ -633,7 +698,7 @@
   },
   {
    "slug": "ikea-frysta",
-   "rank": 14,
+   "rank": 15,
    "tier": "Selected",
    "title": "IKEA Frystä",
    "headline": null,
@@ -668,7 +733,7 @@
   },
   {
    "slug": "nyc-students-in-data",
-   "rank": 15,
+   "rank": 16,
    "tier": "Selected",
    "title": "NYC Students, in Data",
    "headline": null,
@@ -698,7 +763,7 @@
   },
   {
    "slug": "rl-prestige-by-ralph-lauren",
-   "rank": 16,
+   "rank": 17,
    "tier": "Selected",
    "title": "RL Prestige by Ralph Lauren",
    "headline": null,
@@ -748,7 +813,7 @@
   },
   {
    "slug": "cozy",
-   "rank": 17,
+   "rank": 18,
    "tier": "Selected",
    "title": "Cozy",
    "headline": null,
@@ -788,7 +853,7 @@
   },
   {
    "slug": "the-mycelium-project",
-   "rank": 18,
+   "rank": 19,
    "tier": "Selected",
    "title": "The Mycelium Project",
    "headline": null,
@@ -838,7 +903,7 @@
   },
   {
    "slug": "nike-financial-analysis",
-   "rank": 19,
+   "rank": 20,
    "tier": "Selected",
    "title": "Nike Financial Analysis",
    "headline": null,
@@ -888,7 +953,7 @@
   },
   {
    "slug": "the-5th-element-miami",
-   "rank": 20,
+   "rank": 21,
    "tier": "Selected",
    "title": "The 5th Element Miami",
    "headline": null,
@@ -938,7 +1003,7 @@
   },
   {
    "slug": "garrett",
-   "rank": 21,
+   "rank": 22,
    "tier": "Selected",
    "title": "Garrett",
    "headline": null,
@@ -983,7 +1048,7 @@
   },
   {
    "slug": "ben-sharf",
-   "rank": 22,
+   "rank": 23,
    "tier": "Selected",
    "title": "Ben Sharf",
    "headline": null,
@@ -1028,7 +1093,7 @@
   },
   {
    "slug": "new-york-guys",
-   "rank": 23,
+   "rank": 24,
    "tier": "Selected",
    "title": "New York Guys",
    "headline": null,
@@ -1073,7 +1138,7 @@
   },
   {
    "slug": "lvmh-value-chain",
-   "rank": 24,
+   "rank": 25,
    "tier": "Selected",
    "title": "LVMH Value Chain",
    "headline": null,
@@ -1108,7 +1173,7 @@
   },
   {
    "slug": "the-hat-dilemma",
-   "rank": 25,
+   "rank": 26,
    "tier": "Selected",
    "title": "The Hat Dilemma",
    "headline": null,
@@ -1158,7 +1223,7 @@
   },
   {
    "slug": "the-toilet-project",
-   "rank": 26,
+   "rank": 27,
    "tier": "Selected",
    "title": "The Toilet Project",
    "headline": null,
@@ -1208,7 +1273,7 @@
   },
   {
    "slug": "titanic",
-   "rank": 27,
+   "rank": 28,
    "tier": "Selected",
    "title": "Titanic",
    "headline": null,
@@ -1238,7 +1303,7 @@
   },
   {
    "slug": "chilewich-x-hockney",
-   "rank": 28,
+   "rank": 29,
    "tier": "Selected",
    "title": "Chilewich x Hockney",
    "headline": null,
@@ -1273,7 +1338,7 @@
   },
   {
    "slug": "le-cocon",
-   "rank": 29,
+   "rank": 30,
    "tier": "Selected",
    "title": "Le Cocon",
    "headline": null,
@@ -1313,7 +1378,7 @@
   },
   {
    "slug": "lvmh-and-kering-style-guide",
-   "rank": 30,
+   "rank": 31,
    "tier": "Selected",
    "title": "LVMH and Kering Style Guide",
    "headline": null,
@@ -1358,7 +1423,7 @@
   },
   {
    "slug": "zayd-turk-at-jams",
-   "rank": 31,
+   "rank": 32,
    "tier": "Selected",
    "title": "Zayd Turk at Jams",
    "headline": null,
@@ -1408,7 +1473,7 @@
   },
   {
    "slug": "rumble-in-the-jungle",
-   "rank": 32,
+   "rank": 33,
    "tier": "Selected",
    "title": "Rumble in the Jungle",
    "headline": null,
@@ -1448,7 +1513,7 @@
   },
   {
    "slug": "the-palace",
-   "rank": 33,
+   "rank": 34,
    "tier": "Selected",
    "title": "The Palace",
    "headline": null,
