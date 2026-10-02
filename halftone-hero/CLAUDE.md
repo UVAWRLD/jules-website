@@ -821,6 +821,17 @@ books.
   shelf has its own perspective from above.
 - **Shelves**: 6 books a shelf (4 at 820 and under, 3 on a phone), spaced evenly; the plank is a
   white slab 13px thick, its top seen from above (`--shelf-*` tokens, darker in the dark theme).
+- **2026-10-02, Jules's edits**: his own choice of cover for Ubik, Smarter Faster Better, How to
+  Win (10th anniversary), The Joy of x, 1984 (the 1960s Penguin), Animal Farm (Signet, only
+  290px wide), Meditations and Asimov, whose slot is now I, Robot (his cover; it was Bóvedas de
+  acero on Goodreads). Elon Musk, The Little Prince and The Fault in Our Stars removed. Three he
+  is reading added first, each with a red ribbon out of its top: Encore un moment… (Edgar Morin,
+  Folio, his image, no page count), Thinking in Systems (Meadows) and Determined (Sapolsky), the
+  last two from Amazon by ISBN. Spine colours set by hand where the cover's edge misled (Folio
+  white, 1984 Penguin orange, I, Robot's blue). **Spine type**: in vertical writing the inline
+  axis runs down the spine, so the title and the surname are laid out along it (`flex-direction:
+  row` inside `writing-mode: vertical-rl`), title from the top, surname at the foot, centred
+  across; with `column` they sat side by side across the spine, which read as odd.
 - **Hover** lifts a book 8px and turns it 16 degrees more to show its spine. **A click or tap**
   takes it down: forward, cover to you, the others fade to 45%, and its title, subtitle, author,
   rating (five dots), read date and pages open under its shelf. A click elsewhere or Escape puts

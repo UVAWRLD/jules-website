@@ -1,6 +1,54 @@
 {
- "source": "Goodreads, Read shelf (Jules's screenshot, 2026-10-01); the editions on that shelf, covers at full size from the publisher's images (by ISBN)",
+ "source": "Goodreads (Read shelf, Jules's screenshot, 2026-10-01) and Jules's list of 2026-10-02; covers chosen by Jules, or the editions on his shelf at full size",
  "books": [
+  {
+   "slug": "encore-un-moment",
+   "title": "Encore un moment…",
+   "subtitle": null,
+   "author": "Edgar Morin",
+   "rating": null,
+   "status": "reading",
+   "read": null,
+   "pages": null,
+   "format": "pocket",
+   "cover": "public/img/books/encore-un-moment.jpg",
+   "w": 400,
+   "h": 658,
+   "spine": "#f7f5ef",
+   "ink": "#2b4f8a"
+  },
+  {
+   "slug": "thinking-in-systems",
+   "title": "Thinking in Systems",
+   "subtitle": "A Primer",
+   "author": "Donella H. Meadows",
+   "rating": null,
+   "status": "reading",
+   "read": null,
+   "pages": 240,
+   "format": "paper",
+   "cover": "public/img/books/thinking-in-systems.jpg",
+   "w": 530,
+   "h": 800,
+   "spine": "#f8f7f3",
+   "ink": "#1d1d1b"
+  },
+  {
+   "slug": "determined",
+   "title": "Determined",
+   "subtitle": "A Science of Life Without Free Will",
+   "author": "Robert M. Sapolsky",
+   "rating": null,
+   "status": "reading",
+   "read": null,
+   "pages": 528,
+   "format": "hard",
+   "cover": "public/img/books/determined.jpg",
+   "w": 526,
+   "h": 800,
+   "spine": "#000805",
+   "ink": "#f3f1ea"
+  },
   {
    "slug": "nexus",
    "title": "Nexus",
@@ -29,11 +77,11 @@
    "pages": 288,
    "format": "paper",
    "cover": "public/img/books/ubik.jpg",
-   "w": 495,
+   "w": 529,
    "h": 800,
-   "spine": "#f6b23a",
-   "ink": "#141414",
-   "isbn": "8498000831"
+   "spine": "#918e9b",
+   "ink": "#f3f1ea",
+   "isbn": null
   },
   {
    "slug": "skin-in-the-game",
@@ -48,7 +96,7 @@
    "cover": "public/img/books/skin-in-the-game.jpg",
    "w": 506,
    "h": 800,
-   "spine": "#e4e4e4",
+   "spine": "#e3e3e3",
    "ink": "#141414",
    "isbn": "0425284646"
   },
@@ -63,11 +111,11 @@
    "pages": 400,
    "format": "paper",
    "cover": "public/img/books/smarter-faster-better.jpg",
-   "w": 519,
+   "w": 526,
    "h": 800,
-   "spine": "#dc0030",
+   "spine": "#fe6404",
    "ink": "#f3f1ea",
-   "isbn": "0812983599"
+   "isbn": null
   },
   {
    "slug": "meditations",
@@ -80,11 +128,11 @@
    "pages": 304,
    "format": "paper",
    "cover": "public/img/books/meditations.jpg",
-   "w": 521,
+   "w": 502,
    "h": 800,
-   "spine": "#1f2123",
+   "spine": "#000000",
    "ink": "#f3f1ea",
-   "isbn": "0140449337"
+   "isbn": null
   },
   {
    "slug": "homo-deus",
@@ -104,23 +152,6 @@
    "isbn": "1784703931"
   },
   {
-   "slug": "elon-musk",
-   "title": "Elon Musk",
-   "subtitle": "Tesla, SpaceX, and the Quest for a Fantastic Future",
-   "author": "Ashlee Vance",
-   "rating": 3,
-   "status": "read",
-   "read": null,
-   "pages": 400,
-   "format": "hard",
-   "cover": "public/img/books/elon-musk.jpg",
-   "w": 530,
-   "h": 800,
-   "spine": "#313131",
-   "ink": "#f3f1ea",
-   "isbn": "0062301233"
-  },
-  {
    "slug": "the-joy-of-x",
    "title": "The Joy of x",
    "subtitle": "A Guided Tour of Math, from One to Infinity",
@@ -131,11 +162,11 @@
    "pages": 316,
    "format": "hard",
    "cover": "public/img/books/the-joy-of-x.jpg",
-   "w": 530,
+   "w": 531,
    "h": 800,
-   "spine": "#fefefe",
+   "spine": "#fcfcfc",
    "ink": "#141414",
-   "isbn": "0547517653"
+   "isbn": null
   },
   {
    "slug": "how-to-win",
@@ -148,28 +179,11 @@
    "pages": 144,
    "format": "paper",
    "cover": "public/img/books/how-to-win.jpg",
-   "w": 517,
+   "w": 500,
    "h": 800,
-   "spine": "#044281",
-   "ink": "#f3f1ea",
-   "isbn": "1626810915"
-  },
-  {
-   "slug": "the-little-prince",
-   "title": "The Little Prince",
-   "subtitle": null,
-   "author": "Antoine de Saint-Exupéry",
-   "rating": 5,
-   "status": "read",
-   "read": null,
-   "pages": 96,
-   "format": "hard",
-   "cover": "public/img/books/the-little-prince.jpg",
-   "w": 527,
-   "h": 800,
-   "spine": "#014c8d",
-   "ink": "#f3f1ea",
-   "isbn": "0152023984"
+   "spine": "#fec804",
+   "ink": "#141414",
+   "isbn": null
   },
   {
    "slug": "animal-farm",
@@ -182,28 +196,11 @@
    "pages": 141,
    "format": "pocket",
    "cover": "public/img/books/animal-farm.jpg",
-   "w": 447,
-   "h": 800,
-   "spine": "#201c1b",
-   "ink": "#f3f1ea",
-   "isbn": "0451526341"
-  },
-  {
-   "slug": "the-fault-in-our-stars",
-   "title": "The Fault in Our Stars",
-   "subtitle": null,
-   "author": "John Green",
-   "rating": 3,
-   "status": "read",
-   "read": null,
-   "pages": 313,
-   "format": "paper",
-   "cover": "public/img/books/the-fault-in-our-stars.jpg",
-   "w": 539,
-   "h": 800,
-   "spine": "#00acec",
-   "ink": "#f3f1ea",
-   "isbn": "014242417X"
+   "w": 290,
+   "h": 475,
+   "spine": "#ffffff",
+   "ink": "#141414",
+   "isbn": null
   },
   {
    "slug": "thinking-fast-and-slow",
@@ -223,21 +220,21 @@
    "isbn": "0374275637"
   },
   {
-   "slug": "bovedas-de-acero",
-   "title": "Bóvedas de acero",
-   "subtitle": "Robot, #1",
+   "slug": "i-robot",
+   "title": "I, Robot",
+   "subtitle": null,
    "author": "Isaac Asimov",
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 272,
+   "pages": 253,
    "format": "pocket",
-   "cover": "public/img/books/bovedas-de-acero.jpg",
-   "w": 526,
+   "cover": "public/img/books/i-robot.jpg",
+   "w": 495,
    "h": 800,
-   "spine": "#e4dfe3",
-   "ink": "#141414",
-   "isbn": "8497937309"
+   "spine": "#26477c",
+   "ink": "#f3f1ea",
+   "isbn": null
   },
   {
    "slug": "1984",
@@ -250,11 +247,11 @@
    "pages": 368,
    "format": "paper",
    "cover": "public/img/books/1984.jpg",
-   "w": 544,
+   "w": 493,
    "h": 800,
-   "spine": "#0e0904",
-   "ink": "#f3f1ea",
-   "isbn": "0452284236"
+   "spine": "#e8651f",
+   "ink": "#1b1410",
+   "isbn": null
   },
   {
    "slug": "brave-new-world",

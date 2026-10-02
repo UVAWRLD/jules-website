@@ -11,8 +11,8 @@
 // Escape, puts it back.
 //
 // The books come from public/books/books.json (my Goodreads shelf, in the editions on it; the
-// covers at full size from the publishers' images). A book with "status": "reading" is marked as
-// such in its details.
+// covers at full size). The books I am reading ("status": "reading") come first, each with a red
+// ribbon out of its top, and say so in their details.
 
 const DATA = "public/books/books.json";
 const FORMAT = { hard: 1, paper: .93, pocket: .82 };
@@ -31,8 +31,8 @@ export async function createBookshelf() {
 
   function size(b, H0) {
     const H = H0 * (FORMAT[b.format] || .93), W = H * b.w / b.h;
-    const T = Math.min(.17 * W, Math.max(.05 * W, b.pages * .00026 * H0 + .03 * H0));
-    return { W, H, T, fs: Math.min(11, Math.max(7, T * .42)) };
+    const T = Math.min(.17 * W, Math.max(.05 * W, (b.pages || 220) * .00026 * H0 + .03 * H0));
+    return { W, H, T, fs: Math.min(10, Math.max(6.5, T * .34)) };
   }
 
   function book(b, H0) {
@@ -42,10 +42,11 @@ export async function createBookshelf() {
       <span class="b3">
         <span class="cast" aria-hidden="true"></span>
         <span class="f back"></span>
-        <span class="f spine"><b>${esc(b.title)}</b><i>${esc(b.author.split(" ").slice(-1)[0])}</i></span>
+        <span class="f spine"><span class="sp"><b>${esc(b.title)}</b><i>${esc(b.author.split(" ").slice(-1)[0])}</i></span></span>
         <span class="f pages"></span>
         <span class="f top"></span>
         <span class="f front" style="background-image:url('${esc(b.cover)}')"></span>
+        ${b.status === "reading" ? '<span class="rib" aria-hidden="true"></span>' : ""}
       </span>
     </button>`;
   }
@@ -79,7 +80,7 @@ export async function createBookshelf() {
   function detail(b) {
     const status = b.status === "reading" ? "Reading now" : b.read ? `Read ${esc(b.read)}` : "Read";
     return `<h2>${esc(b.title)}</h2>${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ""}<p>${esc(b.author)}</p>
-      <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span><span>${b.pages} pages</span></span>`;
+      <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span>${b.pages ? `<span>${b.pages} pages</span>` : ""}</span>`;
   }
 
   function take(el) {
