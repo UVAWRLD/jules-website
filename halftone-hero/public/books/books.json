@@ -1,5 +1,5 @@
 {
- "source": "Goodreads, Read shelf (Jules's screenshot, 2026-10-01); covers and page counts from Open Library",
+ "source": "Goodreads, Read shelf (Jules's screenshot, 2026-10-01); the editions on that shelf, covers at full size from the publisher's images (by ISBN)",
  "books": [
   {
    "slug": "nexus",
@@ -9,14 +9,14 @@
    "rating": 3,
    "status": "read",
    "read": null,
-   "pages": 544,
+   "pages": 528,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/nexus.jpg",
-   "w": 329,
-   "h": 500,
+   "w": 526,
+   "h": 800,
    "spine": "#fbf7ed",
-   "ink": "#111111"
+   "ink": "#141414",
+   "isbn": "059373422X"
   },
   {
    "slug": "ubik",
@@ -26,14 +26,14 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 224,
-   "format": "mass",
-   "height": 132,
+   "pages": 288,
+   "format": "paper",
    "cover": "public/img/books/ubik.jpg",
-   "w": 128,
-   "h": 187,
-   "spine": "#fb8607",
-   "ink": "#111111"
+   "w": 495,
+   "h": 800,
+   "spine": "#f6b23a",
+   "ink": "#141414",
+   "isbn": "8498000831"
   },
   {
    "slug": "skin-in-the-game",
@@ -43,14 +43,14 @@
    "rating": 4,
    "status": "read",
    "read": "Dec 2025",
-   "pages": 292,
+   "pages": 304,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/skin-in-the-game.jpg",
-   "w": 316,
-   "h": 500,
-   "spine": "#f2f2f2",
-   "ink": "#111111"
+   "w": 506,
+   "h": 800,
+   "spine": "#e4e4e4",
+   "ink": "#141414",
+   "isbn": "0425284646"
   },
   {
    "slug": "smarter-faster-better",
@@ -61,13 +61,13 @@
    "status": "read",
    "read": null,
    "pages": 400,
-   "format": "hard",
-   "height": 172,
+   "format": "paper",
    "cover": "public/img/books/smarter-faster-better.jpg",
-   "w": 328,
-   "h": 500,
-   "spine": "#312a1f",
-   "ink": "#f4f2ec"
+   "w": 519,
+   "h": 800,
+   "spine": "#dc0030",
+   "ink": "#f3f1ea",
+   "isbn": "0812983599"
   },
   {
    "slug": "meditations",
@@ -77,14 +77,14 @@
    "rating": 4,
    "status": "read",
    "read": null,
-   "pages": 254,
-   "format": "trade",
-   "height": 156,
+   "pages": 304,
+   "format": "paper",
    "cover": "public/img/books/meditations.jpg",
-   "w": 304,
-   "h": 500,
-   "spine": "#898233",
-   "ink": "#f4f2ec"
+   "w": 521,
+   "h": 800,
+   "spine": "#1f2123",
+   "ink": "#f3f1ea",
+   "isbn": "0140449337"
   },
   {
    "slug": "homo-deus",
@@ -94,14 +94,14 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 464,
-   "format": "hard",
-   "height": 172,
+   "pages": 528,
+   "format": "paper",
    "cover": "public/img/books/homo-deus.jpg",
-   "w": 332,
-   "h": 499,
-   "spine": "#050505",
-   "ink": "#f4f2ec"
+   "w": 521,
+   "h": 800,
+   "spine": "#010101",
+   "ink": "#f3f1ea",
+   "isbn": "1784703931"
   },
   {
    "slug": "elon-musk",
@@ -111,14 +111,14 @@
    "rating": 3,
    "status": "read",
    "read": null,
-   "pages": 396,
+   "pages": 400,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/elon-musk.jpg",
-   "w": 331,
-   "h": 500,
-   "spine": "#484549",
-   "ink": "#f4f2ec"
+   "w": 530,
+   "h": 800,
+   "spine": "#313131",
+   "ink": "#f3f1ea",
+   "isbn": "0062301233"
   },
   {
    "slug": "the-joy-of-x",
@@ -128,14 +128,14 @@
    "rating": 4,
    "status": "read",
    "read": null,
-   "pages": 336,
+   "pages": 316,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/the-joy-of-x.jpg",
-   "w": 318,
-   "h": 500,
-   "spine": "#9f9789",
-   "ink": "#111111"
+   "w": 530,
+   "h": 800,
+   "spine": "#fefefe",
+   "ink": "#141414",
+   "isbn": "0547517653"
   },
   {
    "slug": "how-to-win",
@@ -145,14 +145,14 @@
    "rating": 5,
    "status": "read",
    "read": "Sep 2025",
-   "pages": 112,
-   "format": "small",
-   "height": 140,
+   "pages": 144,
+   "format": "paper",
    "cover": "public/img/books/how-to-win.jpg",
-   "w": 248,
-   "h": 400,
-   "spine": "#8293a3",
-   "ink": "#f4f2ec"
+   "w": 517,
+   "h": 800,
+   "spine": "#044281",
+   "ink": "#f3f1ea",
+   "isbn": "1626810915"
   },
   {
    "slug": "the-little-prince",
@@ -163,13 +163,13 @@
    "status": "read",
    "read": null,
    "pages": 96,
-   "format": "small",
-   "height": 140,
+   "format": "hard",
    "cover": "public/img/books/the-little-prince.jpg",
-   "w": 354,
-   "h": 500,
-   "spine": "#797979",
-   "ink": "#f4f2ec"
+   "w": 527,
+   "h": 800,
+   "spine": "#014c8d",
+   "ink": "#f3f1ea",
+   "isbn": "0152023984"
   },
   {
    "slug": "animal-farm",
@@ -179,14 +179,14 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 128,
-   "format": "mass",
-   "height": 132,
+   "pages": 141,
+   "format": "pocket",
    "cover": "public/img/books/animal-farm.jpg",
-   "w": 330,
-   "h": 500,
-   "spine": "#060505",
-   "ink": "#f4f2ec"
+   "w": 447,
+   "h": 800,
+   "spine": "#201c1b",
+   "ink": "#f3f1ea",
+   "isbn": "0451526341"
   },
   {
    "slug": "the-fault-in-our-stars",
@@ -196,14 +196,14 @@
    "rating": 3,
    "status": "read",
    "read": null,
-   "pages": 318,
-   "format": "trade",
-   "height": 156,
+   "pages": 313,
+   "format": "paper",
    "cover": "public/img/books/the-fault-in-our-stars.jpg",
-   "w": 322,
-   "h": 500,
-   "spine": "#ad8c79",
-   "ink": "#f4f2ec"
+   "w": 539,
+   "h": 800,
+   "spine": "#00acec",
+   "ink": "#f3f1ea",
+   "isbn": "014242417X"
   },
   {
    "slug": "thinking-fast-and-slow",
@@ -215,12 +215,12 @@
    "read": null,
    "pages": 499,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/thinking-fast-and-slow.jpg",
-   "w": 386,
-   "h": 500,
-   "spine": "#fffdf6",
-   "ink": "#111111"
+   "w": 539,
+   "h": 800,
+   "spine": "#f9f8f3",
+   "ink": "#141414",
+   "isbn": "0374275637"
   },
   {
    "slug": "bovedas-de-acero",
@@ -231,13 +231,13 @@
    "status": "read",
    "read": null,
    "pages": 272,
-   "format": "mass",
-   "height": 132,
+   "format": "pocket",
    "cover": "public/img/books/bovedas-de-acero.jpg",
-   "w": 320,
-   "h": 500,
-   "spine": "#45486d",
-   "ink": "#f4f2ec"
+   "w": 526,
+   "h": 800,
+   "spine": "#e4dfe3",
+   "ink": "#141414",
+   "isbn": "8497937309"
   },
   {
    "slug": "1984",
@@ -247,14 +247,14 @@
    "rating": 4,
    "status": "read",
    "read": null,
-   "pages": 328,
-   "format": "trade",
-   "height": 156,
+   "pages": 368,
+   "format": "paper",
    "cover": "public/img/books/1984.jpg",
-   "w": 314,
-   "h": 500,
-   "spine": "#272620",
-   "ink": "#f4f2ec"
+   "w": 544,
+   "h": 800,
+   "spine": "#0e0904",
+   "ink": "#f3f1ea",
+   "isbn": "0452284236"
   },
   {
    "slug": "brave-new-world",
@@ -265,13 +265,13 @@
    "status": "read",
    "read": null,
    "pages": 288,
-   "format": "trade",
-   "height": 156,
+   "format": "paper",
    "cover": "public/img/books/brave-new-world.jpg",
-   "w": 314,
-   "h": 500,
-   "spine": "#9f820e",
-   "ink": "#f4f2ec"
+   "w": 520,
+   "h": 800,
+   "spine": "#fdfdfd",
+   "ink": "#141414",
+   "isbn": "0060929871"
   },
   {
    "slug": "sapiens",
@@ -281,14 +281,14 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 464,
-   "format": "hard",
-   "height": 172,
+   "pages": 512,
+   "format": "paper",
    "cover": "public/img/books/sapiens.jpg",
-   "w": 326,
-   "h": 500,
-   "spine": "#fffbfa",
-   "ink": "#111111"
+   "w": 521,
+   "h": 800,
+   "spine": "#fdfcfa",
+   "ink": "#141414",
+   "isbn": "0099590085"
   },
   {
    "slug": "zero-to-one",
@@ -300,12 +300,12 @@
    "read": null,
    "pages": 224,
    "format": "hard",
-   "height": 172,
    "cover": "public/img/books/zero-to-one.jpg",
-   "w": 432,
-   "h": 500,
-   "spine": "#6192bb",
-   "ink": "#f4f2ec"
+   "w": 533,
+   "h": 800,
+   "spine": "#5e92ba",
+   "ink": "#f3f1ea",
+   "isbn": "0804139296"
   }
  ]
 }

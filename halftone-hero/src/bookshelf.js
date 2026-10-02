@@ -1,22 +1,25 @@
-// The Bookshelf page: each book a CSS 3D box standing on a thin floating shelf, spine out.
+// The Bookshelf page: my books on white floating shelves, covers out, each a solid CSS 3D book.
 //
-// A book is W x H x D: W its thickness, from the page count; H its height, from its format (a
-// hardback stands taller than a pocket paperback); D the cover's width, from the cover's own
-// proportions. The spine faces you in the colour sampled from the cover's left edge, with the
-// title and author running down it; the cover is the right-hand face, the page edges on top. The
-// shelf is perspective from a little above, so the tops show. Hover slides a book out a little; a
-// click or a tap takes it out: it comes forward and turns to show its cover, and its title,
-// author and my rating show under the shelf. A click anywhere else, or Escape, puts it back.
+// A book is a box W x H x T: H from its format (a hardback stands taller than a paperback, a
+// pocket book shorter), W the cover's width at that height, T its thickness from the page count.
+// The cover faces you, lit from the upper left, with the joint of the binding pressed in near its
+// left edge; the spine is the left face (its colour sampled from the cover, the title running down
+// it), the page block the right face and the top; a soft shadow falls behind it on the wall and
+// under it on the shelf. Each shelf is seen from a little above. Hover lifts a book and turns it
+// to show its spine; a click or a tap takes it down: it comes forward, cover to you, the others
+// fade back, and its title, author and my rating open under its shelf. A click anywhere else, or
+// Escape, puts it back.
 //
-// The books come from public/books/books.json (my Goodreads shelf; covers and page counts from
-// Open Library). A book with "status": "reading" stands at the end of the shelf, leaning, with a
-// bookmark ribbon out of the top. The rows are packed to the width the shelf has.
+// The books come from public/books/books.json (my Goodreads shelf, in the editions on it; the
+// covers at full size from the publishers' images). A book with "status": "reading" is marked as
+// such in its details.
 
 const DATA = "public/books/books.json";
+const FORMAT = { hard: 1, paper: .93, pocket: .82 };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 export async function createBookshelf() {
-  const shelf = document.getElementById("bkShelf"), info = document.getElementById("bkInfo");
+  const shelf = document.getElementById("bkShelf");
   if (!shelf) return;
   let books = [];
   try { books = (await (await fetch(DATA, { cache: "no-cache" })).json()).books || []; }
@@ -24,78 +27,76 @@ export async function createBookshelf() {
   const read = books.filter(b => b.status !== "reading"), reading = books.filter(b => b.status === "reading");
   const count = document.getElementById("bkCount");
   if (count) count.textContent = `${read.length} read` + (reading.length ? ` · ${reading.length} reading` : "");
-  const order = [...read, ...reading];
+  const order = [...reading, ...read];
 
-  function size(b, s) {
-    const H = b.height * s, D = H * b.w / b.h;
-    const W = Math.min(40, Math.max(11, b.pages * .062 + 8)) * s;
-    return { W, H, D, fs: Math.min(11, Math.max(7, W * .4)) };
+  function size(b, H0) {
+    const H = H0 * (FORMAT[b.format] || .93), W = H * b.w / b.h;
+    const T = Math.min(.17 * W, Math.max(.05 * W, b.pages * .00026 * H0 + .03 * H0));
+    return { W, H, T, fs: Math.min(11, Math.max(7, T * .42)) };
   }
 
-  function book(b, s) {
-    const { W, H, D, fs } = size(b, s);
-    const lean = b.status === "reading" ? "-9deg" : "0deg";
-    return `<button class="book${b.status === "reading" ? " reading" : ""}" type="button" data-slug="${esc(b.slug)}"
-      aria-label="${esc(b.title)} by ${esc(b.author)}"
-      style="--w:${W.toFixed(1)}px;--h:${H.toFixed(1)}px;--d:${D.toFixed(1)}px;--fs:${fs.toFixed(1)}px;--spine:${b.spine};--ink-s:${b.ink};--lean:${lean}">
+  function book(b, H0) {
+    const { W, H, T, fs } = size(b, H0);
+    return `<button class="book" type="button" data-slug="${esc(b.slug)}" aria-label="${esc(b.title)} by ${esc(b.author)}"
+      style="--w:${W.toFixed(1)}px;--h:${H.toFixed(1)}px;--t:${T.toFixed(1)}px;--fs:${fs.toFixed(1)}px;--spine:${b.spine};--ink-s:${b.ink}">
       <span class="b3">
-        <span class="f spine"><b>${esc(b.title)}</b><i>${esc(b.author.split(" ").slice(-1)[0])}</i></span>
-        <span class="f cover" style="background-image:url('${esc(b.cover)}')"></span>
+        <span class="cast" aria-hidden="true"></span>
         <span class="f back"></span>
+        <span class="f spine"><b>${esc(b.title)}</b><i>${esc(b.author.split(" ").slice(-1)[0])}</i></span>
+        <span class="f pages"></span>
         <span class="f top"></span>
-        ${b.status === "reading" ? '<span class="rib" aria-hidden="true"></span>' : ""}
+        <span class="f front" style="background-image:url('${esc(b.cover)}')"></span>
       </span>
     </button>`;
   }
 
   let open = null;
   function layout() {
-    // the books fill most of each shelf (as many shelves as they need at their smallest size, up to
-    // 1.55x), shared out evenly between the shelves
-    const pad = innerWidth <= 820 ? 16 : 36, room = shelf.clientWidth - pad;
-    const wOf = (b, k) => size(b, k).W + 1 + (b.status === "reading" ? 22 * k : 0);
-    const sum1 = order.reduce((a, b) => a + wOf(b, 1), 0);
-    const k0 = innerWidth <= 520 ? .78 : .9, n0 = Math.ceil(sum1 * k0 / room);
-    const s = Math.max(k0, Math.min(1.55, room * n0 * .88 / sum1));
-    const total = order.reduce((a, b) => a + wOf(b, s), 0), n = Math.ceil(total / room), target = total / n;
-    const rows = [[]];
-    let used = 0;
-    for (const b of order) {
-      const w = wOf(b, s);
-      if (rows.length < n && used + w / 2 > target && rows[rows.length - 1].length) { rows.push([]); used = 0; }
-      rows[rows.length - 1].push(b); used += w;
+    const phone = innerWidth <= 520, mid = innerWidth <= 820;
+    const per = phone ? 3 : mid ? 4 : 6, H0 = phone ? 132 : mid ? 168 : 206;
+    const rows = [];
+    for (let i = 0; i < order.length; i += per) rows.push(order.slice(i, i + per));
+    shelf.innerHTML = rows.map((r, n) => `<div class="bk-row" data-row="${n}">
+        <div class="bk-books">${r.map(b => book(b, H0)).join("")}</div>
+        <div class="bk-plank"><span class="top"></span><span class="front"></span></div>
+      </div>
+      <div class="bk-detail" data-row="${n}" aria-live="polite"><div class="in"></div></div>`).join("");
+    // a soft shadow under each book, on the shelf's top
+    for (const row of shelf.querySelectorAll(".bk-row")) {
+      const top = row.querySelector(".bk-plank .top"), base = row.getBoundingClientRect().left;
+      for (const el of row.querySelectorAll(".book")) {
+        const r = el.getBoundingClientRect(), sh = document.createElement("span");
+        sh.className = "sh";
+        sh.style.left = (r.left - base - r.width * .02).toFixed(0) + "px";
+        sh.style.width = (r.width * 1.08).toFixed(0) + "px";
+        top.appendChild(sh);
+      }
     }
-    shelf.innerHTML = rows.map(r => {
-      const deep = Math.max(...r.map(b => size(b, s).D));
-      return `<div class="bk-row"><div class="bk-books">${r.map(b => (b.status === "reading" ? `<i style="flex:none;width:${(18 * s).toFixed(0)}px"></i>` : "") + book(b, s)).join("")}</div>
-        <div class="bk-plank" style="--pd:${(deep + 22).toFixed(0)}px;--pz:${(10 * s).toFixed(0)}px"><span class="top"></span><span class="front"></span></div>
-        <span class="bk-wall" aria-hidden="true"></span></div>`;
-    }).join("");
-    if (open) { const el = shelf.querySelector(`.book[data-slug="${CSS.escape(open)}"]`); if (el) take(el, true); else open = null; }
+    if (open) { const el = shelf.querySelector(`.book[data-slug="${CSS.escape(open)}"]`); if (el) take(el); else open = null; }
   }
 
-  function stars(n) { return `<span class="bk-stars" aria-label="${n} out of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span>`; }
-  function show(b) {
-    if (!b) { info.innerHTML = '<span class="hint">Tap or click a book to take it out.</span>'; return; }
+  const stars = n => `<span class="bk-stars" aria-label="${n} out of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span>`;
+  function detail(b) {
     const status = b.status === "reading" ? "Reading now" : b.read ? `Read ${esc(b.read)}` : "Read";
-    info.innerHTML = `<h2>${esc(b.title)}</h2>${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ""}<p>${esc(b.author)}</p>
+    return `<h2>${esc(b.title)}</h2>${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ""}<p>${esc(b.author)}</p>
       <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span><span>${b.pages} pages</span></span>`;
   }
 
-  // take a book out: it comes forward, turned to show its cover, kept inside the screen
-  function take(el, quiet) {
+  function take(el) {
+    const slug = el.dataset.slug, b = order.find(x => x.slug === slug);
     shelf.querySelectorAll(".book.out").forEach(x => x !== el && x.classList.remove("out"));
-    el.classList.add("out"); shelf.classList.add("has-out");
-    open = el.dataset.slug;
-    el.style.setProperty("--ox", "0px");
-    const r = el.getBoundingClientRect(), d = parseFloat(el.style.getPropertyValue("--d")) * 1.3;
-    const left = r.left + r.width / 2 - d / 2, right = r.left + r.width / 2 + d / 2, m = 16;
-    el.style.setProperty("--ox", (left < m ? m - left : right > innerWidth - m ? innerWidth - m - right : 0).toFixed(0) + "px");
-    if (!quiet) show(order.find(b => b.slug === open));
+    el.classList.add("out"); shelf.classList.add("has-out"); open = slug;
+    const n = el.closest(".bk-row").dataset.row;
+    for (const d of shelf.querySelectorAll(".bk-detail")) {
+      const on = d.dataset.row === n;
+      if (on) d.querySelector(".in").innerHTML = detail(b);
+      d.classList.toggle("on", on);
+    }
   }
   function putBack() {
     shelf.querySelectorAll(".book.out").forEach(x => x.classList.remove("out"));
-    shelf.classList.remove("has-out"); open = null; show(null);
+    shelf.querySelectorAll(".bk-detail.on").forEach(d => d.classList.remove("on"));
+    shelf.classList.remove("has-out"); open = null;
   }
 
   shelf.addEventListener("click", e => {
@@ -103,7 +104,7 @@ export async function createBookshelf() {
     e.stopPropagation();
     el.classList.contains("out") ? putBack() : take(el);
   });
-  addEventListener("click", e => { if (open && !e.target.closest(".book")) putBack(); });
+  addEventListener("click", e => { if (open && !e.target.closest(".book, .bk-detail")) putBack(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && open) putBack(); });
 
   layout();

@@ -800,17 +800,28 @@ step. Do not reach for three.js: it is 150KB to draw one triangle.
 ## Bookshelf (bookshelf.html, src/bookshelf.js)
 
 Jules's Goodreads books (2026-10-01: the Read shelf, 18 books, from a screenshot; his rating is
-the stars he gave), as CSS 3D books on a thin floating shelf, linked from Other… on the home page.
-`public/books/books.json` holds them, newest added first, with each book's `status` ("read" or
-"reading"), `rating`, `read` (the month, where Goodreads has it), page count and format; covers and
-page counts come from Open Library (covers saved in `public/img/books/`, 520px tall at most), the
-spine colour is the median of the cover's left edge, its text dark or light to suit. A book is a box
-W x H x D: W from the page count, H from the format (hardback 172, trade 156, small 140, pocket
-132, times the shelf's scale), D the cover's width at that height. The spine faces you, the cover
-is the right-hand face, page edges on top; the shelf is seen from a little above (perspective
-origin 50% -30%). The books are scaled to fill about 88% of each shelf (as many shelves as they need
-at their smallest, 0.78 on a phone, up to 1.55x) and shared out evenly between shelves. Hover
-slides a book out 18px; a click or tap takes it out (forward, turned to show its cover, scaled
-1.18, nudged to stay on screen) and shows its title, author, rating (five dots) and pages under the
-shelf; a click elsewhere or Escape puts it back. A "reading" book stands at the end, leaning 9
-degrees, with a red ribbon out of the top. The crow lands on the rule under the title.
+the stars he gave), as solid CSS 3D books standing covers-out on white floating shelves (after
+his references: a "My bookshelf" grid of white shelves, Stripe Press's spines), linked from Other…
+on the home page. The first version, spines out on one thin plank with Open Library covers, read
+as coloured blocks and the covers were poor; he asked for better covers and books that look like
+books.
+
+- **Covers**: the editions on his Goodreads shelf (the most-rated Goodreads edition of each, its
+  ISBN from the book page, or a print edition with the same cover where Goodreads had an ebook),
+  at full size from Amazon's image server (`images/P/<ISBN10>.01._SCRMZZZZZZ_.jpg`, 1500-2500px),
+  saved 800px tall in `public/img/books/`. `public/books/books.json` has each book's ISBN, format
+  (hard, paper, pocket), pages, rating, `read` month where Goodreads has one, `status` ("read" or
+  "reading"), and the spine colour (median of the cover's left edge) with a text colour to suit.
+- **A book** is a box W x H x T: H from the format (1, .93, .82 of the shelf's height: 206px on
+  a wide screen, 168 at 820 and under, 132 on a phone), W the cover's width at that height, T
+  from the page count. The cover faces you, with the binding's joint pressed in near its left edge
+  and light from the upper left; the spine is the left face (the title and surname down it), the
+  page block the right face and the top (fine page lines); a blurred shadow behind it on the wall
+  and a soft one under it on the shelf. Each book is turned 14 degrees so the spine shows; each
+  shelf has its own perspective from above.
+- **Shelves**: 6 books a shelf (4 at 820 and under, 3 on a phone), spaced evenly; the plank is a
+  white slab 13px thick, its top seen from above (`--shelf-*` tokens, darker in the dark theme).
+- **Hover** lifts a book 8px and turns it 16 degrees more to show its spine. **A click or tap**
+  takes it down: forward, cover to you, the others fade to 45%, and its title, subtitle, author,
+  rating (five dots), read date and pages open under its shelf. A click elsewhere or Escape puts
+  it back. The crow lands on the rule under the title.
