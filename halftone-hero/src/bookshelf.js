@@ -1,7 +1,7 @@
 // The Bookshelf page: my books on white floating shelves, covers out, each a solid CSS 3D book.
 //
-// A book is a box W x H x T: H from its format (a hardback stands taller than a paperback, a
-// pocket book shorter), W the cover's width at that height, T its thickness from the page count.
+// A book is a box W x H x T, at its edition's real size: H its height in inches, W the cover's
+// width at that height, T from its page count and binding.
 // The cover faces you, lit from the upper left, with the joint of the binding pressed in near its
 // left edge; the spine is the left face (its colour sampled from the cover, the title running down
 // it), the page block the right face and the top; a soft shadow falls behind it on the wall and
@@ -11,11 +11,10 @@
 // Escape, puts it back.
 //
 // The books come from public/books/books.json (my Goodreads shelf, in the editions on it; the
-// covers at full size). The books I am reading ("status": "reading") come first, each with a red
-// ribbon out of its top, and say so in their details.
+// covers at full size). The books I am reading ("status": "reading") come first and say so in
+// their details.
 
 const DATA = "public/books/books.json";
-const FORMAT = { hard: 1, paper: .93, pocket: .82 };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 export async function createBookshelf() {
@@ -29,9 +28,12 @@ export async function createBookshelf() {
   if (count) count.textContent = `${read.length} read` + (reading.length ? ` · ${reading.length} reading` : "");
   const order = [...reading, ...read];
 
+  // H0 is pixels to the inch. A book is as tall as its edition (pocket books about 7 inches, trade
+  // paperbacks 8, hardbacks 9.5), as wide as its cover at that height, and as thick as its pages
+  // (about 0.0024 inch a leaf of paper, counted per page) plus its covers (stiff boards on a hardback)
   function size(b, H0) {
-    const H = H0 * (FORMAT[b.format] || .93), W = H * b.w / b.h;
-    const T = Math.min(.17 * W, Math.max(.05 * W, (b.pages || 220) * .00026 * H0 + .03 * H0));
+    const H = (b.height_in || 8) * H0, W = H * b.w / b.h;
+    const T = ((b.pages || 200) * .0024 + (b.format === "hard" ? .2 : .05)) * H0;
     return { W, H, T, fs: Math.min(10, Math.max(6.5, T * .34)) };
   }
 
@@ -46,7 +48,6 @@ export async function createBookshelf() {
         <span class="f pages"></span>
         <span class="f top"></span>
         <span class="f front" style="background-image:url('${esc(b.cover)}')"></span>
-        ${b.status === "reading" ? '<span class="rib" aria-hidden="true"></span>' : ""}
       </span>
     </button>`;
   }
@@ -54,7 +55,7 @@ export async function createBookshelf() {
   let open = null;
   function layout() {
     const phone = innerWidth <= 520, mid = innerWidth <= 820;
-    const per = phone ? 3 : mid ? 4 : 6, H0 = phone ? 132 : mid ? 168 : 206;
+    const per = phone ? 3 : mid ? 4 : 6, H0 = phone ? 14.2 : mid ? 18 : 22.4;
     const rows = [];
     for (let i = 0; i < order.length; i += per) rows.push(order.slice(i, i + per));
     shelf.innerHTML = rows.map((r, n) => `<div class="bk-row" data-row="${n}">

@@ -812,9 +812,11 @@ books.
   saved 800px tall in `public/img/books/`. `public/books/books.json` has each book's ISBN, format
   (hard, paper, pocket), pages, rating, `read` month where Goodreads has one, `status` ("read" or
   "reading"), and the spine colour (median of the cover's left edge) with a text colour to suit.
-- **A book** is a box W x H x T: H from the format (1, .93, .82 of the shelf's height: 206px on
-  a wide screen, 168 at 820 and under, 132 on a phone), W the cover's width at that height, T
-  from the page count. The cover faces you, with the binding's joint pressed in near its left edge
+- **A book** is a box W x H x T at its edition's real size (Jules wanted more variation): H its
+  height in inches (`height_in` in the json: pocket books about 7, trade paperbacks 8, hardbacks
+  9.5) at 22.4px to the inch on a wide screen, 18 at 820 and under, 14.2 on a phone; W the
+  cover's width at that height; T from the pages, 0.0024 inch each, plus 0.2 inch of boards on a
+  hardback or 0.05 on a paperback. The cover faces you, with the binding's joint pressed in near its left edge
   and light from the upper left; the spine is the left face (the title and surname down it), the
   page block the right face and the top (fine page lines); a blurred shadow behind it on the wall
   and a soft one under it on the shelf. Each book is turned 14 degrees so the spine shows; each
@@ -825,7 +827,7 @@ books.
   Win (10th anniversary), The Joy of x, 1984 (the 1960s Penguin), Animal Farm (Signet, only
   290px wide), Meditations and Asimov, whose slot is now I, Robot (his cover; it was Bóvedas de
   acero on Goodreads). Elon Musk, The Little Prince and The Fault in Our Stars removed. Three he
-  is reading added first, each with a red ribbon out of its top: Encore un moment… (Edgar Morin,
+  is reading added first (a red ribbon out of their tops was tried and removed, Jules did not like it): Encore un moment… (Edgar Morin,
   Folio, his image, no page count), Thinking in Systems (Meadows) and Determined (Sapolsky), the
   last two from Amazon by ISBN. Spine colours set by hand where the cover's edge misled (Folio
   white, 1984 Penguin orange, I, Robot's blue). **Spine type**: in vertical writing the inline

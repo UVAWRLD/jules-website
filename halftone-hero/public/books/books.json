@@ -15,7 +15,8 @@
    "w": 400,
    "h": 658,
    "spine": "#f7f5ef",
-   "ink": "#2b4f8a"
+   "ink": "#2b4f8a",
+   "height_in": 7.0
   },
   {
    "slug": "thinking-in-systems",
@@ -31,7 +32,8 @@
    "w": 530,
    "h": 800,
    "spine": "#f8f7f3",
-   "ink": "#1d1d1b"
+   "ink": "#1d1d1b",
+   "height_in": 9.0
   },
   {
    "slug": "determined",
@@ -47,7 +49,8 @@
    "w": 526,
    "h": 800,
    "spine": "#000805",
-   "ink": "#f3f1ea"
+   "ink": "#f3f1ea",
+   "height_in": 9.5
   },
   {
    "slug": "nexus",
@@ -64,7 +67,8 @@
    "h": 800,
    "spine": "#fbf7ed",
    "ink": "#141414",
-   "isbn": "059373422X"
+   "isbn": "059373422X",
+   "height_in": 9.5
   },
   {
    "slug": "ubik",
@@ -74,14 +78,15 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 288,
+   "pages": 224,
    "format": "paper",
    "cover": "public/img/books/ubik.jpg?v=a18775b4",
    "w": 529,
    "h": 800,
    "spine": "#918e9b",
    "ink": "#f3f1ea",
-   "isbn": null
+   "isbn": null,
+   "height_in": 8.0
   },
   {
    "slug": "skin-in-the-game",
@@ -98,7 +103,8 @@
    "h": 800,
    "spine": "#e3e3e3",
    "ink": "#141414",
-   "isbn": "0425284646"
+   "isbn": "0425284646",
+   "height_in": 9.5
   },
   {
    "slug": "smarter-faster-better",
@@ -109,13 +115,14 @@
    "status": "read",
    "read": null,
    "pages": 400,
-   "format": "paper",
+   "format": "hard",
    "cover": "public/img/books/smarter-faster-better.jpg?v=ed35a699",
    "w": 526,
    "h": 800,
    "spine": "#fe6404",
    "ink": "#f3f1ea",
-   "isbn": null
+   "isbn": null,
+   "height_in": 9.5
   },
   {
    "slug": "meditations",
@@ -125,14 +132,15 @@
    "rating": 4,
    "status": "read",
    "read": null,
-   "pages": 304,
+   "pages": 176,
    "format": "paper",
    "cover": "public/img/books/meditations.jpg?v=b0a907ad",
    "w": 502,
    "h": 800,
    "spine": "#000000",
    "ink": "#f3f1ea",
-   "isbn": null
+   "isbn": null,
+   "height_in": 7.8
   },
   {
    "slug": "homo-deus",
@@ -149,7 +157,8 @@
    "h": 800,
    "spine": "#010101",
    "ink": "#f3f1ea",
-   "isbn": "1784703931"
+   "isbn": "1784703931",
+   "height_in": 7.8
   },
   {
    "slug": "the-joy-of-x",
@@ -166,7 +175,8 @@
    "h": 800,
    "spine": "#fcfcfc",
    "ink": "#141414",
-   "isbn": null
+   "isbn": null,
+   "height_in": 9.25
   },
   {
    "slug": "how-to-win",
@@ -176,14 +186,15 @@
    "rating": 5,
    "status": "read",
    "read": "Sep 2025",
-   "pages": 144,
+   "pages": 128,
    "format": "paper",
    "cover": "public/img/books/how-to-win.jpg?v=95471740",
    "w": 500,
    "h": 800,
    "spine": "#fec804",
    "ink": "#141414",
-   "isbn": null
+   "isbn": null,
+   "height_in": 8.0
   },
   {
    "slug": "animal-farm",
@@ -200,7 +211,8 @@
    "h": 475,
    "spine": "#ffffff",
    "ink": "#141414",
-   "isbn": null
+   "isbn": null,
+   "height_in": 6.9
   },
   {
    "slug": "thinking-fast-and-slow",
@@ -217,7 +229,8 @@
    "h": 800,
    "spine": "#f9f8f3",
    "ink": "#141414",
-   "isbn": "0374275637"
+   "isbn": "0374275637",
+   "height_in": 9.5
   },
   {
    "slug": "i-robot",
@@ -227,14 +240,15 @@
    "rating": 5,
    "status": "read",
    "read": null,
-   "pages": 253,
+   "pages": 224,
    "format": "pocket",
    "cover": "public/img/books/i-robot.jpg?v=b10e916f",
    "w": 495,
    "h": 800,
    "spine": "#26477c",
    "ink": "#f3f1ea",
-   "isbn": null
+   "isbn": null,
+   "height_in": 7.0
   },
   {
    "slug": "1984",
@@ -244,14 +258,15 @@
    "rating": 4,
    "status": "read",
    "read": null,
-   "pages": 368,
-   "format": "paper",
+   "pages": 256,
+   "format": "pocket",
    "cover": "public/img/books/1984.jpg?v=8783a3d6",
    "w": 493,
    "h": 800,
    "spine": "#e8651f",
    "ink": "#1b1410",
-   "isbn": null
+   "isbn": null,
+   "height_in": 7.1
   },
   {
    "slug": "brave-new-world",
@@ -268,7 +283,8 @@
    "h": 800,
    "spine": "#fdfdfd",
    "ink": "#141414",
-   "isbn": "0060929871"
+   "isbn": "0060929871",
+   "height_in": 8.0
   },
   {
    "slug": "sapiens",
@@ -285,7 +301,8 @@
    "h": 800,
    "spine": "#fdfcfa",
    "ink": "#141414",
-   "isbn": "0099590085"
+   "isbn": "0099590085",
+   "height_in": 7.8
   },
   {
    "slug": "zero-to-one",
@@ -302,7 +319,8 @@
    "h": 800,
    "spine": "#5e92ba",
    "ink": "#f3f1ea",
-   "isbn": "0804139296"
+   "isbn": "0804139296",
+   "height_in": 8.6
   }
  ]
 }
