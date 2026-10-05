@@ -333,19 +333,29 @@ sat on the title row of the Timeline and Projects pages.
 "Message me." on the home page is a `mailto:hello@julesbockelee.com` (forwarded to Jules's Gmail by
 ImprovMX; the MX and SPF records are on Vercel DNS, and Gmail sends as hello@ through
 smtp.gmail.com with an app password). A click sends a **paper plane, drawn in the crow's dots**
-(`src/plane.js`), slowly from the end of the link to the right edge of the window; the mail opens as
-its nose reaches the edge, and it flies on out of sight. Like the pull chain it hands the renderer
+(`src/plane.js`), from the end of the link to the right edge of the window; the mail opens as its
+nose reaches the edge, and it flies on out of sight. Like the pull chain it hands the renderer
 shaded points each frame (`window.flyPlane(x, y, onEdge)`, set by `src/halftone.js`), splatted
-into the crow's buffer and screened on the crow's lattice. The dart is modelled in code, no GLB:
-two wings folded up from the spine in a V and the two leaves of the keel, flat triangles sampled
-under a pixel apart, shaded with the crow's light and rim, folds and edges darker, the keel a shade
-darker again (it sits in the wings' shadow). Seen from the side, a little above and in front.
-It is 6.2% of the window wide (62-96px), grows in over 0.35s, eases into a glide of 2.2-3.6s
-(240px/s), rising and falling a little with its nose following the path, rocking on its long axis.
-Without the renderer, with Reduce Motion, or on a cmd/ctrl click, the mail opens at once.
-A first version, a flat SVG plane seen from above darting off to the top right with a dotted
-trail, was not liked. `?grab` exposes it as `window.__plane`; to inspect a frame, freeze
-`performance.now` after `fly()`.
+into the crow's buffer and screened on the crow's lattice.
+
+- **The model** is "Animated Paper plane | Blockbench" by 3DartSam (Sketchfab, CC-BY-4.0), sent
+  by a friend of Jules (`public/models/paper-plane-license.txt`). Only its shape is used: its six
+  triangles were read out of the GLB into `PANELS` (two broad wings drooping a little from the
+  spine, two keel leaves; the inner wing layers left out). Its own animation, a loop the loop, is
+  not. The triangles are sampled under a pixel apart and shaded with the crow's light and rim,
+  folds and edges darker, the keel darker again. Seen a little above and in front (yaw -0.3,
+  tilt 0.45). 6.2% of the window wide (62-96px).
+- **The flight is simulated and different every time**: thrown, it starts fast and settles to a
+  cruise set so it takes about 2-2.7s to the edge on any screen; gusts (three slow sines each,
+  random rates and phases) vary its speed and height and bank and rock it; the nose follows its
+  path with a little lag. **It never sinks**: its height is sprung toward a line climbing 40-90px
+  from the throw, with a hard floor 6px below it. Jules did not want it to read as falling,
+  least of all over the New York skyline (the halftone city under the copy); simulated over 20
+  flights it never went below its throw and climbed 46-101px.
+- Earlier: a flat SVG plane seen from above darting off to the top right with a dotted trail;
+  then a dart modelled by hand on a fixed gliding path. Without the renderer, with Reduce Motion,
+  or on a cmd/ctrl click, the mail opens at once. `?grab` exposes it as `window.__plane`; to look
+  at a frame, step `update()` by hand to the time wanted and then freeze `performance.now`.
 
 ## The home page nav, and the Projects page
 
