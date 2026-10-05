@@ -657,7 +657,7 @@ the card and sends him off in the same gesture.
 Fonts: Satoshi for the page and Libre Caslon Condensed are self hosted from `public/fonts`
 (one 42KB variable file covers every Satoshi weight; Caslon in three cuts: SemiBold for the
 card's word, Medium for the name on the home page and the Timeline title, Regular unused
-for now), with their licences beside them. The home page's grey copy and nav links are a shade darker than `--muted` (70% muted, 30% ink;
+for now), with their licences beside them. The home page's grey copy and nav links are a shade darker than `--muted` (85% muted, 15% ink, halfway between the old grey and a first try at 70%;
 feedback that the grey read light). The name "Jules Bockelee Morvan" is Caslon Medium
 at 1.15em (16.1px), a step above the links so it reads as the heading: at 0.96em its capitals
 would stand exactly as tall as Satoshi Bold's beside it (0.762 em against 0.731, measured in
