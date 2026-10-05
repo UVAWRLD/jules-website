@@ -328,6 +328,16 @@ in `src/site.css`; the markup is written into each page. **Every new page other 
 page gets it**, with its own entry added to every page's bar. It replaced the "← Back ⌂" that
 sat on the title row of the Timeline and Projects pages.
 
+## Message me
+
+"Message me." on the home page is a `mailto:hello@julesbockelee.com` (forwarded to Jules's Gmail by
+ImprovMX; the MX and SPF records are on Vercel DNS, and Gmail sends as hello@ through
+smtp.gmail.com with an app password). A click launches a paper plane in `--ink` (an inline SVG,
+20px) from the end of the link: it dips, then swings up and away along a cubic curve off the top
+right of the screen in 1.15s, easing in, banking with its path, a touch larger mid-flight, and
+drops a trail of small dots that fade. The mail opens at 82% of the flight (and in any case 0.4s
+after it should have ended). Reduce Motion, or a cmd/ctrl click, opens the mail at once.
+
 ## The home page nav, and the Projects page
 
 The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, **Projects** and
