@@ -37,7 +37,7 @@ function rng(seed) {
 
 // The group's natural layout, in px, with the main print at the origin and the outer side on
 // the left: [{i, x, y, w, h, r, z}] and its bounds.
-function arrange(p, kind = "cluster") {
+function arrange(p) {
   const R = rng(p.slug), pr = p.prints;
   if (!pr.length) return null;
   // A set that is mostly phone screens is stacked like a hand of cards: every screen at the same
@@ -60,65 +60,6 @@ function arrange(p, kind = "cluster") {
     return { items, W: x1 + pad, H: y1 - y0 };
   }
   const size = (pt, area) => { const a = pt.w / pt.h; return [Math.sqrt(area * a), Math.sqrt(area / a)]; };
-  const bounds = (out, pad = 8) => {
-    const x0 = Math.min(...out.map(o => o.x)) - pad, y0 = Math.min(...out.map(o => o.y)) - pad;
-    const x1 = Math.max(...out.map(o => o.x + o.w)) + pad, y1 = Math.max(...out.map(o => o.y + o.h)) + pad;
-    out.forEach(o => { o.x -= x0; o.y -= y0; });
-    return { items: out, W: x1 - x0, H: y1 - y0 };
-  };
-  const use = pr.slice(0, 10);
-  // A cascade: the prints step down and across from the outer side, each over the last, the main
-  // print largest and in front at the end of the run
-  if (kind === "cascade") {
-    const rest = use.slice(1, 7), out = [];
-    let x = 0, y = 0;
-    rest.forEach((t, n) => {
-      const [w, h] = size(t, MAIN_AREA * (0.34 + R() * 0.06));
-      out.push({ i: n + 1, x, y, w, h, r: (R() - 0.5) * 4, z: n + 1 });
-      x += w * (0.34 + R() * 0.08); y += h * (0.12 + R() * 0.06);
-    });
-    const [w, h] = size(use[0], MAIN_AREA * 0.78);
-    out.push({ i: 0, x: x + w * 0.05, y: y + h * 0.02, w, h, r: (R() - 0.5) * 2, z: 20 });
-    return bounds(out);
-  }
-  // A contact sheet: the main print two rows tall, the others in two rows beside it at one
-  // height, a few pixels apart, barely turned
-  if (kind === "grid") {
-    const rest = use.slice(1, 9), rowH = 128, gap = 9, out = [];
-    const [mw0, mh0] = [rowH * 2 + gap, rowH * 2 + gap];
-    const mw = mh0 * use[0].w / use[0].h;
-    out.push({ i: 0, x: 0, y: 0, w: mw, h: mh0, r: (R() - 0.5) * 1.6, z: 2 });
-    const rows = [[], []]; let wsum = [0, 0];
-    rest.forEach((t, n) => { const r = wsum[0] <= wsum[1] ? 0 : 1, w = rowH * t.w / t.h; rows[r].push({ n, w }); wsum[r] += w + gap; });
-    rows.forEach((row, r) => { let x = mw + gap; row.forEach(({ n, w }) => { out.push({ i: n + 1, x, y: r * (rowH + gap), w, h: rowH, r: (R() - 0.5) * 2.4, z: 3 }); x += w + gap; }); });
-    return bounds(out);
-  }
-  // A fan: the prints at one height, held like a hand of cards from a point below them, the
-  // main print in the middle and on top
-  if (kind === "fan") {
-    const n = Math.min(use.length, 7), H = 230, R0 = 520, spread = Math.min(30, 8 + n * 3.4), out = [];
-    const order = [...Array(n).keys()].sort((a, b) => (a % 2 ? -a : a) - (b % 2 ? -b : b));   // 0 in the middle
-    order.forEach((idx, k) => {
-      const t = use[idx], h = H * (idx === 0 ? 1.06 : 0.94 + R() * 0.06), w = h * t.w / t.h;
-      const th = (k / Math.max(1, n - 1) - 0.5) * spread * Math.PI / 180;
-      const cx = Math.sin(th) * R0, cy = (1 - Math.cos(th)) * R0;
-      out.push({ i: idx, x: cx - w / 2, y: cy - h / 2, w, h, r: th * 180 / Math.PI, z: idx === 0 ? 20 : 10 - Math.abs(k - (n - 1) / 2) });
-    });
-    return bounds(out);
-  }
-  // A strip: the main print large, the others in a row across its foot, overlapping it
-  if (kind === "strip") {
-    const [mw0, mh0] = size(use[0], MAIN_AREA * 1.05), f = Math.min(1, 480 / mw0, 300 / mh0), mw = mw0 * f, mh = mh0 * f;
-    const out = [{ i: 0, x: 0, y: 0, w: mw, h: mh, r: (R() - 0.5) * 2, z: 2 }];
-    const rest = use.slice(1, 7), sh = Math.min(118, mh * 0.42), ws = rest.map(t => sh * t.w / t.h);
-    const total = ws.reduce((a, b) => a + b, 0), step = Math.min(1, (mw * 1.08) / (total * 0.86));
-    let x = (mw - total * 0.86 * step) / 2 - mw * 0.04;
-    rest.forEach((t, n) => {
-      out.push({ i: n + 1, x, y: mh - sh * (0.42 + R() * 0.16), w: ws[n], h: sh, r: (R() - 0.5) * 6, z: 5 + n });
-      x += ws[n] * 0.86 * step;
-    });
-    return bounds(out);
-  }
   let [mw, mh] = size(pr[0], MAIN_AREA);
   const fit = Math.min(1, MAIN_MAX_W / mw, MAIN_MAX_H / mh); mw *= fit; mh *= fit;
   const out = [{ i: 0, x: 0, y: 0, w: mw, h: mh, r: (R() - 0.5) * 3, z: 2 }];
@@ -225,20 +166,7 @@ export async function createProjectControls() {
   list.insertAdjacentHTML("afterbegin", projects.map(card).join(""));
 
   const cards = [...list.querySelectorAll(".pj-card")];
-  // each card gets one of the layouts, seeded by its name, never the same as either of the two
-  // cards before it (in the database's order); fewer than three prints, or a hand of phone
-  // screens, keep their own
-  const KINDS = ["cluster", "cascade", "grid", "fan", "strip"], recent = [];
-  const kindOf = new Map(projects.map(p => {
-    if (p.prints.length < 3) return [p.slug, "cluster"];
-    // a fan only suits prints taller than wide: wide slides fanned hide behind the front one
-    const wide = p.prints.reduce((s, t) => s + t.w / t.h, 0) / p.prints.length > 1.15;
-    const R = rng(p.slug + ":layout"), pick = KINDS.filter(k => !recent.includes(k) && !(wide && k === "fan"));
-    const k = pick[Math.floor(R() * pick.length)];
-    recent.push(k); if (recent.length > 2) recent.shift();
-    return [p.slug, k];
-  }));
-  const groups = new Map(projects.map(p => [p.slug, arrange(p, kindOf.get(p.slug))]));
+  const groups = new Map(projects.map(p => [p.slug, arrange(p)]));
   const layout = () => { const w = list.clientWidth; for (const c of cards) { const g = groups.get(c.dataset.slug); if (g) place(c, g, w); } };
   layout();
   let lastW = list.clientWidth;

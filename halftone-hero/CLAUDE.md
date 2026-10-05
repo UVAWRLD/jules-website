@@ -390,15 +390,6 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   middle of the group (16 for the outer ones) and turns a touch further; **a click (or tap) on the
   pictures fans them right out**, over the card's edges, and a second click, or a click anywhere
   else, brings them back.
-- **Five layouts** (2026-10-05, after family feedback that the pictures should vary more from project
-  to project). Besides the cluster above: **cascade** (the prints step down and across from the
-  outer side, each over the last, the main print largest and in front at the end), **grid** (a
-  contact sheet: the main print two rows tall, the rest in two rows of one height beside it),
-  **fan** (one height, held like a hand of cards from a point below, the main in the middle on
-  top; only for sets that are mostly portrait, since wide slides fanned hide behind the front
-  one) and **strip** (the main print large, the rest in a row overlapping its foot). Each card's
-  layout is seeded by its name and never repeats either of the two cards before it in the
-  database's order; under three prints, and the hand of phone screens, keep their own.
 - **The filter menu stays on top**: a card is `isolation: isolate`, so its prints' z-index (up to
   20) stays inside it, and the controls bar is `z-index: 20`. Before, the prints of the first card
   covered the Add Filter menu (a family member could not read the options).
