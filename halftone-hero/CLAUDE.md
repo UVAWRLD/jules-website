@@ -527,7 +527,8 @@ Paper and ink are read from the page's computed `body` colours, so the loader is
 
 **Timing.** Desktop (fine pointer): the sweep starts 4s after the hourglass first draws, which
 is exactly when the model's sand runs out. Touch: an "Enable tilt" button sits under the
-hourglass; the tap calls `enableTilt()` (iOS shows its prompt) and the sweep starts once there is
+hourglass, a pill like the Projects page's Search and Sort (the pill grey, body grey type, no
+outline) with a thin line icon of a phone leaning between two turn arrows (`public/img/tilt.svg`); the tap calls `enableTilt()` (iOS shows its prompt) and the sweep starts once there is
 an answer, allow or not; the hourglass keeps draining and flipping while it waits. Either way
 the sweep also waits for the page's textures. The crow's arrival is restarted at the reveal
 (`crow.replay()`), or he would already be perched behind the loader.
