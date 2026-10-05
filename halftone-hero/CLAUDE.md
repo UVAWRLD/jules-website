@@ -834,6 +834,10 @@ books.
   axis runs down the spine, so the title and the surname are laid out along it (`flex-direction:
   row` inside `writing-mode: vertical-rl`), title from the top, surname at the foot, centred
   across; with `column` they sat side by side across the spine, which read as odd.
+- **Borders**: publishers' images of white covers can carry a frame baked into the file (Skin in
+  the Game had a 4px black one, which read as a black line round the book; The Joy of x and
+  Thinking in Systems thinner grey ones; slivers on Homo Deus and the scanned 1984). They are
+  trimmed off the saved covers; check a new cover's edges against the pixels just inside them.
 - **Cache**: Vercel serves images for a week (`max-age=604800`), so a cover replaced under the
   same name stayed old in Jules's browser. Every cover link in `books.json` carries the file's
   fingerprint (`?v=` + 8 hex of its MD5), and so does every print link the database's export
