@@ -96,10 +96,16 @@
   #loader{position:fixed;inset:0;z-index:100;background:var(--paper)}
   #loader.sweeping{background:transparent}
   #loader canvas{display:block;width:100%;height:100%}
+  /* a pill like the Projects page's Search and Sort: no outline, the pill grey, the body grey
+     type, a thin line icon (public/img/tilt.svg, a phone leaning with turn arrows) */
   #loaderTilt{position:absolute;left:50%;transform:translateX(-50%);top:70%;
-    font:inherit;font-size:13px;line-height:1;color:var(--ink);background:var(--paper);
-    border:1px solid var(--ink);border-radius:3px;padding:11px 22px;cursor:pointer;
-    -webkit-tap-highlight-color:transparent;transition:opacity .2s ease}
+    display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+    font:inherit;font-size:13px;line-height:1;color:var(--body);background:var(--pill);
+    border:0;border-radius:999px;padding:10px 17px 10px 14px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;transition:opacity .2s ease, color .2s ease}
+  #loaderTilt:active{color:var(--ink)}
+  #loaderTilt .ic{width:14px;height:14px;flex:none;background:currentColor;
+    -webkit-mask:url(public/img/tilt.svg) no-repeat center/100% 100%;mask:url(public/img/tilt.svg) no-repeat center/100% 100%}
   #loaderTilt[hidden]{display:none}
   #loaderTilt:disabled{opacity:.45}
   #loader.sweeping #loaderTilt{opacity:0}
@@ -154,7 +160,7 @@
 
 <div id="loader" aria-label="Loading">
   <canvas id="loaderCv" aria-hidden="true"></canvas>
-  <button id="loaderTilt" hidden>Enable tilt</button>
+  <button id="loaderTilt" hidden><i class="ic" aria-hidden="true"></i>Enable tilt</button>
 </div>
 
 <div class="stage" id="stage">
