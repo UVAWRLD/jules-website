@@ -32,6 +32,10 @@ const PANELS = [
   [NOSE, SPINE_R, KEEL],                  // keel leaf
 ];
 
+// a slight turn about its long axis, held through the flight, so it banks a little toward you
+// and shows more of the top of its wings
+const ROLL = 0.2;
+
 // rotations, applied to [x, y, z]
 const rx = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0], p[1] * c - p[2] * s, p[1] * s + p[2] * c]; };
 const ry = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c]; };
@@ -101,7 +105,7 @@ export function createPlane({ reduce } = {}) {
     // attitude: nose along the path (with a little lag), banking and rocking in the gusts
     const want = Math.atan2(-f.vy, f.vx) * 0.85;
     f.pitch += (clamp(want, -0.42, 0.42) - f.pitch) * Math.min(1, dt * 6);
-    const roll = 0.22 * g(2) + 0.06 * Math.sin(t * 5.1 + f.ph);
+    const roll = ROLL + 0.22 * g(2) + 0.06 * Math.sin(t * 5.1 + f.ph);
     const grow = Math.min(1, t / 0.3), S = f.S * (0.72 + 0.28 * (1 - (1 - grow) * (1 - grow)));
     draw(f.x, f.y, S, f.pitch, roll, Math.min(1, t / 0.12));
     if (!f.edged && f.x + S * 0.5 >= W) { f.edged = true; f.onEdge && f.onEdge(); }
@@ -112,7 +116,7 @@ export function createPlane({ reduce } = {}) {
     fly(x, y, onEdge) {
       if (reduce) { onEdge && onEdge(); return; }
       const r = (a, b) => a + Math.random() * (b - a);
-      const S = clamp(innerWidth * 0.062, 62, 96), now = performance.now();
+      const S = clamp(innerWidth * 0.042, 44, 64), now = performance.now();
       const gust = () => [[1, r(0.7, 1.3), r(0, 6.3)], [0.55, r(1.6, 2.6), r(0, 6.3)], [0.3, r(3.1, 4.4), r(0, 6.3)]]
         .map(([a, w, ph]) => [a / 1.85, w, ph]);
       const x0 = x + S * 0.3, y0 = y - S * 0.2;
