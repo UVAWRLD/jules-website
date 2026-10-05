@@ -54,6 +54,11 @@ public/img/favicon.svg  the logo mark (Jules's Vector.svg): ink on a light tab, 
                       dark one, by prefers-color-scheme inside the SVG. favicon-32.png and
                       apple-touch-icon.png (on the paper, 180px) for Safari and the home screen;
                       favicon.ico (16+32) at the root. Rendered from the same path.
+public/img/email/     mark-spin.gif, the turning mark in Jules's email signature. **Do not remove
+                      it**: every email Jules has sent loads it from this address, and they
+                      break without it (it was removed once and had to be restored). Linked
+                      from no page; noindex in vercel.json. The signature itself lives outside
+                      this repo, in ~/Developer/prj_jules_email_signature.
 public/img/timeline/  the Timeline page's assets, from Figma (rule, rings, connectors,
                       certificate dashes, back link icon and underline), and portrait.jpg, the clipped
                       photo: Jules's print straightened (it came tilted 5.6 degrees) and cut
