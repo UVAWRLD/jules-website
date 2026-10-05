@@ -1,6 +1,7 @@
 import {createCrow} from "./crow.js";
 import {createLoader} from "./loader.js";
 import {createChain} from "./chain.js";
+import {createPlane} from "./plane.js";
 import {createCrowUI} from "./crowui.js";
 
 // paths are relative to index.html, so the folder runs from any static server.
@@ -280,8 +281,8 @@ gl.bindBuffer(gl.ARRAY_BUFFER,chainBuf);
 gl.enableVertexAttribArray(aPosLoc);
 gl.vertexAttribPointer(aPosLoc,4,gl.FLOAT,false,0,0);
 gl.bindVertexArray(null);
-let chainLocal=new Float32Array(0);
-function drawCrow(withCrow,chainN){
+let chainLocal=new Float32Array(0), planeLocal=new Float32Array(0);
+function drawCrow(withCrow,chainN,planeN){
   gl.bindFramebuffer(gl.FRAMEBUFFER,crowFB);
   gl.viewport(0,0,cv.width,cv.height);
   gl.clearColor(0,0,0,0); gl.clearDepth(1);
@@ -300,6 +301,16 @@ function drawCrow(withCrow,chainN){
     gl.uniform1f(CU.uSize,1.0); gl.uniform1f(CU.uFlag,1);
     gl.drawArrays(gl.POINTS,0,chainN);
     gl.uniform1f(CU.uFlag,0);
+  }
+  if(planeN){
+    // the paper plane (src/plane.js): window px, screened on the crow's lattice like the bird
+    const r=cv.getBoundingClientRect(), src=plane.points;
+    if(planeLocal.length<planeN*4) planeLocal=new Float32Array(src.length);
+    for(let i=0;i<planeN*4;i+=4){ planeLocal[i]=src[i]-r.left; planeLocal[i+1]=src[i+1]-r.top; planeLocal[i+2]=src[i+2]; planeLocal[i+3]=src[i+3]; }
+    gl.bindVertexArray(chainVAO); gl.bindBuffer(gl.ARRAY_BUFFER,chainBuf);
+    gl.bufferData(gl.ARRAY_BUFFER,planeLocal.subarray(0,planeN*4),gl.DYNAMIC_DRAW);
+    gl.uniform1f(CU.uSize,1.9); gl.uniform1f(CU.uFlag,0);
+    gl.drawArrays(gl.POINTS,0,planeN);
   }
   if(!withCrow){ gl.bindVertexArray(null); gl.bindFramebuffer(gl.FRAMEBUFFER,null);
     gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.useProgram(prog); gl.bindVertexArray(vao); return; }
@@ -614,6 +625,10 @@ function setTheme(dark){
   if(dark) root.setAttribute("data-theme","dark"); else root.removeAttribute("data-theme");
   try{ localStorage.setItem("theme",dark?"dark":"light"); }catch(e){}
 }
+// the paper plane "Message me." sends to the right edge; the page's own script calls this
+const plane=createPlane({reduce});
+window.flyPlane=(x,y,onEdge)=>plane.fly(x,y,onEdge);
+if(GRAB) window.__plane=plane;
 const chain=createChain({
   fine, reduce, dot,
   getLean:()=>sway,                       // on a phone, tilting leans the chain too
@@ -793,7 +808,9 @@ function frame(){
     sway, scale:crowScale, reduce
   });
   const chainN=chain?chain.count:0, crowOn=!!(alive&&crow.count);
-  if(crowOn||chainN) drawCrow(crowOn,chainN);
+  plane.update(performance.now());
+  const planeN=plane.count;
+  if(crowOn||chainN||planeN) drawCrow(crowOn,chainN,planeN);
   ui.update(cvr);
 
   if(ready===NTEX){
@@ -822,7 +839,7 @@ function frame(){
     gl.uniform1f(U.uShowDep,showDep?1:0);
     gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D,crowTex); gl.uniform1i(U.uCrow,5);
     gl.uniform2f(U.uRes,cv.width/dpr,cv.height/dpr);
-    gl.uniform1f(U.uCrowOn,crowOn||chainN?1:0);
+    gl.uniform1f(U.uCrowOn,crowOn||chainN||planeN?1:0);
     gl.uniform1f(U.uCrowInk,+ctl.crowInk.value);
     gl.uniform1f(U.uCrowFog,+ctl.crowFog.value);
     gl.uniform1f(U.uCellCrow,Math.max(bandW()/+ctl.crowCells.value, CROW_MIN_CELL));

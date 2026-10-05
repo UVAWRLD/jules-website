@@ -332,11 +332,20 @@ sat on the title row of the Timeline and Projects pages.
 
 "Message me." on the home page is a `mailto:hello@julesbockelee.com` (forwarded to Jules's Gmail by
 ImprovMX; the MX and SPF records are on Vercel DNS, and Gmail sends as hello@ through
-smtp.gmail.com with an app password). A click launches a paper plane in `--ink` (an inline SVG,
-20px) from the end of the link: it dips, then swings up and away along a cubic curve off the top
-right of the screen in 1.15s, easing in, banking with its path, a touch larger mid-flight, and
-drops a trail of small dots that fade. The mail opens at 82% of the flight (and in any case 0.4s
-after it should have ended). Reduce Motion, or a cmd/ctrl click, opens the mail at once.
+smtp.gmail.com with an app password). A click sends a **paper plane, drawn in the crow's dots**
+(`src/plane.js`), slowly from the end of the link to the right edge of the window; the mail opens as
+its nose reaches the edge, and it flies on out of sight. Like the pull chain it hands the renderer
+shaded points each frame (`window.flyPlane(x, y, onEdge)`, set by `src/halftone.js`), splatted
+into the crow's buffer and screened on the crow's lattice. The dart is modelled in code, no GLB:
+two wings folded up from the spine in a V and the two leaves of the keel, flat triangles sampled
+under a pixel apart, shaded with the crow's light and rim, folds and edges darker, the keel a shade
+darker again (it sits in the wings' shadow). Seen from the side, a little above and in front.
+It is 6.2% of the window wide (62-96px), grows in over 0.35s, eases into a glide of 2.2-3.6s
+(240px/s), rising and falling a little with its nose following the path, rocking on its long axis.
+Without the renderer, with Reduce Motion, or on a cmd/ctrl click, the mail opens at once.
+A first version, a flat SVG plane seen from above darting off to the top right with a dotted
+trail, was not liked. `?grab` exposes it as `window.__plane`; to inspect a frame, freeze
+`performance.now` after `fly()`.
 
 ## The home page nav, and the Projects page
 

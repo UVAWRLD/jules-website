@@ -80,13 +80,6 @@
   .copy .gap{margin-top:25px}
   .copy b.k{font-weight:500;color:var(--ink)}
   .copy a.msg{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-  /* Message me: a paper plane takes off from the link and flies off the screen, leaving a dotted
-     trail, then the mail opens */
-  .plane{position:fixed;left:0;top:0;width:20px;height:20px;z-index:50;pointer-events:none;color:var(--ink);will-change:transform}
-  .plane svg{display:block;width:100%;height:100%}
-  .plane-dot{position:fixed;left:0;top:0;width:2.4px;height:2.4px;margin:-1.2px 0 0 -1.2px;border-radius:50%;
-    background:var(--ink);z-index:49;pointer-events:none;animation:planedot .9s ease-out forwards}
-  @keyframes planedot{from{opacity:.55}to{opacity:0;transform:var(--t) scale(.4)}}
 
   .caption{position:absolute;right:4.86%;top:5.18vh;height:27px;z-index:4;
     display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12px}
@@ -299,46 +292,23 @@
 
 <script type="module" src="src/halftone.js"></script>
 <script>
-  // Message me: a paper plane lifts off the end of the link, swings up and away along a curve,
-  // banking with its path and speeding up, and leaves a fading trail of dots; the mail opens as it
-  // reaches the edge of the screen. Reduce Motion opens the mail at once.
+  // Message me: a paper plane, in the crow's dots (src/plane.js, drawn by the renderer), glides
+  // slowly from the link to the right edge of the window; the mail opens as it reaches it.
+  // Without the renderer, with Reduce Motion, or on a cmd/ctrl click, the mail opens at once.
   (() => {
     const link = document.querySelector("a.msg");
     if (!link) return;
     let flying = false;
     link.addEventListener("click", e => {
-      if (matchMedia("(prefers-reduced-motion: reduce)").matches || e.metaKey || e.ctrlKey) return;
+      if (!window.flyPlane || matchMedia("(prefers-reduced-motion: reduce)").matches || e.metaKey || e.ctrlKey) return;
       e.preventDefault();
       if (flying) return;
       flying = true;
-      const go = () => { location.href = link.href; };
-      const r = link.getBoundingClientRect(), W = innerWidth, H = innerHeight;
-      const P0 = [r.right + 4, r.top + r.height / 2], P3 = [W + 60, Math.min(-40, P0[1] - H * 0.9)];
-      const P1 = [P0[0] + 70, P0[1] + 26], P2 = [P0[0] + (P3[0] - P0[0]) * 0.45, P0[1] - 40];
-      const at = (t, i) => { const u = 1 - t; return u*u*u*P0[i] + 3*u*u*t*P1[i] + 3*u*t*t*P2[i] + t*t*t*P3[i]; };
-      const plane = document.createElement("div");
-      plane.className = "plane"; plane.setAttribute("aria-hidden", "true");
-      plane.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M2.5 11.2 21.5 3 15.2 21 11.6 13.4Z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.6 13.4 21.5 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
-      document.body.appendChild(plane);
-      const DUR = 1150, t0 = performance.now(); let opened = false, lastDot = -1;
-      const step = now => {
-        const k = Math.min(1, (now - t0) / DUR), t = k * k * (1.6 - 0.6 * k);     // eases in: a slow lift, then away
-        const x = at(t, 0), y = at(t, 1), t2 = Math.min(1, t + 0.01);
-        const ang = Math.atan2(at(t2, 1) - y, at(t2, 0) - x) * 180 / Math.PI + 45;  // the svg's nose points up-right
-        const s = 1 + 0.25 * Math.sin(Math.min(1, k * 1.4) * Math.PI);               // a little nearer mid-flight
-        plane.style.transform = `translate(${x - 10}px, ${y - 10}px) rotate(${ang}deg) scale(${s})`;
-        const d = Math.floor(t * 26);
-        if (d > lastDot && k < 0.92) {
-          lastDot = d;
-          const dot = document.createElement("i"); dot.className = "plane-dot";
-          dot.style.setProperty("--t", `translate(${x}px, ${y}px)`); dot.style.transform = `translate(${x}px, ${y}px)`;
-          document.body.appendChild(dot); setTimeout(() => dot.remove(), 950);
-        }
-        if (k >= 0.82 && !opened) { opened = true; go(); }
-        if (k < 1) requestAnimationFrame(step); else { plane.remove(); flying = false; }
-      };
-      requestAnimationFrame(step);
-      setTimeout(() => { if (!opened) { opened = true; go(); } }, DUR + 400);   // the mail opens even if frames stall
+      let opened = false;
+      const go = () => { if (opened) return; opened = true; flying = false; location.href = link.href; };
+      const r = link.getBoundingClientRect();
+      window.flyPlane(r.right + 6, r.top + r.height / 2, go);
+      setTimeout(go, 4500);                       // the mail opens even if frames stall
     });
   })();
 
