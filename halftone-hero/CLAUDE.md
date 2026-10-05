@@ -822,7 +822,7 @@ books.
   and a soft one under it on the shelf. Each book is turned 14 degrees so the spine shows; each
   shelf has its own perspective from above.
 - **Shelves**: 6 books a shelf (4 at 820 and under, 3 on a phone), spaced evenly; the plank is a
-  white slab 8px thick (13 at first; Jules asked for it finer), its top seen from above (`--shelf-*` tokens, darker in the dark theme).
+  white slab 13px thick, its top seen from above (`--shelf-*` tokens, darker in the dark theme).
 - **2026-10-02, Jules's edits**: his own choice of cover for Ubik, Smarter Faster Better, How to
   Win (10th anniversary), The Joy of x, 1984 (the 1960s Penguin), Animal Farm (Signet, only
   290px wide), Meditations and Asimov, whose slot is now I, Robot (his cover; it was Bóvedas de
