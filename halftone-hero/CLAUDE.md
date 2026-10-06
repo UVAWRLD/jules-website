@@ -567,6 +567,21 @@ cell is held at the crow's pitch, `clamp(height / 80, 1.8, 2.6)` px.
 laptop); on touch screens 20%, between 120 and 190px: bigger than the crow (35-56px)
 but a small object on the page. The first version was 40% of the height, which was too much.
 
+**The cursor pushes its dots** (`disturb()` in `src/loader.js`, after dobre.agency's particle hero,
+which Jules liked but wanted gentler; their widget is a repel field with a core and a tail, a
+spring home, damping, curl and per-particle randomness, and this is the same idea at a fraction of
+its strength). Each point carries its own screen offset on a damped spring (40/s², damping 6.2:
+home in about two thirds of a second, a little overshoot). Within 60% of the hourglass's height of
+the cursor it is pushed: away from the cursor, half along its own normal on screen (so the form
+bulges rather than slides), a little swirl (curl 0.35), each point's push scaled by its own random
+(±45%) and turned its own way (up to ±0.55 rad) so they scatter, strongly inside 24% of the height
+(5200 px/s²) and softly beyond (900), harder the faster the cursor moves (35% when still). Offsets
+are capped at 12% of the height, speeds at 700px/s; pushed points come a touch nearer, so they
+print larger. The points are re-screened on the lattice every frame, so it reads as the hourglass
+bulging and breaking into loose dots where the cursor goes, then settling. Touch drags push it
+too. Reduce Motion turns it off. `?grab` exposes `window.__hg` (the offsets, the cursor speed):
+a quick sweep in headless Chrome moved 4,400 points, at most 13.7px; 0.6s later the largest was 1.8.
+
 Paper and ink are read from the page's computed `body` colours, so the loader is the hero's
 `#ECECEC` (it was white) and would follow a dark theme.
 

@@ -224,12 +224,15 @@ export function createLoader(opts) {
 
   // ---- posing ----
   let M = null, out = null, alpha = null, nOpaque = 0, nAll = 0;
+  let off = null, vel = null, nscr = null, rnd = null;     // the cursor's push on each dot (see disturb)
   const PARTICLES = 90;
   const part = Array.from({ length: PARTICLES }, () => ({ y: -1, x: 0, z: 0, v: 0 }));
   loadModel("public/models/").then(m => {
     M = m;
     nAll = m.nr + m.ns + PARTICLES;
     out = new Float32Array(nAll * 4); alpha = new Float32Array(nAll);
+    off = new Float32Array(nAll * 3); vel = new Float32Array(nAll * 3); nscr = new Float32Array(nAll * 2);
+    rnd = Float32Array.from({ length: nAll }, () => Math.random() * 2 - 1);
   }).catch(e => { console.error("hourglass", e); });
 
   function sandPose(fi, f) {
@@ -284,6 +287,7 @@ export function createLoader(opts) {
       const k = scale * CAM / (CAM - tz);
       out[q * 4] = cx + rx * k; out[q * 4 + 1] = cy - ty * k;
       out[q * 4 + 2] = clamp(0.5 + tz * 1.6, 0, 1);
+      nscr[q * 2] = nrx; nscr[q * 2 + 1] = -nty;          // its normal on screen, y down
       const lam = Math.max(0, nrx * LIGHT[0] + nty * LIGHT[1] + ntz * LIGHT[2]);
       const rim = 1 - Math.abs(ntz);
       let ink, a = 1;
@@ -345,6 +349,65 @@ export function createLoader(opts) {
     }
   }
 
+  // ---- the cursor pushes the dots ----
+  // After dobre.agency's particle hero, gentler. Each dot has its own offset from where the model
+  // puts it, on a damped spring back to zero. Near the cursor it is pushed: away from the cursor,
+  // turned partly along the dot's own surface normal (so the hourglass seems to bulge rather than
+  // slide), with a little swirl around the cursor and a little randomness per dot; strongly in a
+  // core, softly in a wider tail, and harder the faster the cursor moves. Dots pushed out also come
+  // a little toward the viewer, so they print larger. Then the springs settle them back.
+  const PUSH = { core: 0.24, tail: 0.6,              // radii, as a share of the hourglass's height
+                 coreK: 5200, tailK: 900,            // px/s², at the centre of each
+                 spring: 40, damp: 6.2,              // back home in about two thirds of a second, a little overshoot
+                 maxOff: 0.12, maxV: 700,            // offset at most 12% of the height; px/s
+                 curl: 0.35, normal: 0.5, rand: 0.45, scatter: 0.55 };   // scatter: each dot's own turn, radians
+  let mouse = null, mPrev = null, mSpeed = 0;
+  addEventListener("pointermove", e => { mouse = [e.clientX, e.clientY]; }, { passive: true });
+  addEventListener("pointerdown", e => { mouse = [e.clientX, e.clientY]; }, { passive: true });
+  document.addEventListener("pointerleave", () => { mouse = null; });
+  addEventListener("pointerup", e => { if (e.pointerType !== "mouse") mouse = null; });
+  if (location.search.includes("grab")) window.__hg = { get off() { return off; }, get speed() { return mSpeed; } };
+  function disturb(dt) {
+    if (!off || reduce) return;
+    if (mouse && mPrev && dt > 0) mSpeed += (Math.hypot(mouse[0] - mPrev[0], mouse[1] - mPrev[1]) / dt - mSpeed) * Math.min(1, dt * 12);
+    else mSpeed *= Math.exp(-dt * 8);
+    mPrev = mouse ? [mouse[0], mouse[1]] : null;
+    const rc = scale * PUSH.core, rt = scale * PUSH.tail, maxO = scale * PUSH.maxOff;
+    const pace = 0.35 + 0.65 * Math.min(1, mSpeed / 700);      // a still cursor moves them less
+    const n = nAll;
+    for (let i = 0; i < n; i++) {
+      const o3 = i * 3, o4 = i * 4;
+      let fx = 0, fy = 0, fz = 0;
+      if (mouse && out[o4] > -1e3) {
+        const dx = out[o4] - mouse[0], dy = out[o4 + 1] - mouse[1], d = Math.hypot(dx, dy) || 1e-3;
+        if (d < rt) {
+          let f = PUSH.tailK * Math.pow(1 - d / rt, 3);
+          if (d < rc) f += PUSH.coreK * Math.pow(1 - d / rc, 4.2);
+          f *= pace * (1 + PUSH.rand * rnd[i]);
+          const ux = dx / d, uy = dy / d;
+          const ax = ux * (1 - PUSH.normal) + nscr[i * 2] * PUSH.normal, ay = uy * (1 - PUSH.normal) + nscr[i * 2 + 1] * PUSH.normal;
+          const al = Math.hypot(ax, ay) || 1;
+          // each dot turned a little its own way, so they scatter rather than shift as one
+          const th = PUSH.scatter * rnd[(i * 7 + 3) % n], c = Math.cos(th), s = Math.sin(th);
+          const bx = ax / al - uy * PUSH.curl, by = ay / al + ux * PUSH.curl;
+          fx = f * (bx * c - by * s); fy = f * (bx * s + by * c); fz = f * 0.0006;
+        }
+      }
+      for (let c = 0; c < 3; c++) {
+        const F = c === 0 ? fx : c === 1 ? fy : fz, k = o3 + c;
+        vel[k] += (F - PUSH.spring * off[k] - PUSH.damp * vel[k]) * dt;
+      }
+      const sp = Math.hypot(vel[o3], vel[o3 + 1]);
+      if (sp > PUSH.maxV) { vel[o3] *= PUSH.maxV / sp; vel[o3 + 1] *= PUSH.maxV / sp; }
+      off[o3] += vel[o3] * dt; off[o3 + 1] += vel[o3 + 1] * dt; off[o3 + 2] += vel[o3 + 2] * dt;
+      const ol = Math.hypot(off[o3], off[o3 + 1]);
+      if (ol > maxO) { off[o3] *= maxO / ol; off[o3 + 1] *= maxO / ol; }
+      off[o3 + 2] = clamp(off[o3 + 2], 0, 0.25);
+      out[o4] += off[o3]; out[o4 + 1] += off[o3 + 1];
+      out[o4 + 2] = clamp(out[o4 + 2] + off[o3 + 2], 0, 1);
+    }
+  }
+
   // ---- the sequence ----
   let shownAt = null, sweepAt = null, t = 0, last = performance.now(), raf = 0;
   let answered = !mobile;
@@ -366,6 +429,7 @@ export function createLoader(opts) {
       if (shownAt === null) shownAt = now;
       t = (now - shownAt) / 1000;
       pose(t, dt);
+      disturb(dt);
       const due = mobile ? answered : t >= DESKTOP_HOLD;
       if (sweepAt === null && due && heroOk()) {
         sweepAt = now;
