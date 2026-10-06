@@ -585,8 +585,9 @@ a quick sweep in headless Chrome moved 4,400 points, at most 13.7px; 0.6s later 
 Paper and ink are read from the page's computed `body` colours, so the loader is the hero's
 `#ECECEC` (it was white) and would follow a dark theme.
 
-**Timing.** Desktop (fine pointer): the sweep starts 4s after the hourglass first draws, which
-is exactly when the model's sand runs out. Touch: an "Enable tilt" button sits under the
+**Timing.** Desktop (fine pointer): the sweep starts 9s after the hourglass first draws, which
+is when the model's sand runs out the second time (it was 4s, the first time; Jules wanted it
+about twice as long, so there is time to play with the dots). Touch: an "Enable tilt" button sits under the
 hourglass, a pill like the Projects page's Search and Sort (the pill grey, body grey type, no
 outline) with a thin line icon of a phone leaning between two turn arrows (`public/img/tilt.svg`); the tap calls `enableTilt()` (iOS shows its prompt) and the sweep starts once there is
 an answer, allow or not; the hourglass keeps draining and flipping while it waits. Either way
@@ -746,7 +747,9 @@ there is no room that side, or straight up (or down) when the card ends up over 
 is what a phone gets. The rise shortens to whatever fits and the dashes shorten with it. If
 the line cannot be drawn without crossing him, it is dropped rather than drawn through him.
 
-**The pointer is a 7px dot in `#F13A0D`,** with the native cursor hidden. It is an element
+**The pointer is a 7px dot in `#F13A0D`,** above everything (z-index 120, so it shows over the
+loading screen too; at 20 it sat under the loader, whose page hides the native cursor, so there
+was no cursor at all while the hourglass played), with the native cursor hidden. It is an element
 rather than a cursor image, so it stays crisp on a retina screen, and it is moved inside the
 pointer handler rather than the frame loop, so it does not trail the hand. Over the bird it hollows into a
 ring of the same size rather than growing — without a pointer that is the only thing left to

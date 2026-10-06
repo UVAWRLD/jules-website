@@ -15,7 +15,7 @@ const LIGHT = (() => { const v = [-0.45, 0.78, 0.44]; const l = Math.hypot(...v)
 const CAM = 5;                        // camera distance, in hourglass heights
 const PITCH = 0.2;                    // looking down on it a little, so the rims read as ellipses
 const SPIN = 0.32;                    // radians a second: a slow turn, so it reads as 3D
-const DESKTOP_HOLD = 4.0;             // seconds on screen before the sweep, on a desktop
+const DESKTOP_HOLD = 9.0;             // seconds on screen before the sweep, on a desktop: the sand runs out a second time (it was 4, the first time; Jules wanted about twice as long)
 // the build: every cell starts at its own random moment within SPREAD, and takes CELL_DUR
 const SPREAD = 0.6, CELL_DUR = 0.32;
 const SWEEP = SPREAD + CELL_DUR;      // the whole build, seconds
