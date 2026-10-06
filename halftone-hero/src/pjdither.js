@@ -1,16 +1,15 @@
-// The Projects page's prints, in halftone until you look at them.
+// The Projects page's prints, revealed from halftone as the page opens.
 //
 // Each print gets a canvas over its picture holding a one-bit ordered dither of it (Bayer 8 x 8,
 // one dot per screen pixel, up to two a CSS pixel, the picture lightly sharpened first so fine
 // detail survives; in the page's ink and the card's paper), so the page reads as black and
-// white. Looking at a card brings the colour back, once, for the rest of the visit: the dither is
-// wiped away dot by dot in a random order, cell by cell (2px cells, the order a seeded shuffle
-// over a 64px tile), the prints a few frames apart. With a mouse that happens on the first hover;
-// on a touch screen there is no hover, so it happens in about half a second when the card's
-// pictures reach the middle of the screen.
+// white for a moment as the page opens, then the colour comes back by itself in 1.5s: the dither
+// is wiped away dot by dot in a random order, cell by cell (2px cells, the order a seeded shuffle
+// over a 64px tile), the prints a little apart. Only the prints on screen when the page opens are
+// dithered; the rest are in colour from the start.
 //
-// The dithers are made only when a card comes near the viewport, from the picture at the size it
-// is shown, and remade when that size changes. The theme swaps the two colours (light dots on
+// Each dither is made from the picture at the size it is shown, and remade if that size changes
+// before the colour has come back. The theme swaps the two colours (light dots on
 // dark in the dark theme) by redrawing from the stored dots.
 
 const BAYER = (() => {                       // 8 x 8 ordered-dither thresholds, 0..63
@@ -65,7 +64,6 @@ const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 export function ditherPrints(list, cards) {
   if (!list || !cards.length) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const mouse = matchMedia("(hover: hover) and (pointer: fine)");
   list.classList.add("pj-dither");
   let pal = colours();
 
@@ -160,11 +158,14 @@ export function ditherPrints(list, cards) {
     pr.done = true;
   }
 
-  // made when a card comes within a screen of the viewport
-  const near = new IntersectionObserver(es => {
-    for (const e of es) if (e.isIntersecting) { e.target.querySelectorAll(".pj-layer").forEach(f => ready(byFig.get(f))); near.unobserve(e.target); }
-  }, { rootMargin: "100% 0px" });
-  cards.forEach(c => near.observe(c));
+  // Only the prints on screen when the page opens are put in halftone; the rest show in colour
+  // from the start, and never get a dither at all.
+  const vh = innerHeight, firstView = prints.filter(pr => {
+    const r = pr.card.querySelector(".pj-imgs").getBoundingClientRect();
+    return !pr.card.hidden && r.bottom > 0 && r.top < vh;
+  });
+  for (const pr of prints) if (!firstView.includes(pr)) { pr.fig.classList.add("dz"); pr.cv.remove(); pr.p = 1; }
+  const readyAll = Promise.all(firstView.map(ready));
 
   // remade when a print is shown at a new size (the layout reruns on a change of width)
   let resizeT = 0;
@@ -178,9 +179,10 @@ export function ditherPrints(list, cards) {
   new MutationObserver(() => { pal = colours(); prints.forEach(pr => { if (pr.bits) { paint(pr); pr.level = -1; draw(pr); } }); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-  // ---- the wipe: once per visit, on the first hover with a mouse, or on a touch screen when a
-  // card's pictures reach the middle of the screen; after that the card stays in colour until
-  // the page is loaded again ----
+  // ---- the wipe: once, as the page opens. When the prints on screen are ready (or after 2.5s
+  // at most, whatever has loaded), a beat, then they all go from halftone to colour, wiped away
+  // dot by dot, in 1.5s from first to last: each print over 1.1s, starting up to 0.4s apart. ----
+  const TOTAL = 1500, EACH = 1100;
   let raf = 0, last = 0;
   function tick(now) {
     raf = 0;
@@ -190,52 +192,27 @@ export function ditherPrints(list, cards) {
       if (pr.p >= 1 || !pr.target) continue;
       if (reduce) pr.p = 1;
       else if (pr.wait > 0) { pr.wait -= dt; moving = true; continue; }
-      else { pr.lin = Math.min(1, (pr.lin || 0) + dt / pr.dur); pr.p = ease(pr.lin); }
+      else { pr.lin = Math.min(1, (pr.lin || 0) + dt / EACH); pr.p = ease(pr.lin); }
       draw(pr);
       if (pr.p < 1) moving = true;
     }
     if (moving) raf = requestAnimationFrame(tick); else last = 0;
   }
-  // with a mouse: 620ms a print, 55ms apart; on a touch screen about half a second in all
-  function reveal(card, touch) {
-    if (card.dataset.seen) return;
-    card.dataset.seen = "1";
-    for (const pr of prints) if (pr.card === card) {
-      pr.target = 1; pr.dur = touch ? 420 : 620; pr.wait = pr.n * (touch ? 12 : 55);
-    }
+  function play() {
+    const n = firstView.length;
+    firstView.forEach((pr, k) => {
+      if (!pr.done) { pr.p = 1; pr.fig.classList.add("dz"); pr.cv.style.visibility = "hidden"; return; }   // not loaded in time: colour as it comes
+      pr.p = 0; pr.lin = 0; pr.level = -1; pr.target = 1;
+      pr.wait = n > 1 ? (k / (n - 1)) * (TOTAL - EACH) : 0;
+      draw(pr);
+    });
     if (!raf) raf = requestAnimationFrame(tick);
   }
-
-  for (const c of cards) c.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") reveal(c, false); });
-  // fanned out (a click or a tap on the pictures), a card shows its colours at once
-  new MutationObserver(ms => { for (const m of ms) if (m.target.classList?.contains("fan")) reveal(m.target, !mouse.matches); })
-    .observe(list, { subtree: true, attributes: true, attributeFilter: ["class"] });
-
-  // on a touch screen: when the middle of a card's pictures comes up to the middle of the screen
-  // (or past it)
-  let sraf = 0;
-  function onScroll() {
-    sraf = 0;
-    if (mouse.matches) return;
-    const vh = innerHeight;
-    for (const c of cards) {
-      if (c.hidden || c.dataset.seen) continue;
-      const box = c.querySelector(".pj-imgs").getBoundingClientRect();
-      if (box.bottom > 0 && (box.top + box.bottom) / 2 <= vh * .55) reveal(c, true);
-    }
-  }
-  const scrolled = () => { if (!sraf) sraf = requestAnimationFrame(onScroll); };
-  addEventListener("scroll", scrolled, { passive: true });
-  addEventListener("resize", scrolled);
-  mouse.addEventListener?.("change", scrolled);
-  scrolled();
-  // coming back to the page (the back button can restore it as it was left) starts it over
-  addEventListener("pageshow", e => {
-    if (!e.persisted) return;
-    for (const c of cards) delete c.dataset.seen;
-    for (const pr of prints) { pr.p = pr.lin = pr.target = 0; pr.level = -1; draw(pr); }
-    scrolled();
-  });
+  let played = false;
+  const go = () => { if (played) return; played = true; setTimeout(play, 250); };
+  readyAll.then(go); setTimeout(go, 2500);
+  // coming back to the page (the back button can restore it as it was left) plays it again
+  addEventListener("pageshow", e => { if (e.persisted) play(); });
   return { prints };
 }
 

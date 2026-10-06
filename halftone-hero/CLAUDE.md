@@ -434,21 +434,20 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
 - **The filter menu stays on top**: a card is `isolation: isolate`, so its prints' z-index (up to
   20) stays inside it, and the controls bar is `z-index: 20`. Before, the prints of the first card
   covered the Add Filter menu (a family member could not read the options).
-- **The prints are in halftone until looked at** (`src/pjdither.js`, Jules's test of 2026-10-01).
-  Each print has a canvas over its picture with a one-bit ordered dither of it (Bayer 8 x 8, one
-  dot per screen pixel, up to two a CSS pixel, after a light unsharp mask so small type survives;
-  first tried at one dot per CSS pixel, which Jules found too coarse; the tones stretched between the 1st and 99th percentiles, in the darker and
-  lighter of `--ink` and `--surface`), made when its card comes within a screen of the viewport,
-  from the picture at the size it is shown, and remade when that size changes. Looking at a card brings the colour back once, for the rest of the visit
-  (Jules: it should stay until you come back to the site; a page restored by the back button
-  starts over): the dither is wiped away in 2px cells in a seeded random order (a 64px tile; each
-  step is one `destination-out` pattern fill). With a mouse it happens on the first hover, the
-  prints 620ms each and 55ms apart. A touch screen has no hover, so it happens when the middle of
-  a card's pictures comes up to the middle of the screen (55% of its height), in about half a
-  second (420ms a print, 12ms apart); a first try that followed the scroll felt too quick and
-  too gradual. Fanning a card out shows its colours too. The picture is hidden (`.pj-dither`) until its dither is ready, so it never flashes in
-  colour first. A soft shadow (`.pj-more`, `--more-shade`) sits along the bottom of the screen
-  while more projects are below and fades out at the end of the list.
+- **The prints open in halftone and turn to colour by themselves** (`src/pjdither.js`). Each
+  print on screen when the page opens gets a canvas over its picture with a one-bit ordered dither
+  of it (Bayer 8 x 8, one dot per screen pixel, up to two a CSS pixel, after a light unsharp mask so
+  small type survives; the tones stretched between the 1st and 99th percentiles, in the darker and
+  lighter of `--ink` and `--surface`). When they are ready (2.5s at most), after a 0.25s beat, the
+  dither is wiped away in 2px cells in a seeded random order (a 64px tile; each step one
+  `destination-out` pattern fill): 1.5s from first to last, each print over 1.1s, starting up to
+  0.4s apart. Prints below the first screen are in colour from the start and never dithered; a
+  page restored by the back button plays it again. **History**: it first revealed a card on hover
+  (with a mouse) or as it reached the middle of the screen (touch), staying in colour once seen;
+  Jules found the hover and scroll triggers intrusive (2026-10-05) and wanted it on load instead.
+  The picture is hidden (`.pj-dither`) until its dither is ready, so it never flashes in colour
+  first. A soft shadow (`.pj-more`, `--more-shade`) sits along the bottom of the screen while more
+  projects are below and fades out at the end of the list.
 - **Text**: tags are the database's `discipline` and `context`; the year is `year` or `years`
   (undated projects show none). The heading is `headline` when the database has one (with the
   project's name above it in small capitals), else the title; then `description`, and
