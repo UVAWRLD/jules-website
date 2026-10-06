@@ -129,19 +129,6 @@
   .pj-case i{font-style:normal;font-size:14px;line-height:1}
   .pj-empty{margin:0;font-size:12px;color:var(--muted)}
 
-  /* ---- footer ---- */
-  .pj-foot{margin-top:98px;padding:46px 4.86% 54px}
-  .pj-foot::before{content:"";display:block;height:1px;background:var(--ink);opacity:.22;margin-bottom:42px}
-  .pj-foot-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
-  .pj-contact{display:flex;align-items:center;gap:22px}
-  .pj-contact .mk{width:23px;height:23.4px;flex:none;background:var(--ink);
-    -webkit-mask:url(public/img/logo.svg) no-repeat center/contain;mask:url(public/img/logo.svg) no-repeat center/contain}
-  .pj-contact p{margin:0;font-weight:500;font-size:26px;line-height:normal;color:var(--ink)}
-  .pj-contact a{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--body);text-decoration:none}
-  .pj-links{display:flex;align-items:center;gap:24px;font-size:10px;white-space:nowrap}
-  .pj-links a{color:var(--body);text-decoration:none}
-  .pj-contact a:hover,.pj-links a:hover{color:var(--ink)}
-  .pj-links small{font-size:9.5px;color:var(--muted)}
 
   /* ---- narrower screens: the card's pictures on top, its words under them ---- */
   @media (max-width:980px){
@@ -171,9 +158,6 @@
     .pj-sum h3 + p{font-size:11.5px;line-height:1.42}
     .pj-contrib span{font-size:10px}
     .pj-tags li,.pj-year{font-size:9px}
-    .pj-foot{padding:40px 24px 44px;margin-top:72px}
-    .pj-contact{align-items:flex-start;gap:14px}
-    .pj-contact p{font-size:20px}
   }
 </style>
 </head>
@@ -219,12 +203,12 @@
       <i class="mk" aria-hidden="true"></i>
       <div>
         <p>Have a complicated thing to make clear?</p>
-        <a href="mailto:hello@julesbockelee.com">hello@julesbockelee.com ↗</a>
+        <a href="mailto:hello@julesbockelee.com" data-plane>hello@julesbockelee.com ↗</a>
       </div>
     </div>
     <div class="pj-links">
       <a href="https://www.linkedin.com/in/julesbockelee/" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a href="https://www.instagram.com/thejulesbockelee/" target="_blank" rel="noopener">Instagram ↗</a>
+      <a href="https://x.com/julesbockelee" target="_blank" rel="noopener">X ↗</a>
       <small>© 2026</small>
     </div>
   </div>
@@ -233,9 +217,11 @@
 <script type="module">
   // The crow, as on the Timeline: in from the right, down onto the rule under the title
   import { createCrowStage } from "./src/crowstage.js";
+  import { bindPlaneLinks } from "./src/mailplane.js";
   import { createProjectControls } from "./src/projects.js";
   createCrowStage({ perchOn: document.querySelector(".pj-head"), perchAt: 0.5, dir: -1 });
   createProjectControls();
+  bindPlaneLinks();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>

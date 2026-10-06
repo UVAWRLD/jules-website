@@ -8,6 +8,7 @@
 // bird on every page. The canvas is fixed and the perch is read every frame, so when the page
 // scrolls he goes with the line he stands on.
 
+import { createPlane } from "./plane.js";
 import { createCrow } from "./crow.js";
 import { createCrowUI } from "./crowui.js";
 
@@ -135,6 +136,9 @@ export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" })
 
   const crow = createCrow(base + "public/models/", { dir });
   const ui = createCrowUI({ crow, fine, canvasWidth: () => W });
+  // the paper plane the email links send off (src/mailplane.js), in the bird's dots on his stage
+  const plane = createPlane({ reduce });
+  window.flyPlane = (x, y, onEdge) => plane.fly(x, y, onEdge);
 
   // he turns a little toward the cursor, as on the home page
   let mouse = null;
@@ -159,8 +163,10 @@ export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" })
     });
     ui.update({ left: 0, top: 0 });
 
-    if (alive && crow.count && lutReady) {
-      // splat him
+    plane.update(performance.now());
+    const crowOn = !!(alive && crow.count), planeN = plane.count;
+    if ((crowOn || planeN) && lutReady) {
+      // splat him, and the plane
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
       gl.viewport(0, 0, cv.width, cv.height);
       gl.clearColor(0, 0, 0, 0); gl.clearDepth(1);
@@ -168,10 +174,17 @@ export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" })
       gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND);
       gl.useProgram(pSplat); gl.bindVertexArray(vao);
       gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.bufferData(gl.ARRAY_BUFFER, crow.positions, gl.DYNAMIC_DRAW);
       gl.uniform2f(SU.uRes, cv.width, cv.height); gl.uniform1f(SU.uDpr, dpr);
-      gl.uniform1f(SU.uSize, SPLAT * scale / 110);
-      gl.drawArrays(gl.POINTS, 0, crow.count);
+      if (crowOn) {
+        gl.bufferData(gl.ARRAY_BUFFER, crow.positions, gl.DYNAMIC_DRAW);
+        gl.uniform1f(SU.uSize, SPLAT * scale / 110);
+        gl.drawArrays(gl.POINTS, 0, crow.count);
+      }
+      if (planeN) {                                   // its points are in window px, as this canvas is
+        gl.bufferData(gl.ARRAY_BUFFER, plane.points.subarray(0, planeN * 4), gl.DYNAMIC_DRAW);
+        gl.uniform1f(SU.uSize, 1.9);
+        gl.drawArrays(gl.POINTS, 0, planeN);
+      }
       gl.disable(gl.DEPTH_TEST);
       // and screen him into dots
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);

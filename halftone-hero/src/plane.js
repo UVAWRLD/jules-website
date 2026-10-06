@@ -120,7 +120,7 @@ export function createPlane({ reduce } = {}) {
       const gust = () => [[1, r(0.7, 1.3), r(0, 6.3)], [0.55, r(1.6, 2.6), r(0, 6.3)], [0.3, r(3.1, 4.4), r(0, 6.3)]]
         .map(([a, w, ph]) => [a / 1.85, w, ph]);
       const x0 = x + S * 0.3, y0 = y - S * 0.2;
-      const cruise = clamp((innerWidth - x0) / r(2.1, 2.7), 70, 240);   // about two and a half seconds to the edge, on any screen
+      const cruise = clamp((innerWidth - x0) / r(2.1, 2.7), 70, 600);   // about two and a half seconds to the edge, on any screen
       flight = { t0: now, last: now, x: x0, y: y0, x0, y0, S, onEdge, edged: false,
                  vx: 0, vy: r(-70, -40), pitch: 0, ph: r(0, 6.3),
                  cruise, throwV: cruise * r(0.8, 1.2),

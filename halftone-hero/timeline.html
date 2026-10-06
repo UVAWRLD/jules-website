@@ -321,13 +321,32 @@
   </div>
 </main>
 
+<footer class="pj-foot">
+  <div class="pj-foot-row">
+    <div class="pj-contact">
+      <i class="mk" aria-hidden="true"></i>
+      <div>
+        <p>Have a complicated thing to make clear?</p>
+        <a href="mailto:hello@julesbockelee.com" data-plane>hello@julesbockelee.com ↗</a>
+      </div>
+    </div>
+    <div class="pj-links">
+      <a href="https://www.linkedin.com/in/julesbockelee/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://x.com/julesbockelee" target="_blank" rel="noopener">X ↗</a>
+      <small>© 2026</small>
+    </div>
+  </div>
+</footer>
+
 <script type="module">
   // The crow: in from the right, down onto the rule under the title, off to the left when he
   // is clicked, back ten seconds later. Hovering him opens his card, as on the home page.
   import { createCrowStage } from "./src/crowstage.js";
+  import { bindPlaneLinks } from "./src/mailplane.js";
   import { createTimelineCards } from "./src/tlcards.js";
   import { createPinup } from "./src/pinup.js";
   const stage = createCrowStage({ perchOn: document.querySelector(".tl-head"), perchAt: 0.5, dir: -1 });
+  bindPlaneLinks();
   if (stage && /[?&]grab\b/.test(location.search)) window.__crow = stage.crow;   // for checking, as on home
 
   // The detail cards: each entry, ring or text, opens its own (src/tlcards.js)

@@ -173,7 +173,7 @@
       <p class="dim">I've seen good ideas get lost in the handover more often than anywhere else.</p>
       <p class="dim gap">Between the promise and the budget, the brand and the product, the pitch and the people who build it. That's where I work, across hospitality, tech and consumer brands.</p>
       <p class="dim"><b class="k">Paris, New York.</b> Recent work with Jumeirah and Rosewood. Co-founded a social events app.</p>
-      <p class="dim">For projects with too many moving parts, <a class="msg" href="mailto:hello@julesbockelee.com">Message me.</a></p>
+      <p class="dim">For projects with too many moving parts, <a class="msg" href="mailto:hello@julesbockelee.com" data-plane>Message me.</a></p>
     </div>
     <div class="caption">
       <span class="now" id="now">Cassis</span>
@@ -291,27 +291,12 @@
 </div>
 
 <script type="module" src="src/halftone.js"></script>
+<script type="module">
+  // Message me sends the paper plane first (src/mailplane.js)
+  import { bindPlaneLinks } from "./src/mailplane.js";
+  bindPlaneLinks();
+</script>
 <script>
-  // Message me: a paper plane, in the crow's dots (src/plane.js, drawn by the renderer), glides
-  // slowly from the link to the right edge of the window; the mail opens as it reaches it.
-  // Without the renderer, with Reduce Motion, or on a cmd/ctrl click, the mail opens at once.
-  (() => {
-    const link = document.querySelector("a.msg");
-    if (!link) return;
-    let flying = false;
-    link.addEventListener("click", e => {
-      if (!window.flyPlane || matchMedia("(prefers-reduced-motion: reduce)").matches || e.metaKey || e.ctrlKey) return;
-      e.preventDefault();
-      if (flying) return;
-      flying = true;
-      let opened = false;
-      const go = () => { if (opened) return; opened = true; flying = false; location.href = link.href; };
-      const r = link.getBoundingClientRect();
-      window.flyPlane(r.right + 6, r.top + r.height / 2, go);
-      setTimeout(go, 4500);                       // the mail opens even if frames stall
-    });
-  })();
-
   // Other…: opens on a click or tap and closes on a second one, a click anywhere else, or Escape
   (() => {
     const btn = document.querySelector(".more-btn"), menu = document.getElementById("moreMenu");

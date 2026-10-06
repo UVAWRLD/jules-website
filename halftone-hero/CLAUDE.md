@@ -353,6 +353,12 @@ into the crow's buffer and screened on the crow's lattice.
   from the throw, with a hard floor 6px below it. Jules did not want it to read as falling,
   least of all over the New York skyline (the halftone city under the copy); simulated over 20
   flights it never went below its throw and climbed 46-101px.
+- **On every page**: any link with `data-plane` sends the plane (`src/mailplane.js`,
+  `bindPlaneLinks()`): "Message me." on the home page and the footer address on the Timeline,
+  Projects and Bookshelf. On the home page the renderer draws it; on the others `src/crowstage.js`
+  does, on the crow's stage, so it is the same dots. Its pace is set from the distance to the edge
+  (about 2.1-2.7s on any screen, up to 600px/s from a footer on the far left); the mail also opens
+  after 6s if frames stall.
 - Earlier: a flat SVG plane seen from above darting off to the top right with a dotted trail;
   then a dart modelled by hand on a fixed gliding path. Without the renderer, with Reduce Motion,
   or on a cmd/ctrl click, the mail opens at once. `?grab` exposes it as `window.__plane`; to look
@@ -454,9 +460,10 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   newest first and oldest first (undated last); **+ Add Filter** drops a menu of the cards' tags,
   each chosen tag becomes a chip (× to remove), and a card shows only with every chosen tag. The
   count follows. "Nothing matches" when nothing does. Escape closes the menu and clears the search.
-- **Footer**: a faint rule, the mark, "Have a complicated thing to make clear?",
-  hello@julesbockelee.com (a `mailto:`), LinkedIn and Instagram (the addresses from the old Wix
-  site) and © 2026.
+- **Footer** (the same on the Timeline, Projects and Bookshelf; its CSS is `.pj-foot` in
+  `src/site.css`, the markup is written into each page): a faint rule, the mark, "Have a complicated
+  thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the paper plane first),
+  LinkedIn, X (x.com/julesbockelee; it replaced Instagram, 2026-10-05) and © 2026.
 - **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
   `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
   muted), so the page takes the dark theme.
