@@ -119,7 +119,9 @@
     -webkit-mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%;mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%}
   .tl-certs-item{display:block}
   /* volunteering: two entries, laid out as the first two certificates are */
-  .tl-vols{justify-content:flex-start;column-gap:calc(var(--k) * 12px)}
+  .tl-vols{justify-content:flex-start;align-items:flex-start;column-gap:calc(var(--k) * 10px)}
+  .tl-vols .tl-cert{width:auto;max-width:calc(var(--k) * 150px)}
+  .tl-vols .tl-sep{position:static;flex:none;margin-top:calc(var(--k) * 6.31px)}
 
   /* ---- skills & tools, and languages: plain rows, no rings; the label sits in the years'
      column and its text where the entries' titles start, so they line up with the page above ---- */
@@ -128,7 +130,8 @@
   .tl-kv dt{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-kv dd{margin:0;font-size:calc(var(--k) * 8.643px);line-height:1.45;color:var(--body)}
   /* the two sit side by side: skills in the wider column, languages beside them */
-  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 118px);column-gap:calc(var(--k) * 22px)}
+  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 118px);column-gap:calc(var(--k) * 22px);
+    margin-left:calc(var(--k) * -62px)}   /* starts on the rings' line: no rings here, so it takes their margin */
   .tl-pair .tl-kv{grid-template-columns:calc(var(--k) * 46px) 1fr}
   .tl-langs{list-style:none;padding:0;margin:calc(var(--k) * 8.643px) 0 0;display:flex;flex-direction:column;
     gap:calc(var(--k) * 9px)}
@@ -388,8 +391,8 @@
         <li class="tl-item tl-certs-item" data-name="Volunteering">
           <div class="tl-certs tl-vols">
             <div class="tl-cert"><b>Youth Advocate</b><span>UNICEF</span><em>2016-2020</em></div>
-            <div class="tl-cert"><b>Sustainable Development Project, Namibia</b><span>International School of Paris</span><em>2017</em></div>
             <i class="tl-sep a" aria-hidden="true"></i>
+            <div class="tl-cert"><b>Sustainable Development Project, Namibia</b><span>International School of Paris</span><em>2017</em></div>
           </div>
         </li>
       </ol>

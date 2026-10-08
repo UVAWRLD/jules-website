@@ -304,15 +304,17 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   (two are not in capitals) and the smaller role size on the later entries.
 - **Skills & Tools, and Languages** (added 2026-10-08, after the certificates; from Jules's CV,
   with C++ added under Code). Side by side (`.tl-pair`): skills in the wider column, languages
-  in a 104 x k column beside them; stacked on phones. Plain rows, no rings and no cards. Skills
+  in a 118 x k column beside them; stacked on phones. The pair starts on the rings' line
+  (`margin-left: -62 x k`, the reach of a timeline entry): it has no rings, so it takes their margin
+  (Jules: left-align it with the line). Plain rows, no rings and no cards. Skills
   are a definition list (`.tl-kv`), the label 46 x k wide beside the languages, in the years'
   column (58.775 x k) on a phone. Each language has five dots (`.tl-dots`), filled for each step
   and hollow rings for the rest, its level under its name: English 5 Bilingual, French 5 Mother
   tongue, Spanish 4 Professional proficiency, Hebrew 1 Beginner, learning. (A first version had
   the languages under the skills with a dashed leader to the level.)
 - **Volunteering** (2026-10-08), the last section, built like the certificates: one entry with a
-  ring, the two side by side (`.tl-vols`, laid out as the first two certificates, with the long
-  fading dash between them): Youth Advocate, UNICEF, 2016-2020, and Sustainable Development
+  ring, the two side by side (`.tl-vols`), each as wide as its text with the long fading dash in
+  the flow between them (at the certificates' fixed widths the short first entry left a gap): Youth Advocate, UNICEF, 2016-2020, and Sustainable Development
   Project, Namibia, International School of Paris, 2017. It opens a card like the certificates'
   (`VOLUNTEERING` in `CARDS`, after them), whose entry names link out to UNICEF's Youth Advocates
   page and ISP's page on the trip (Otjimanangombe, a primary boarding school, per that page). The
