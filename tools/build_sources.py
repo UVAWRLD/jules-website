@@ -5,7 +5,7 @@ The references already carry the look we want, but they are halftoned on their o
 their screen frequencies out of the spectrum and keep everything else, including the
 sub-dot detail (edges, windows, branches) the renderer needs for threshold screening.
 
-    python tools/build_sources.py ../refs/cassis.png ../refs/nyc.png ../refs/paris.png
+    python3 tools/build_sources.py design/references/cassis.png design/references/nyc.png design/references/paris.png
 """
 import sys, pathlib
 import numpy as np
@@ -50,7 +50,7 @@ def pitch(profile):
     band = (f > 1 / 40) & (f < 1 / 6)
     return 1 / f[np.argmax(F * band)]
 
-out_dir = pathlib.Path(__file__).resolve().parent.parent / "public" / "img"
+out_dir = pathlib.Path(__file__).resolve().parent.parent / "site" / "public" / "img"
 for src in sys.argv[1:]:
     src = pathlib.Path(src)
     g = np.asarray(Image.open(src).convert("L")).astype(np.float32) / 255

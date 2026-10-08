@@ -20,6 +20,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400&display=swap" rel="stylesheet">
 <!-- fonts, colour tokens in both themes, and the page itself, shared with the other pages -->
 <link rel="stylesheet" href="src/site.css">
+<!-- fetch early, in parallel: the scripts the page imports, then what the loader and the first
+     frame need (the hourglass, the dot curve, the first city and its depth, the crow) -->
+<link rel="modulepreload" href="src/halftone.js">
+<link rel="modulepreload" href="src/crow.js">
+<link rel="modulepreload" href="src/loader.js">
+<link rel="modulepreload" href="src/chain.js">
+<link rel="modulepreload" href="src/plane.js">
+<link rel="modulepreload" href="src/crowui.js">
+<link rel="modulepreload" href="src/mailplane.js">
+<script>
+  // the hourglass only when the loader will play: once a visit, and not with ?noloader
+  (() => { let seen = false; try { seen = sessionStorage.getItem("loaderSeen") === "1"; } catch (e) {}
+    if (seen || /[?&]noloader\b/.test(location.search)) return;
+    for (const f of ["hourglass.json?v=1", "hourglass.bin?v=1"]) {
+      const l = document.createElement("link"); l.rel = "preload"; l.as = "fetch"; l.crossOrigin = "anonymous";
+      l.href = "public/models/" + f; document.head.appendChild(l);
+    } })();
+</script>
+<link rel="preload" href="public/img/dot-lut.png" as="image">
+<link rel="preload" href="public/img/cassis.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="public/img/cassis-depth.jpg" as="image">
+<link rel="preload" href="public/models/crow-cloud.bin?v=6" as="fetch" crossorigin>
+<link rel="preload" href="public/models/crow-anim.bin?v=6" as="fetch" crossorigin>
 <style>
 
   .stage{height:400vh;height:400lvh;position:relative}

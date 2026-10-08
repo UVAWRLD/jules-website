@@ -1,8 +1,5 @@
-# the site is halftone-hero/; everything below is working material, not the deploy
-refs
-Wireframe*.png
-halftone-hero.zip
-halftone-morph-v1.html
-halftone-hero/tools
-halftone-hero/public/img/photo
-halftone-hero/public/img/Logo 1 B
+# only site/ is served; everything else is working material and stays out of the upload
+design
+archive
+tools
+CLAUDE.md

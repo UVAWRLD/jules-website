@@ -1,15 +1,19 @@
-"""Static server for the prototype, plus a drop box for frame grabs.
+"""Static server for the site (site/), plus a drop box for frame grabs.
 
 Same as python -m http.server, with one addition: POST /_grab with a data URL in the body
 writes it to tools/grabs/<name>.png. That lets a page hand back exactly what the GPU drew,
 at full resolution, so renders can be judged without a screenshot of a screenshot.
 
-    python tools/devserver.py [port]
+    python3 tools/devserver.py [port]
+
+It serves site/ at the root, with clean URLs as on Vercel (/timeline serves timeline.html), and
+this tools/ folder under /tools/, so tools/crow-preview.html can load the site's scripts.
 """
 import base64, http.server, pathlib, socketserver, sys
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-GRABS = ROOT / "tools" / "grabs"
+TOOLS = pathlib.Path(__file__).resolve().parent
+ROOT = TOOLS.parent / "site"
+GRABS = TOOLS / "grabs"
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -22,6 +26,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if path != "/" and "." not in path.rsplit("/", 1)[-1] and (ROOT / (path.lstrip("/") + ".html")).is_file():
             self.path = path + ".html" + (self.path[len(path):] if "?" in self.path else "")
         return super().do_GET()
+
+    def translate_path(self, path):
+        # /tools/... comes from this folder rather than from site/
+        clean = path.split("?", 1)[0].split("#", 1)[0]
+        if clean.startswith("/tools/"):
+            return str(TOOLS / clean[len("/tools/"):])
+        return super().translate_path(path)
 
     def do_POST(self):
         if not self.path.startswith("/_grab"):

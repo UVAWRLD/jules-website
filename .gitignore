@@ -1,8 +1,9 @@
 .DS_Store
 exec-*.png
-# the three references, already kept with readable names in refs/
+# loose screenshots dropped at the top; the references are kept in design/references/
 image *.png
 
 # the source model: big, and we commit the baked point cloud instead
-halftone-hero/public/models/*.glb
+*.glb
+*.gltf
 __pycache__/

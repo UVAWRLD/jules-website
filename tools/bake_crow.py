@@ -90,7 +90,7 @@ def main():
 
     gl = GLTF(args.gltf)
     g = gl.g
-    out_dir = pathlib.Path(args.out or (pathlib.Path(__file__).resolve().parent.parent / "public" / "models"))
+    out_dir = pathlib.Path(args.out or (pathlib.Path(__file__).resolve().parent.parent / "site" / "public" / "models"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # ---- mesh in bind space -------------------------------------------------------------

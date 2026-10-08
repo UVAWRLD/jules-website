@@ -15,10 +15,10 @@
 <div class="grid" id="grid"></div>
 <script type="module">
 // Draws the baked cloud flat, without the halftone pass, so poses can be judged directly.
-const {createCrow} = await import("../src/crow.js?v=" + Date.now());   // dodge the module cache
+const {createCrow} = await import("/src/crow.js?v=" + Date.now());   // dodge the module cache
 const W=520,H=380;
 
-const crow=createCrow("../public/models/");
+const crow=createCrow("/public/models/");
 await new Promise(r=>{ const w=()=>crow.ready?r():setTimeout(w,40); w(); });
 
 function panel(title, drive){

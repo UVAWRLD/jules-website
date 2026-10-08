@@ -19,6 +19,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/site.css">
+<!-- fetch early, in parallel: the page's scripts, and the crow -->
+<link rel="modulepreload" href="src/crowstage.js">
+<link rel="modulepreload" href="src/crow.js">
+<link rel="modulepreload" href="src/crowui.js">
+<link rel="modulepreload" href="src/plane.js">
+<link rel="modulepreload" href="src/mailplane.js">
+<link rel="preload" href="public/img/dot-lut.png" as="image">
+<link rel="preload" href="public/models/crow-cloud.bin?v=6" as="fetch" crossorigin>
+<link rel="preload" href="public/models/crow-anim.bin?v=6" as="fetch" crossorigin>
+<link rel="modulepreload" href="src/tlcards.js">
+<link rel="modulepreload" href="src/tldots.js">
+<link rel="modulepreload" href="src/pinup.js">
 <style>
   /* Figma: V4.0 / Timeline WIP (node 1700:2). One centred column, laid out in flow rather
      than at the frame's absolute positions, so it grows with the text and folds onto a phone.

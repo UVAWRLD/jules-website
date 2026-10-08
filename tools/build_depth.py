@@ -17,7 +17,7 @@ import torch
 from transformers import pipeline
 
 MODEL = "depth-anything/Depth-Anything-V2-Small-hf"
-IMG = pathlib.Path(__file__).resolve().parent.parent / "public" / "img"
+IMG = pathlib.Path(__file__).resolve().parent.parent / "site" / "public" / "img"
 PLACES = ["cassis", "paris", "nyc"]
 
 device = "mps" if torch.backends.mps.is_available() else "cpu"

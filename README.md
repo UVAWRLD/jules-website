@@ -17,31 +17,34 @@ Every page but the home page shares a page bar and a footer. The email links sen
 
 Plain HTML, CSS and JavaScript modules. There is no framework, no build step and no dependencies to install.
 
-The halftone, the crow, the chain, the hourglass and the paper plane are drawn with WebGL2 shaders written for this site. The 3D models are baked into small point clouds by the scripts in `halftone-hero/tools`, so nothing loads a 3D library at runtime.
+The halftone, the crow, the chain, the hourglass and the paper plane are drawn with WebGL2 shaders written for this site. The 3D models are baked into small point clouds by the scripts in `tools/`, so nothing loads a 3D library at runtime. Each page asks for its scripts and its first images and models up front, in parallel, and the fonts and project images are cached by the browser for a year.
 
 ```
-halftone-hero/          the site itself (what Vercel serves)
-  index.html            home
-  timeline.html         Timeline
-  projects.html         Projects
-  bookshelf.html        Bookshelf
-  src/                  the scripts and the shared stylesheet
-  public/               fonts, images, baked models, project prints, book covers
-  tools/                the bake scripts and a local dev server
-vercel.json             hosting settings: clean URLs, caching
+site/               the site, and only what is served
+  index.html        home
+  timeline.html     Timeline
+  projects.html     Projects
+  bookshelf.html    Bookshelf
+  src/              the scripts and the shared stylesheet
+  public/           fonts, images, baked models, project prints, book covers
+tools/              bake scripts, build scripts and the local dev server
+design/             reference art, wireframes, original photos and the logo source
+archive/            the first prototype
+vercel.json         hosting: what is served, clean URLs, caching
+CLAUDE.md           detailed technical notes
 ```
 
-The Projects page reads `halftone-hero/public/projects/projects.json`, which is exported from a separate project database and is not edited by hand here.
+The Projects page reads `site/public/projects/projects.json`, which is exported from a separate project database and is not edited by hand here.
 
-The detailed technical notes (how the renderer works, measured layout values, every design decision and why) are in `halftone-hero/CLAUDE.md`.
+The detailed notes (how the renderer works, measured layout values, every design decision and why) are in `CLAUDE.md`.
 
 ## Run it locally
 
 ```
-python3 halftone-hero/tools/devserver.py 8765
+python3 tools/devserver.py 8765
 ```
 
-Then open http://localhost:8765. Any static server works (`npx serve halftone-hero`), but this one also serves the clean URLs (`/timeline`, `/projects`) the way Vercel does.
+Then open http://localhost:8765. Any static server pointed at `site/` works (`npx serve site`), but this one also serves the clean URLs (`/timeline`, `/projects`) the way Vercel does.
 
 Useful flags: `?noloader` skips the hourglass, `?debug` shows what a phone reports, `?grab` exposes the drawing for inspection.
 

@@ -5,17 +5,37 @@ Three places (Cassis, Paris, New York) share one fixed dot lattice. Each dot res
 changes opacity to the ink coverage of whichever photograph is currently dominant, so the
 image transitions without the dots ever moving.
 
-This folder is a working prototype extracted from a browser artifact. It is framework
-agnostic on purpose. The target stack is Astro, GitHub Desktop, Vercel.
+It started as a prototype extracted from a browser artifact, and is framework agnostic on
+purpose: plain HTML, CSS and ES modules, no build step. It is deployed by Vercel from GitHub.
+
+## Repository layout
+
+```
+site/          the site, and only the site: this is what Vercel serves (vercel.json
+               outputDirectory). Its URLs are the paths inside it: /timeline, /public/img/...
+tools/         bake scripts, build scripts and the dev server; never deployed
+design/        working material, never deployed: references/ (the halftone reference art the
+               sources are built from), wireframes/, photos/ (the original photographs, no
+               longer used), logo/ (the logo's source SVG)
+archive/       the first one-file prototype and the zip of the first export
+README.md      the repo's front page on GitHub
+CLAUDE.md      these notes
+```
+
+**Paths in the rest of these notes are inside `site/`** (`src/halftone.js` is
+`site/src/halftone.js`), except those starting `tools/`, `design/` or `archive/`, which are at
+the top. Reorganised 2026-10-08 from a single `halftone-hero/` folder, which held the site, the
+tools and these notes together (so the tools sat in the served folder), with the references,
+wireframes and old prototype loose at the top. No URL changed.
 
 ## Run it
 
-Any static server from this folder. Paths are relative, but `index.html` still needs to be
-served rather than opened from the filesystem (the renderer is a module).
+```
+python3 tools/devserver.py 8765
+```
 
-```
-npx serve .          # or: python3 -m http.server
-```
+It serves `site/` with clean URLs as on Vercel, and `tools/` under `/tools/` (for
+`tools/crow-preview.html`). `.claude/launch.json` starts the same thing.
 
 ## Files
 
@@ -24,37 +44,38 @@ index.html            the home page: markup and its CSS, plus the tuning panel
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
 bookshelf.html        the Bookshelf page (in Other… on the home page): my books as 3D books on a
-                      thin shelf (src/bookshelf.js, public/books/books.json, public/img/books/)
+                      shelf (src/bookshelf.js, public/books/books.json, public/img/books/)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
+src/pjdither.js       the Projects prints' halftone reveal
+src/plane.js          the paper plane the email links send; src/mailplane.js binds the links
 public/projects/      exported by the project database (never edit by hand): projects.json and
-                      each card's prints, <slug>/1-7.jpg (34 projects, 8.3MB)
+                      each card's prints, <slug>/1-10.jpg
 src/site.css          shared by every page: fonts, colour tokens in both themes, the page,
-                      the logo, the theme cross-fade
+                      the logo, the page bar, the footer, the theme cross-fade
 src/halftone.js       the whole renderer: WebGL2 setup, shader, scroll and cursor wiring
 src/crow.js           the crow: loads the baked cloud, skins it, runs the state machine
 src/crowui.js         around the crow, on every page: his card, its leader, the hit area,
                       the red dot pointer
 src/crowstage.js      the crow alone on a transparent canvas, for pages without the landscape
+                      (and the paper plane there)
 src/loader.js         the loading screen: hourglass and the dot build into the page
 src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
-public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
 src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
-public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
-                      The .glb/.gltf itself is not committed. No credits are kept in the code
-                      (Jules, 2026-10-08).
+public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
+public/models/        crow-cloud.bin, crow-anim.bin, crow.json, hourglass.bin, hourglass.json
+                      (baked; see tools/MODELS.md). The source models are not committed.
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
 public/img/*-depth.jpg  depth maps (tools/build_depth.py), white near, black far
-public/img/photo/     the original photographs, no longer used
 tools/                build_sources.py (descreen refs), build_depth.py (depth maps),
-                      build_single.py (one-file HTML), bake_crow.py (glTF to point
-                      cloud), crow-preview.html (crow poses)
+                      build_single.py (one-file HTML), bake_crow.py, bake_hourglass.py (models
+                      to point clouds), crow-preview.html (crow poses), devserver.py
 public/img/dot-lut.png  256 entry lookup: dot radius as a function of ink coverage
-public/img/favicon.svg  the logo mark (Jules's Vector.svg): ink on a light tab, #ECECEC on a
-                      dark one, by prefers-color-scheme inside the SVG. favicon-32.png and
-                      apple-touch-icon.png (on the paper, 180px) for Safari and the home screen;
-                      favicon.ico (16+32) at the root. Rendered from the same path.
+public/img/favicon.svg  the logo mark (Jules's Vector.svg, its source in design/logo/): ink on a
+                      light tab, #ECECEC on a dark one, by prefers-color-scheme inside the SVG.
+                      favicon-32.png and apple-touch-icon.png (on the paper, 180px) for Safari
+                      and the home screen; favicon.ico (16+32) at the root.
 public/img/email/     mark-spin.gif, the turning mark in Jules's email signature. **Do not remove
                       it**: every email Jules has sent loads it from this address, and they
                       break without it (it was removed once and had to be restored). Linked
@@ -115,7 +136,7 @@ per pixel.
 
 ## Sources: reference art, not photographs
 
-The tone sources are the halftone reference images in `../refs/`, not the photographs.
+The tone sources are the halftone reference images in `design/references/`, not the photographs.
 No tone curve on a photo reproduces them (Cassis pines are bright in the photo, black in
 the art). `tools/build_sources.py` notches the art's own screen out of the spectrum
 (it sits at ~17.5px pitch, 233 dots across, the same for all three) and keeps sub-dot

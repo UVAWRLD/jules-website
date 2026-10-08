@@ -19,6 +19,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/site.css">
+<!-- fetch early, in parallel: the page's scripts, and the crow -->
+<link rel="modulepreload" href="src/crowstage.js">
+<link rel="modulepreload" href="src/crow.js">
+<link rel="modulepreload" href="src/crowui.js">
+<link rel="modulepreload" href="src/plane.js">
+<link rel="modulepreload" href="src/mailplane.js">
+<link rel="preload" href="public/img/dot-lut.png" as="image">
+<link rel="preload" href="public/models/crow-cloud.bin?v=6" as="fetch" crossorigin>
+<link rel="preload" href="public/models/crow-anim.bin?v=6" as="fetch" crossorigin>
+<link rel="modulepreload" href="src/projects.js">
+<link rel="modulepreload" href="src/pjdither.js">
 <style>
   /* Figma: Projects portfolio (node 2315:386), a 1440 frame, built at its own sizes: the header
      column and the project list are 920 wide and centred, the logo and page bar are the site's.

@@ -1,9 +1,9 @@
 """Inline index.html + src/halftone.js + public/img into one self-contained HTML file.
 
-    python tools/build_single.py /tmp/halftone-hero-standalone.html
+    python3 tools/build_single.py /tmp/site-standalone.html
 """
 import sys, base64, pathlib
-root = pathlib.Path(__file__).resolve().parent.parent
+root = pathlib.Path(__file__).resolve().parent.parent / "site"
 html = (root / "index.html").read_text()
 js = (root / "src" / "halftone.js").read_text()
 def uri(name, mime):

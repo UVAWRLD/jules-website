@@ -61,7 +61,7 @@ def main():
     args = ap.parse_args()
     glb = GLB(args.glb)
     g = glb.g
-    out_dir = pathlib.Path(args.out or pathlib.Path(__file__).resolve().parent.parent / "public" / "models")
+    out_dir = pathlib.Path(args.out or pathlib.Path(__file__).resolve().parent.parent / "site" / "public" / "models")
     rng = np.random.default_rng(20260924)
 
     def prim(mi):
