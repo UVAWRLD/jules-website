@@ -1,6 +1,6 @@
 """Bake the hourglass for the loading screen into a point cloud plus its animation.
 
-Input is the Sketchfab GLB ("Sands of Time" by Antonio Gloria, CC-BY-4.0). As with the crow,
+Input is the hourglass GLB. As with the crow,
 nothing loads the model at runtime: this reads it here and writes two small files.
 
 The model is three rigidly skinned parts: the wooden frame and the glass on one bone, and the
@@ -253,8 +253,7 @@ def main():
 
     (out_dir / "hourglass.bin").write_bytes(b"".join(parts))
     meta = {"fps": args.fps, "frames": frames, "q": Q, "wood": n_wood, "glass": n_glass,
-            "sand": n_sand, "layout": layout,
-            "credit": "Sands of Time by Antonio Gloria, CC-BY-4.0"}
+            "sand": n_sand, "layout": layout}
     (out_dir / "hourglass.json").write_text(json.dumps(meta))
     print(f"wrote hourglass.bin {off / 1024:.0f}KB, {frames} frames at {args.fps}fps")
 

@@ -16,9 +16,8 @@
 const LIGHT = (() => { const l = [-0.45, -0.78, 0.44], n = Math.hypot(...l); return l.map(v => v / n); })();
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-// The dart is "Animated Paper plane | Blockbench" by 3DartSam (Sketchfab, CC-BY-4.0), given to Jules
-// by a friend; public/models/paper-plane-license.txt is the record. Only its shape is used (its six
-// triangles, read out of the GLB): its own animation, a loop the loop, is not. Here in our frame,
+// The dart's shape is a paper plane model's six triangles, read out of its GLB; its own
+// animation, a loop the loop, is not used. Here in our frame,
 // nose at +x, y up, z across, one unit long: two broad wings drooping a little from the spine and
 // the two leaves of the keel below. (The model's inner wing layers lie in the wings' planes and add
 // nothing seen from outside, so they are left out.)

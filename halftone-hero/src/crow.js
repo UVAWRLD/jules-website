@@ -1,7 +1,6 @@
 // The crow: a rigged model, baked to a point cloud, posed by our own state machine.
 //
-// The shape and the wingbeat come from the Sketchfab model ("Crow" by Alexei Ostapenko;
-// the author confirmed to Jules that no visible credit is needed), baked by
+// The shape and the wingbeat come from a rigged crow model, baked by
 // tools/bake_crow.py into two files: points sampled over its surface
 // with their bone weights, and the animation as per frame skinning matrices. Nothing is
 // loaded at runtime beyond those two files: no glTF loader, no three.js.
@@ -265,7 +264,6 @@ export function createCrow(base = BASE, opts = {}) {
     get ready() { return st.ready; },
     get phase() { return st.phase; },
     get bbox() { return st.bbox; },
-    get credit() { return M ? M.meta.credit : ""; },
     state: st,
     update,
     hit(x, y) {

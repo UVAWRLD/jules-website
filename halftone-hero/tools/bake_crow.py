@@ -1,6 +1,6 @@
 """Bake the rigged crow into a point cloud plus its animation, for the halftone renderer.
 
-Input is the Sketchfab glTF ("Crow" by Alexei Ostapenko, CC-BY-4.0). We do not ship the
+Input is the rigged crow glTF. We do not ship the
 model or use a runtime loader: this reads the glTF here and writes two small files.
 
     crow-cloud.bin    points sampled evenly over the mesh surface, in bind space, each
@@ -300,7 +300,6 @@ def main():
         "idle": [0, max(first - 10, 1)],          # perched, with the pecks
         "takeoff": [max(first - 10, 1), min(first + 50, frames)],
         "flight": flight,
-        "credit": "Crow by Alexei Ostapenko, CC-BY-4.0, sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2",
     }
     (out_dir / "crow.json").write_text(json.dumps(meta, indent=2) + "\n")
     print("segments", {k: v for k, v in meta.items() if isinstance(v, list)})

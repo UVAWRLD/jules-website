@@ -42,7 +42,8 @@ src/tldots.js         the dot screen behind a detail card, built in at random
 public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
 src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json (baked from the glTF),
-                      plus the model licence. The .glb/.gltf itself is not committed.
+                      The .glb/.gltf itself is not committed. No credits are kept in the code
+                      (Jules, 2026-10-08).
 public/img/*.jpg      descreened reference art (tools/build_sources.py), 2048 wide
 public/img/*-depth.jpg  depth maps (tools/build_depth.py), white near, black far
 public/img/photo/     the original photographs, no longer used
@@ -367,8 +368,7 @@ nose reaches the edge, and it flies on out of sight. Like the pull chain it hand
 shaded points each frame (`window.flyPlane(x, y, onEdge)`, set by `src/halftone.js`), splatted
 into the crow's buffer and screened on the crow's lattice.
 
-- **The model** is "Animated Paper plane | Blockbench" by 3DartSam (Sketchfab, CC-BY-4.0), sent
-  by a friend of Jules (`public/models/paper-plane-license.txt`). Only its shape is used: its six
+- **The model** is a paper plane GLB sent by a friend of Jules. Only its shape is used: its six
   triangles were read out of the GLB into `PANELS` (two broad wings drooping a little from the
   spine, two keel leaves; the inner wing layers left out). Its own animation, a loop the loop, is
   not. The triangles are sampled under a pixel apart and shaded with the crow's light and rim,
@@ -576,9 +576,7 @@ then a halftone sweep into the page. It has its own canvas and WebGL context, fi
 everything (`#loader`, z-index 100), since it must cover the copy and logo too; once the sweep
 is done it removes itself and loses its context. `?noloader` skips it.
 
-**Model.** "Sands of Time" by Antonio Gloria, Sketchfab, CC-BY-4.0. The author waived the
-credit to Jules directly (2026-09-24), so, as with the crow, there is none on the page;
-`public/models/hourglass-license.txt` is kept as the record of where it came from.
+**Model.** A rigged hourglass GLB with its sand animated by morph targets.
 `tools/bake_hourglass.py` reads the GLB (no loader library) into `hourglass.bin` (169KB) and
 `hourglass.json` (the layout). The model is three rigid parts: frame and glass on one bone,
 sand on another, whose shape is morph targets (the top drains, the stream falls, the pile
@@ -648,9 +646,7 @@ with `document.getElementById("loaderTilt").click()`; stub
 
 A rigged model, baked to a point cloud, posed by our own state machine.
 
-**Model.** "Crow" by Alexei Ostapenko, from Sketchfab, CC-BY-4.0. The author confirmed
-to Jules directly that no visible credit is needed, so there is no credit line on the page;
-`public/models/crow-license.txt` is kept as the record of where it came from. 2.2k
+**Model.** A rigged crow glTF. 2.2k
 triangles, 92 bones, one 10.5s animation, `root|TakeOff`.
 
 **Bake.** `tools/bake_crow.py` reads the glTF itself, with no loader library, and writes:
@@ -661,7 +657,7 @@ crow-cloud.bin   6000 points sampled over the surface by triangle area, in bind 
                  bone indices and weights                             (140KB)
 crow-anim.bin    per frame skinning matrices, 317 frames x 92 joints, 3x4 each,
                  int16 at 1e-4 of a body length                       (683KB)
-crow.json        fps, the three segment ranges, and the credit line
+crow.json        fps and the three segment ranges
 ```
 
 It also normalises the model: +x forward, +y up, one unit from beak to tail tip, centred.

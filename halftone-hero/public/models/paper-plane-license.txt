@@ -1,7 +1,0 @@
-Paper plane model
-"Animated Paper plane | Blockbench" by 3DartSam
-https://sketchfab.com/3d-models/animated-paper-plane-blockbench-64cea11a77a443f785873f5a12d04c35
-Licence: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-
-Given to Jules by a friend, 2026-10-05. Only the shape is used: its six triangles were read out of
-the GLB by hand into src/plane.js (the GLB itself is not committed). Its animation is not used.
