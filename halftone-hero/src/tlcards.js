@@ -68,7 +68,7 @@ const CARDS = [
     ["p", "I graduated with a minor in Product Design, a 3.91 GPA and a place on the Dean’s List. For my capstone I developed a product and brand strategy for a new venture, tested it with users, and presented it to faculty and industry reviewers."],
     ["p", "Focus: Strategic design · Product design · Business"],
   ]},
-  { title: "INTERNATIONAL SCHOOL OF PARIS, PARIS", meta: "Bilingual IB Certificate · 2016-2020 · Paris", body: [
+  { title: "INTERNATIONAL SCHOOL OF PARIS, PARIS", meta: "Bilingual International Baccalaureate (IB) · 2016-2020 · Paris", body: [
     ["h", "The school:"],
     ["p", "An international school in Paris, where I took the International Baccalaureate. Mine was the bilingual IB, with French and English both studied as first languages."],
     ["h", "Subjects:"],
