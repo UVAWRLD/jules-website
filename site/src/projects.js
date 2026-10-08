@@ -164,6 +164,7 @@ export async function createProjectControls() {
   try { projects = (await (await fetch(DATA, { cache: "no-cache" })).json()).projects || []; }
   catch (e) { empty.textContent = "The projects could not be loaded."; empty.hidden = false; return; }
   list.insertAdjacentHTML("afterbegin", projects.map(card).join(""));
+  document.getElementById("pjText")?.remove();   // its text for crawlers (tools/build_seo.py)
 
   const cards = [...list.querySelectorAll(".pj-card")];
   const groups = new Map(projects.map(p => [p.slug, arrange(p)]));

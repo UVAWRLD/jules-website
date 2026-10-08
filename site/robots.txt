@@ -1,0 +1,5 @@
+# Every page is open to every crawler, search engines and AI assistants alike.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.julesbockelee.com/sitemap.xml

@@ -159,3 +159,10 @@ body.crow-card #crowCard, body.crow-card #crowLead{opacity:1}
   .pj-foot-row{position:relative}
   .pj-links{position:absolute;right:0;bottom:2px;width:auto;gap:14px}
 }
+
+/* The text of what the scripts draw (the projects, the books, the Timeline's cards), written into
+   the page by tools/build_seo.py for search engines and AI crawlers, which mostly read the HTML
+   without running it. Out of sight and out of the layout; screen readers still read it. The
+   Projects and Bookshelf scripts remove theirs once the real thing is drawn. */
+.seo-text{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}

@@ -41,6 +41,7 @@ It serves `site/` with clean URLs as on Vercel, and `tools/` under `/tools/` (fo
 
 ```
 index.html            the home page: markup and its CSS, plus the tuning panel
+robots.txt, sitemap.xml, llms.txt, llms-full.txt   for crawlers (tools/build_seo.py)
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
 bookshelf.html        the Bookshelf page (in Other… on the home page): my books as 3D books on a
@@ -204,6 +205,31 @@ the button (it is looked up at call time). Orientation is faked by dispatching
 viewport and client heights, svh/lvh/dvh, the canvas and picture size, the copy's position,
 the tilt state and raw angles, the sway, and reduce motion / pointer / touch points. It exists
 for phones, where the only way to see these is a screenshot from the visitor.
+
+## Search and AI (tools/build_seo.py)
+
+Added 2026-10-08, with the rule that nothing visible changes (checked by comparing every
+element's box, font and colour before and after, on desktop and phone: identical; only the tab
+titles changed, from "Jules B. M." to the full name). `tools/build_seo.py` writes:
+
+- **each page's head**, between `<!-- seo:head -->` markers: title, description, canonical, Open
+  Graph and X tags (image `public/img/share.jpg`, a 1200 x 630 frame of the home page), and one
+  JSON-LD graph: the Person (`#jules`: name, job, Paris and New York, LinkedIn, X, Parsons, ISP,
+  the degree and certificates, languages), the WebSite, and the page (ProfilePage for home and
+  Timeline; CollectionPage with an ItemList of the projects or the books). The words are in
+  `PAGES` and `PERSON` at the top of the script; edit them there, not in the HTML.
+- **the text of what scripts draw**, between `<!-- seo:body -->` markers, in a `.seo-text` block
+  (clipped to nothing in `src/site.css`; screen readers still read it): every project, every
+  book, every Timeline card. Most AI crawlers do not run JavaScript, and to them Projects was an
+  empty list. `src/projects.js` and `src/bookshelf.js` remove theirs once they have drawn the real
+  thing; the Timeline keeps its, since the cards' text exists only while one is open.
+- `sitemap.xml` (lastmod from git), `llms.txt` (a summary and links for AI tools) and
+  `llms-full.txt` (everything as plain text), both `noindex` in vercel.json so they do not show
+  in Google. `robots.txt` is by hand: everything open to every crawler.
+
+Run it after the projects export (which now calls it), a change to `books.json`, or to `CARDS`
+in `src/tlcards.js` (read by running node on the array). The home page's name is now its `h1`
+(it was a `b`), styled the same. Never put Cape's client in `PERSON` or `PAGES`.
 
 ## The Timeline page
 

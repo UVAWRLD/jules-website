@@ -34,6 +34,16 @@ vercel.json         hosting: what is served, clean URLs, caching
 CLAUDE.md           detailed technical notes
 ```
 
+## Search and AI
+
+Each page carries a full title and description, a canonical link, social preview tags (with `site/public/img/share.jpg`) and schema.org structured data describing Jules and what the page lists. The projects, books and Timeline cards are drawn by scripts, so their text is also written into the HTML, out of sight, for crawlers that do not run JavaScript. `site/robots.txt`, `site/sitemap.xml`, `site/llms.txt` and `site/llms-full.txt` are at the root. All of it except `robots.txt` is generated:
+
+```
+python3 tools/build_seo.py
+```
+
+Run it after changing the projects, the books or the Timeline's cards (the projects export runs it by itself).
+
 The Projects page reads `site/public/projects/projects.json`, which is exported from a separate project database and is not edited by hand here.
 
 The detailed notes (how the renderer works, measured layout values, every design decision and why) are in `CLAUDE.md`.

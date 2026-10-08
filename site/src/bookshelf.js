@@ -110,6 +110,7 @@ export async function createBookshelf() {
   addEventListener("keydown", e => { if (e.key === "Escape" && open) putBack(); });
 
   layout();
+  document.getElementById("bkText")?.remove();   // its text for crawlers (tools/build_seo.py)
   let lastW = innerWidth, t = 0;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (innerWidth !== lastW) { lastW = innerWidth; layout(); } }, 120); });
 }
