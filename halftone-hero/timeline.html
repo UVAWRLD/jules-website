@@ -126,7 +126,7 @@
   .tl-kv dt{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-kv dd{margin:0;font-size:calc(var(--k) * 8.643px);line-height:1.45;color:var(--body)}
   /* the two sit side by side: skills in the wider column, languages beside them */
-  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 104px);column-gap:calc(var(--k) * 22px)}
+  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 118px);column-gap:calc(var(--k) * 22px)}
   .tl-pair .tl-kv{grid-template-columns:calc(var(--k) * 46px) 1fr}
   .tl-langs{list-style:none;padding:0;margin:calc(var(--k) * 8.643px) 0 0;display:flex;flex-direction:column;
     gap:calc(var(--k) * 9px)}
@@ -134,6 +134,16 @@
   .tl-langs .row{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k) * 8px)}
   .tl-langs b{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-langs span{font-size:calc(var(--k) * 8.643px);line-height:1.35;color:var(--body)}
+  /* the right-hand column: languages, then volunteering under them */
+  .tl-side{display:flex;flex-direction:column;gap:calc(var(--k) * 27.415px)}
+  .tl-vol{list-style:none;padding:0;margin:calc(var(--k) * 8.643px) 0 0;display:flex;flex-direction:column;
+    gap:calc(var(--k) * 10px)}
+  .tl-vol li{display:flex;flex-direction:column;gap:calc(var(--k) * 1.729px);line-height:1.4}
+  .tl-vol a{display:block;font-size:calc(var(--k) * 9.075px);line-height:1.35;text-decoration:none}
+  .tl-vol b{font-weight:700;font-size:calc(var(--k) * 9.075px);color:var(--strong)}
+  .tl-vol a:hover b{text-decoration:underline;text-underline-offset:2px}
+  .tl-vol em{font-style:normal;font-weight:500;font-size:calc(var(--k) * 9.075px);color:var(--faint)}
+  .tl-vol span{font-size:calc(var(--k) * 8.643px);line-height:1.35;color:var(--body)}
   /* five dots: filled for each step, hollow rings for the rest */
   .tl-dots{display:inline-flex;gap:calc(var(--k) * 2.6px)}
   .tl-dots i{width:calc(var(--k) * 5.6px);height:calc(var(--k) * 5.6px);border-radius:50%;box-sizing:border-box;
@@ -362,15 +372,25 @@
           <dt>Workflow</dt><dd>Notion, Miro, Airtable, Slack, Linear, Asana, Claude</dd>
         </dl>
       </section>
-      <section class="tl-languages">
-        <h2>Languages</h2>
-        <ul class="tl-langs">
-          <li><div class="row"><b>English</b><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Bilingual</span></li>
-          <li><div class="row"><b>French</b><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Mother tongue</span></li>
-          <li><div class="row"><b>Spanish</b><span class="tl-dots" role="img" aria-label="4 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><span>Professional proficiency</span></li>
-          <li><div class="row"><b>Hebrew</b><span class="tl-dots" role="img" aria-label="1 out of 5"><i class="on"></i><i></i><i></i><i></i><i></i></span></div><span>Beginner, learning</span></li>
-        </ul>
-      </section>
+      <div class="tl-side">
+        <section class="tl-languages">
+          <h2>Languages</h2>
+          <ul class="tl-langs">
+            <li><div class="row"><b>English</b><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Bilingual</span></li>
+            <li><div class="row"><b>French</b><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Mother tongue</span></li>
+            <li><div class="row"><b>Spanish</b><span class="tl-dots" role="img" aria-label="4 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><span>Professional proficiency</span></li>
+            <li><div class="row"><b>Hebrew</b><span class="tl-dots" role="img" aria-label="1 out of 5"><i class="on"></i><i></i><i></i><i></i><i></i></span></div><span>Beginner, learning</span></li>
+          </ul>
+        </section>
+
+        <section class="tl-volunteer">
+          <h2>Volunteering</h2>
+          <ul class="tl-vol">
+            <li><a href="https://www.unicef.org/youth/youth-advocates" target="_blank" rel="noopener"><b>UNICEF Youth Advocate&nbsp;↗</b></a><em>2016-2020</em><span>Speaking up and taking action for children’s rights.</span></li>
+            <li><a href="https://www.isparis.edu/student-experience/experiential-and-service-learning/~board/experiential-and-service-learning/post/visiting-namibia-after-sdp" target="_blank" rel="noopener"><b>Sustainable Development Project, Namibia&nbsp;↗</b></a><em>2017</em><span>With ISP’s student volunteers, working alongside local people at a primary boarding school in Otjimanangombe.</span></li>
+          </ul>
+        </section>
+      </div>
     </div>
   </div>
 </main>

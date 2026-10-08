@@ -310,6 +310,11 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   and hollow rings for the rest, its level under its name: English 5 Bilingual, French 5 Mother
   tongue, Spanish 4 Professional proficiency, Hebrew 1 Beginner, learning. (A first version had
   the languages under the skills with a dashed leader to the level.)
+- **Volunteering**, under the languages in the same right-hand column (`.tl-side`, 118 x k):
+  UNICEF Youth Advocate, 2016-2020, and ISP's Sustainable Development Project in Namibia, 2017
+  (Otjimanangombe, a primary boarding school, per ISP's page). Each title links out (↗, kept on the
+  title's last word with a no-break space); the text is only what the linked pages and Jules say.
+  Jules called it "associative work"; the heading is the English word.
 - **Phones**: `--k` 1, the column fills the width less 24px a side, the sections move to 62px
   in, and the certificate dashes are dropped (they only line up three across).
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
