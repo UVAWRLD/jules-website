@@ -322,7 +322,12 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   languages in the side column; Jules wanted it like the certificate block. Jules called it
   "associative work"; the heading is the English word.
 - **Phones**: `--k` 1, the column fills the width less 24px a side, the sections move to 62px
-  in, and the certificate dashes are dropped (they only line up three across).
+  in. Certificates go two a row: the dash between the first two stays (12px, in the 18px gap),
+  the second goes, and the third, alone on the next row, gets a ring and connector of its own
+  (pseudo elements on it, the ring's and connector's masks; no spotlight, which needs a mouse).
+  Volunteering takes the same two columns (110.6px, the dash between). Languages span the full
+  width, so the dots end on the skills lists' right edge, with a dashed leader from each name to
+  its dots (on every screen; short on a computer). From Jules's marked-up phone screenshots.
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
   coming back from the Timeline does not mean four more seconds of hourglass.
 
