@@ -116,7 +116,10 @@ export function createPlane({ reduce } = {}) {
     fly(x, y, onEdge) {
       if (reduce) { onEdge && onEdge(); return; }
       const r = (a, b) => a + Math.random() * (b - a);
-      const S = clamp(innerWidth * 0.042, 44, 64), now = performance.now();
+      // on a phone it is smaller (its 44px floor was big on a 375px screen) and climbs much more,
+      // since the edge is close: up and away to the side, where it can be seen
+      const phone = innerWidth <= 820;
+      const S = phone ? clamp(innerWidth * 0.085, 30, 38) : clamp(innerWidth * 0.042, 44, 64), now = performance.now();
       const gust = () => [[1, r(0.7, 1.3), r(0, 6.3)], [0.55, r(1.6, 2.6), r(0, 6.3)], [0.3, r(3.1, 4.4), r(0, 6.3)]]
         .map(([a, w, ph]) => [a / 1.85, w, ph]);
       const x0 = x + S * 0.3, y0 = y - S * 0.2;
@@ -124,7 +127,7 @@ export function createPlane({ reduce } = {}) {
       flight = { t0: now, last: now, x: x0, y: y0, x0, y0, S, onEdge, edged: false,
                  vx: 0, vy: r(-70, -40), pitch: 0, ph: r(0, 6.3),
                  cruise, throwV: cruise * r(0.8, 1.2),
-                 climb: r(40, 90), gust: [gust(), gust(), gust()] };
+                 climb: phone ? clamp((y - 60) * r(0.3, 0.42), 90, 220) : r(40, 90), gust: [gust(), gust(), gust()] };
     },
     get flying() { return !!flight; },
     update,

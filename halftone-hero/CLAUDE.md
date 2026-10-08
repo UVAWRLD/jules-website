@@ -374,7 +374,10 @@ into the crow's buffer and screened on the crow's lattice.
   not. The triangles are sampled under a pixel apart and shaded with the crow's light and rim,
   folds and edges darker, the keel darker again. Seen a little above and in front (yaw -0.3,
   tilt 0.45), rolled 0.2 rad about its long axis toward you (Jules: slightly turned on x). 4.2% of
-  the window wide (44-64px; 6.2% read as too big).
+  the window wide (44-64px; 6.2% read as too big); on a phone (820px and under) 8.5% of the width,
+  30-38px (the 44px floor was big on a 375px screen), and it climbs more there, 30-42% of its
+  height above 60px (90-220px), so it rises up and away to the side where it can be seen: about
+  35px wide, climbing 113-159px over 1.6-2.2s in a 375px simulation.
 - **The flight is simulated and different every time**: thrown, it starts fast and settles to a
   cruise set so it takes about 2-2.7s to the edge on any screen; gusts (three slow sines each,
   random rates and phases) vary its speed and height and bank and rock it; the nose follows its
