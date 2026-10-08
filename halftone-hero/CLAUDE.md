@@ -304,7 +304,7 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   (two are not in capitals) and the smaller role size on the later entries.
 - **Skills & Tools, and Languages** (added 2026-10-08, after the certificates; from Jules's CV,
   with C++ added under Code). Side by side (`.tl-pair`): skills in the wider column, languages
-  in a 118 x k column beside them; stacked on phones. The pair starts on the rings' line
+  in a 118 x k column beside them, 44 x k apart (22 read as cramped); stacked on phones. The pair starts on the rings' line
   (`margin-left: -62 x k`, the reach of a timeline entry): it has no rings, so it takes their margin
   (Jules: left-align it with the line). Plain rows, no rings and no cards. Skills
   are a definition list (`.tl-kv`), the label 46 x k wide beside the languages, in the years'
@@ -489,6 +489,8 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   `src/site.css`, the markup is written into each page): a faint rule, the mark, "Have a complicated
   thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the paper plane first),
   LinkedIn, X (x.com/julesbockelee; it replaced Instagram, 2026-10-05) and © 2026.
+  On a phone the links are indented to line up with the words above them (37px: the mark and its
+  gap), not with the mark, and the footer sits closer to the page (48px above, 36 inside).
 - **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
   `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
   muted), so the page takes the dark theme.

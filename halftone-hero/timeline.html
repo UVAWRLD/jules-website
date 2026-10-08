@@ -130,7 +130,7 @@
   .tl-kv dt{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-kv dd{margin:0;font-size:calc(var(--k) * 8.643px);line-height:1.45;color:var(--body)}
   /* the two sit side by side: skills in the wider column, languages beside them */
-  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 118px);column-gap:calc(var(--k) * 22px);
+  .tl-pair{display:grid;grid-template-columns:1fr calc(var(--k) * 118px);column-gap:calc(var(--k) * 44px);
     margin-left:calc(var(--k) * -62px)}   /* starts on the rings' line: no rings here, so it takes their margin */
   .tl-pair .tl-kv{grid-template-columns:calc(var(--k) * 46px) 1fr}
   .tl-langs{list-style:none;padding:0;margin:calc(var(--k) * 8.643px) 0 0;display:flex;flex-direction:column;
@@ -247,7 +247,7 @@
   /* ---- phones: the design's first size, with the column brought in to fit ---- */
   @media (max-width:820px){
     :root{--k:1}
-    .tl{padding-top:112px}
+    .tl{padding-top:112px;padding-bottom:24px}
     .tl-secs{margin-left:62px;width:auto;max-width:none}
     .tl-pair{grid-template-columns:1fr;row-gap:calc(var(--k) * 27.415px)}
     .tl-pair .tl-kv{grid-template-columns:calc(var(--k) * 58.775px) 1fr}
