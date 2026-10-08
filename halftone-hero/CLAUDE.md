@@ -302,6 +302,11 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   sets the dates and the Education and Certificates titles in Inter, the rest in Satoshi;
   all three section titles are Satoshi Black here). Company names keep the design's casing
   (two are not in capitals) and the smaller role size on the later entries.
+- **Skills & Tools, and Languages** (added 2026-10-08, after the certificates; from Jules's CV,
+  with C++ added under Code). Plain rows with no rings and no cards: the label in the years'
+  column (58.775 x k), the list where the entries' titles start, so they line up with the page
+  above (`.tl-kv`, a definition list). Languages put a dashed leader between the language and its
+  level, the levels in a column of their own (`.tl-langs`), 260 x k wide at most.
 - **Phones**: `--k` 1, the column fills the width less 24px a side, the sections move to 62px
   in, and the certificate dashes are dropped (they only line up three across).
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
