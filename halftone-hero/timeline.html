@@ -119,8 +119,9 @@
     -webkit-mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%;mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%}
   .tl-certs-item{display:block}
   /* volunteering: two entries, laid out as the first two certificates are */
-  .tl-vols{justify-content:flex-start;align-items:flex-start;column-gap:calc(var(--k) * 10px)}
-  .tl-vols .tl-cert{width:auto;max-width:calc(var(--k) * 150px)}
+  .tl-vols{justify-content:flex-start;align-items:flex-start;flex-wrap:nowrap;column-gap:calc(var(--k) * 10px)}
+  .tl-vols .tl-cert{width:auto;flex:none;max-width:calc(var(--k) * 150px)}
+  .tl-vols .tl-cert:last-child{flex:0 1 auto;min-width:0}
   .tl-vols .tl-sep{position:static;flex:none;margin-top:calc(var(--k) * 6.31px)}
 
   /* ---- skills & tools, and languages: plain rows, no rings; the label sits in the years'
@@ -137,7 +138,11 @@
     gap:calc(var(--k) * 9px)}
   .tl-langs li{display:flex;flex-direction:column;gap:calc(var(--k) * 2px)}
   .tl-langs .row{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k) * 8px)}
-  .tl-langs .lead{flex:1;min-width:calc(var(--k) * 8px);height:0;border-top:1px dashed var(--muted);opacity:.7}
+  .tl-languages{width:fit-content}                    /* the rows end where the heading ends */
+  .tl-langs .lvl{display:block;width:0;white-space:nowrap}   /* hangs under the name, never widens the row */
+  /* 3. a hairline of fine dashes, half a pixel tall */
+  .tl-langs .lead{flex:1;min-width:calc(var(--k) * 8px);height:1px;transform:scaleY(.5);opacity:.6;
+    background:repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 4px)}
   .tl-langs b{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-langs span{font-size:calc(var(--k) * 8.643px);line-height:1.35;color:var(--body)}
   /* the right-hand column */
@@ -255,9 +260,6 @@
     /* two certificates a row: the dash between the first two stays (in the 18px gap), the second
        dash goes, and the third, alone on the next row, gets a ring and connector of its own */
     .tl-sep.b{display:none}
-    /* volunteering takes the certificates' two columns: 110.6 wide, the dash in the 18px gap */
-    .tl-vols{column-gap:3px}
-    .tl-vols .tl-cert{width:110.635px;max-width:none}
     .tl-vols .tl-sep{width:12px}
     .tl-certs:not(.tl-vols) .tl-sep.a{left:113px;width:12px}
     .tl-certs:not(.tl-vols) .tl-cert:nth-child(3){position:relative}
@@ -389,10 +391,10 @@
         <section class="tl-languages">
           <h2>Languages</h2>
           <ul class="tl-langs">
-            <li><div class="row"><b>English</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Bilingual</span></li>
-            <li><div class="row"><b>French</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span>Mother tongue</span></li>
-            <li><div class="row"><b>Spanish</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="4 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><span>Professional proficiency</span></li>
-            <li><div class="row"><b>Hebrew</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="1 out of 5"><i class="on"></i><i></i><i></i><i></i><i></i></span></div><span>Beginner, learning</span></li>
+            <li><div class="row"><b>English</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span class="lvl">Bilingual</span></li>
+            <li><div class="row"><b>French</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="5 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span class="lvl">Mother tongue</span></li>
+            <li><div class="row"><b>Spanish</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="4 out of 5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><span class="lvl">Professional proficiency</span></li>
+            <li><div class="row"><b>Hebrew</b><i class="lead" aria-hidden="true"></i><span class="tl-dots" role="img" aria-label="1 out of 5"><i class="on"></i><i></i><i></i><i></i><i></i></span></div><span class="lvl">Beginner, learning</span></li>
           </ul>
         </section>
 

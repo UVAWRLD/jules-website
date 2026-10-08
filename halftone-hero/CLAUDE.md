@@ -325,9 +325,11 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   in. Certificates go two a row: the dash between the first two stays (12px, in the 18px gap),
   the second goes, and the third, alone on the next row, gets a ring and connector of its own
   (pseudo elements on it, the ring's and connector's masks; no spotlight, which needs a mouse).
-  Volunteering takes the same two columns (110.6px, the dash between). Languages span the full
-  width, so the dots end on the skills lists' right edge, with a dashed leader from each name to
-  its dots (on every screen; short on a computer). From Jules's marked-up phone screenshots.
+  Volunteering: each entry as wide as its text at every size, the dash between with equal gaps
+  (fixed certificate columns left an odd gap). Languages: the block is as wide as its heading
+  (`width: fit-content`; the level under each name is zero-width so it never widens a row), so
+  the dots end where "LANGUAGES" ends, with a hairline leader of fine dashes (2px on, 2 off, half a
+  pixel tall) from each name to its dots. From Jules's marked-up phone screenshots.
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
   coming back from the Timeline does not mean four more seconds of hourglass.
 
