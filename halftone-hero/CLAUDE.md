@@ -328,7 +328,8 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   Volunteering: each entry as wide as its text at every size, the dash between with equal gaps
   (fixed certificate columns left an odd gap). Languages: the block is as wide as its heading
   (`width: fit-content`; the level under each name is zero-width so it never widens a row), so
-  the dots end where "LANGUAGES" ends, with a hairline leader of fine dashes (2px on, 2 off, half a
+  the dots end where "LANGUAGES" ends (on a computer; on a phone the rows run to 260px, the dots
+  out to the right, where Jules marked them), with a hairline leader of fine dashes (2px on, 2 off, half a
   pixel tall) from each name to its dots. From Jules's marked-up phone screenshots.
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so
   coming back from the Timeline does not mean four more seconds of hourglass.
@@ -491,8 +492,8 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   `src/site.css`, the markup is written into each page): a faint rule, the mark, "Have a complicated
   thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the paper plane first),
   LinkedIn, X (x.com/julesbockelee; it replaced Instagram, 2026-10-05) and © 2026.
-  On a phone the links are indented to line up with the words above them (37px: the mark and its
-  gap), not with the mark, and the footer sits closer to the page (48px above, 36 inside).
+  On a phone the links take a line of their own, ending on the right edge under the end of the
+  line above (Jules's mark), and the footer sits closer to the page (48px above, 36 inside).
 - **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
   `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
   muted), so the page takes the dark theme.

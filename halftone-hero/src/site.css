@@ -150,6 +150,6 @@ body.crow-card #crowCard, body.crow-card #crowLead{opacity:1}
   .pj-foot::before{margin-bottom:32px}
   .pj-contact{align-items:flex-start;gap:14px}
   .pj-contact p{font-size:20px}
-  /* the links line up with the words above them, not with the mark */
-  .pj-links{padding-left:37px;gap:20px}
+  /* the links take a line of their own, ending on the right edge, under the end of the line above */
+  .pj-links{width:100%;justify-content:flex-end;gap:20px}
 }
