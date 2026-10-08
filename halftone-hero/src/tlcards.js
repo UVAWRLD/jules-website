@@ -85,6 +85,11 @@ const CARDS = [
     ["cert", "Entrepreneurship <small>101-103</small>", "MITx | edX", "2020", "MIT’s three-part course on starting a company: finding a first customer, deciding what to offer them, and working out how the business makes money."],
     ["p", "Focus: Data · Analysis · Venture building"],
   ]},
+  { title: "VOLUNTEERING", meta: "UNICEF and the International School of Paris · 2016-2020", body: [
+    ["cert", '<a href="https://www.unicef.org/youth/youth-advocates" target="_blank" rel="noopener">Youth Advocate&nbsp;↗</a>', "UNICEF", "2016-2020", "One of UNICEF’s Youth Advocates, young people who speak up and take action for children’s rights."],
+    ["cert", '<a href="https://www.isparis.edu/student-experience/experiential-and-service-learning/~board/experiential-and-service-learning/post/visiting-namibia-after-sdp" target="_blank" rel="noopener">Sustainable Development Project, Namibia&nbsp;↗</a>', "International School of Paris", "2017", "A service trip to Otjimanangombe with ISP’s student volunteers, working alongside local people at a primary boarding school."],
+    ["p", "Focus: Children’s rights · Service · Sustainable development"],
+  ]},
 ];
 
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
@@ -92,7 +97,7 @@ function render(c) {
   const body = c.body.map(([kind, a, b, y, d]) => {
     if (kind === "h") return `<p class="tc-h">${esc(a)}</p>`;
     if (kind === "p") return `<p class="tc-p">${esc(a)}</p>`;
-    // a certificate: its name may carry a small course number, the one bit of markup allowed
+    // a certificate: its name may carry a small course number or a link, the only markup allowed
     return `<div class="tc-cert"><b>${a}</b><span>${esc(b)}</span><em>${esc(y)}</em><p class="tc-p">${esc(d)}</p></div>`;
   }).join("");
   return `<header class="tc-head"><div><h2 id="tcTitle">${esc(c.title)}</h2><p class="tc-meta">${esc(c.meta)}</p></div>
@@ -210,7 +215,7 @@ export function createTimelineCards(items) {
     li.tabIndex = 0;
     li.setAttribute("role", "button");
     li.setAttribute("aria-haspopup", "dialog");
-    const name = li.querySelector("h3") ? li.querySelector("h3").textContent : "Certificates";
+    const name = li.dataset.name || (li.querySelector("h3") ? li.querySelector("h3").textContent : "Certificates");
     li.setAttribute("aria-label", "Open details: " + name);
     li.addEventListener("click", () => show(i, li));
     li.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); show(i, li); } });

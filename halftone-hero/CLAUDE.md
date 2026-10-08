@@ -223,8 +223,8 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
 - **The detail cards** (`src/tlcards.js`; Figma: V4.0 / detail-card-1 to 8, and card 1 open
   over the page in the second Timeline frame). Every entry, ring or text, is a button that
   opens its card: the six jobs, Parsons, the International School of Paris (added 2026-10-08: the
-  bilingual IB, 2016-2020, its subjects, personal project and activities, from Jules), and the
-  certificates, in that order. The card's text
+  bilingual IB, 2016-2020, its subjects, personal project and activities, from Jules), the
+  certificates, and volunteering, in that order. The card's text
   lives in `CARDS` in the script, copied from Figma (straight apostrophes made curly, and the
   design's "associate Data Analyst" capitalised). One dialog is reused for all eight.
   Opening: the page goes under a fine hex dot screen (the design's pattern fill: 1.8px dots,
@@ -310,11 +310,15 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   and hollow rings for the rest, its level under its name: English 5 Bilingual, French 5 Mother
   tongue, Spanish 4 Professional proficiency, Hebrew 1 Beginner, learning. (A first version had
   the languages under the skills with a dashed leader to the level.)
-- **Volunteering**, under the languages in the same right-hand column (`.tl-side`, 118 x k):
-  UNICEF Youth Advocate, 2016-2020, and ISP's Sustainable Development Project in Namibia, 2017
-  (Otjimanangombe, a primary boarding school, per ISP's page). Each title links out (↗, kept on the
-  title's last word with a no-break space); the text is only what the linked pages and Jules say.
-  Jules called it "associative work"; the heading is the English word.
+- **Volunteering** (2026-10-08), the last section, built like the certificates: one entry with a
+  ring, the two side by side (`.tl-vols`, laid out as the first two certificates, with the long
+  fading dash between them): Youth Advocate, UNICEF, 2016-2020, and Sustainable Development
+  Project, Namibia, International School of Paris, 2017. It opens a card like the certificates'
+  (`VOLUNTEERING` in `CARDS`, after them), whose entry names link out to UNICEF's Youth Advocates
+  page and ISP's page on the trip (Otjimanangombe, a primary boarding school, per that page). The
+  li carries `data-name` so its button is labelled "Volunteering". It first sat under the
+  languages in the side column; Jules wanted it like the certificate block. Jules called it
+  "associative work"; the heading is the English word.
 - **Phones**: `--k` 1, the column fills the width less 24px a side, the sections move to 62px
   in, and the certificate dashes are dropped (they only line up three across).
 - **The loader plays once a visit** (`sessionStorage` "loaderSeen", set at the reveal), so

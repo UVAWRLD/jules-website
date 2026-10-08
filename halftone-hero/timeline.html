@@ -118,6 +118,8 @@
   .tl-sep.b{left:calc(var(--k) * 235px);width:calc(var(--k) * 7px);
     -webkit-mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%;mask:url(public/img/timeline/cert-sep-short.svg) no-repeat 0 0/100% 100%}
   .tl-certs-item{display:block}
+  /* volunteering: two entries, laid out as the first two certificates are */
+  .tl-vols{justify-content:flex-start;column-gap:calc(var(--k) * 12px)}
 
   /* ---- skills & tools, and languages: plain rows, no rings; the label sits in the years'
      column and its text where the entries' titles start, so they line up with the page above ---- */
@@ -134,16 +136,8 @@
   .tl-langs .row{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k) * 8px)}
   .tl-langs b{font-weight:700;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tl-langs span{font-size:calc(var(--k) * 8.643px);line-height:1.35;color:var(--body)}
-  /* the right-hand column: languages, then volunteering under them */
+  /* the right-hand column */
   .tl-side{display:flex;flex-direction:column;gap:calc(var(--k) * 27.415px)}
-  .tl-vol{list-style:none;padding:0;margin:calc(var(--k) * 8.643px) 0 0;display:flex;flex-direction:column;
-    gap:calc(var(--k) * 10px)}
-  .tl-vol li{display:flex;flex-direction:column;gap:calc(var(--k) * 1.729px);line-height:1.4}
-  .tl-vol a{display:block;font-size:calc(var(--k) * 9.075px);line-height:1.35;text-decoration:none}
-  .tl-vol b{font-weight:700;font-size:calc(var(--k) * 9.075px);color:var(--strong)}
-  .tl-vol a:hover b{text-decoration:underline;text-underline-offset:2px}
-  .tl-vol em{font-style:normal;font-weight:500;font-size:calc(var(--k) * 9.075px);color:var(--faint)}
-  .tl-vol span{font-size:calc(var(--k) * 8.643px);line-height:1.35;color:var(--body)}
   /* five dots: filled for each step, hollow rings for the rest */
   .tl-dots{display:inline-flex;gap:calc(var(--k) * 2.6px)}
   .tl-dots i{width:calc(var(--k) * 5.6px);height:calc(var(--k) * 5.6px);border-radius:50%;box-sizing:border-box;
@@ -201,6 +195,8 @@
      came out at 7 to 8px, too small to read */
   .tc-cert b{font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--strong)}
   .tc-cert b small{font-size:calc(var(--k) * 7.676px)}
+  .tc-cert b a{color:inherit;text-decoration:none}
+  .tc-cert b a:hover{text-decoration:underline;text-underline-offset:2px}
   .tc-cert span{font-size:calc(var(--k) * 8.643px);line-height:1.4;color:var(--body)}
   .tc-cert em{font-style:normal;font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--faint)}
   .tc-foot{display:flex;justify-content:space-between;
@@ -383,15 +379,21 @@
           </ul>
         </section>
 
-        <section class="tl-volunteer">
-          <h2>Volunteering</h2>
-          <ul class="tl-vol">
-            <li><a href="https://www.unicef.org/youth/youth-advocates" target="_blank" rel="noopener"><b>UNICEF Youth Advocate&nbsp;↗</b></a><em>2016-2020</em><span>Speaking up and taking action for children’s rights.</span></li>
-            <li><a href="https://www.isparis.edu/student-experience/experiential-and-service-learning/~board/experiential-and-service-learning/post/visiting-namibia-after-sdp" target="_blank" rel="noopener"><b>Sustainable Development Project, Namibia&nbsp;↗</b></a><em>2017</em><span>With ISP’s student volunteers, working alongside local people at a primary boarding school in Otjimanangombe.</span></li>
-          </ul>
-        </section>
       </div>
     </div>
+
+    <section>
+      <h2>Volunteering</h2>
+      <ol class="tl-list">
+        <li class="tl-item tl-certs-item" data-name="Volunteering">
+          <div class="tl-certs tl-vols">
+            <div class="tl-cert"><b>Youth Advocate</b><span>UNICEF</span><em>2016-2020</em></div>
+            <div class="tl-cert"><b>Sustainable Development Project, Namibia</b><span>International School of Paris</span><em>2017</em></div>
+            <i class="tl-sep a" aria-hidden="true"></i>
+          </div>
+        </li>
+      </ol>
+    </section>
   </div>
 </main>
 
