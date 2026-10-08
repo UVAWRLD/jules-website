@@ -68,6 +68,17 @@ const CARDS = [
     ["p", "I graduated with a minor in Product Design, a 3.91 GPA and a place on the Dean’s List. For my capstone I developed a product and brand strategy for a new venture, tested it with users, and presented it to faculty and industry reviewers."],
     ["p", "Focus: Strategic design · Product design · Business"],
   ]},
+  { title: "INTERNATIONAL SCHOOL OF PARIS, PARIS", meta: "Bilingual IB Certificate · 2016-2020 · Paris", body: [
+    ["h", "The school:"],
+    ["p", "An international school in Paris, where I took the International Baccalaureate. Mine was the bilingual IB, with French and English both studied as first languages."],
+    ["h", "Subjects:"],
+    ["p", "Mathematics HL, Economics HL, Design and Technology HL and Geography HL, with French Language and Literature, English Language and Literature, and Theory of Knowledge."],
+    ["h", "Personal Project:"],
+    ["p", "The Uberification of Common Life: a socio-economic study of Airbnb, Uber and the service economy."],
+    ["h", "Activities:"],
+    ["p", "Student Council President and Vice-President, Chairman of the Model United Nations Club, and Student Mentor."],
+    ["p", "Focus: Economics · Design and Technology · Leadership"],
+  ]},
   { title: "CERTIFICATES", meta: "Data and entrepreneurship · 2020-2026", body: [
     ["cert", "Associate Data Analyst", "DataCamp", "2026", "DataCamp’s assessed certification in SQL, with a timed exam and a practical case on cleaning, analysing and reporting data."],
     ["cert", "Data Analytics Professional Certificate", "Google | Coursera", "2025", "Google’s programme on the whole analysis process, from framing the question to presenting results, in spreadsheets, SQL, Tableau and R."],

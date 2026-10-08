@@ -222,7 +222,9 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   design's static render of him, a 2.1MB mask for a 129px bird.
 - **The detail cards** (`src/tlcards.js`; Figma: V4.0 / detail-card-1 to 8, and card 1 open
   over the page in the second Timeline frame). Every entry, ring or text, is a button that
-  opens its card: the six jobs, Parsons, and the certificates, in that order. The card's text
+  opens its card: the six jobs, Parsons, the International School of Paris (added 2026-10-08: the
+  bilingual IB, 2016-2020, its subjects, personal project and activities, from Jules), and the
+  certificates, in that order. The card's text
   lives in `CARDS` in the script, copied from Figma (straight apostrophes made curly, and the
   design's "associate Data Analyst" capitalised). One dialog is reused for all eight.
   Opening: the page goes under a fine hex dot screen (the design's pattern fill: 1.8px dots,
