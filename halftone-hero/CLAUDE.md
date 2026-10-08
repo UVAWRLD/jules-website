@@ -492,9 +492,11 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   `src/site.css`, the markup is written into each page): a faint rule, the mark, "Have a complicated
   thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the paper plane first),
   LinkedIn, X (x.com/julesbockelee; it replaced Instagram, 2026-10-05) and © 2026.
-  Under 820px the links sit at the right on the address's line when there is room for both (from
-  460px; Jules's mark), and on a line of their own, still on the right, on narrower phones; the
-  footer sits closer to the page there (48px above, 36 inside).
+  Under 820px the links sit at the right on the address's line (Jules's mark), 14px apart, from
+  360px, which is every current phone (at 375 the address ends at 201 and the links start at 225;
+  460 was tried first and left a 430px iPhone with the links on a line of their own); below 360
+  they take their own line, on the right. The footer sits closer to the page there (48px above,
+  36 inside).
 - **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
   `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
   muted), so the page takes the dark theme.
