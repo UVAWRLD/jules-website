@@ -236,14 +236,11 @@ export function createTimelineCards(items) {
     was.focus({ preventScroll: true });
   }
 
-  // the logos in the list: an entry's at the right of its name, on the right edge of the text
-  // below it; a certificate's or a volunteer post's after its issuer, as in the card
+  // the logos in the list, as in the card: an entry's after its name, a certificate's or a
+  // volunteer post's after its issuer
   items.forEach((li, i) => {
     const h3 = li.querySelector("h3");
-    if (h3 && LOGOS[CARDS[i].logo]) {
-      h3.classList.add("tl-hl");
-      h3.innerHTML = `<span>${esc(h3.textContent)}</span>${logo(CARDS[i].logo)}`;
-    }
+    if (h3 && CARDS[i].logo) h3.innerHTML = named(h3.textContent, CARDS[i].logo);
     for (const sp of li.querySelectorAll(".tl-cert span")) {
       const text = sp.textContent.replace(/\u00a0/g, "").replace(/\s+\|/, " |"), key = ISSUER_LOGO[text];
       if (key) sp.innerHTML = named(text, key);
