@@ -543,8 +543,11 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   count follows. "Nothing matches" when nothing does. Escape closes the menu and clears the search.
 - **Footer** (the same on the Timeline, Projects, Bookshelf and Thoughts pages; its CSS is
   `.pj-foot` in `src/site.css`, the markup is written into each page): a faint rule, the mark,
-  "Have a complicated thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the
-  paper plane first), the LinkedIn, X and Substack pills (`.soc`, below) and © 2026. X replaced
+  "From idea to something real." (it was "Have a complicated thing to make clear?" until
+  2026-10-27, Jules's pick from a list of lines), hello@julesbockelee.com (a `mailto:` that sends the
+  paper plane first), the LinkedIn, X and Substack pills (`.soc`, below) and © 2026. Made smaller
+  the same day: the line 19px (16 on a phone, where it now fits on one line), the mark 18px, less
+  room above and inside. X replaced
   Instagram 2026-10-05; Substack was added 2026-10-27, when the plain text links became pills.
   Under 820px the pills take a line of their own under the address, lined up with its text (37px
   in), the year at the right; three pills did not fit beside the address the way two text links
