@@ -33,7 +33,7 @@
      darker, and the hairline round a tag */
   --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
   --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
-  --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
+  --layer-shadow:4px 7px 16px rgba(17,16,12,.10);
   --more-shade:rgba(25,24,17,.13);
   /* band width follows the viewport height so the picture keeps the same vertical
      composition at every window size; it only gives way when the window is too narrow */
@@ -49,7 +49,7 @@
   --strong:#E4E4E0; --body:#A6A6A0; --faint:#7C7C75;
   --surface:#1A1A18; --pill:#262624; --hairline:#4A4A46;
   --lift-shadow:0 14px 38px rgba(0,0,0,.35); --lift-shadow-hi:0 22px 48px rgba(0,0,0,.5);
-  --layer-shadow:6px 9px 20px rgba(0,0,0,.4);
+  --layer-shadow:4px 7px 16px rgba(0,0,0,.3);
   --more-shade:rgba(0,0,0,.55);
 }
 :root[data-theme="light"]{
@@ -59,7 +59,7 @@
   --strong:#1A1A1A; --body:#555555; --faint:#888888;
   --surface:#F7F6F2; --pill:#E3E3E0; --hairline:#BCBCBC;
   --lift-shadow:0 14px 38px rgba(25,24,17,.07); --lift-shadow-hi:0 22px 48px rgba(25,24,17,.12);
-  --layer-shadow:6px 9px 20px rgba(17,16,12,.14);
+  --layer-shadow:4px 7px 16px rgba(17,16,12,.10);
   --more-shade:rgba(25,24,17,.13);
 }
 *{box-sizing:border-box}

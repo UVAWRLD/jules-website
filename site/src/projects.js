@@ -51,7 +51,7 @@ function arrange(p) {
       const screen = t.w / t.h < 0.62, d = i - mid;
       const h = (screen ? 300 : 150) * (0.94 + R() * 0.06), w = h * t.w / t.h;
       const y = (screen ? 0 : 120) + Math.abs(d) * 9 + (R() - 0.5) * 16;
-      items.push({ i, x, y, w, h, r: d * 2.2 + (R() - 0.5) * 2, z: 10 - Math.round(Math.abs(d)) });
+      items.push({ i, x, y, w, h, r: d * 2.2 + (R() - 0.5) * 2, z: 10 - Math.round(Math.abs(d)), scr: screen });
       x += w * (0.64 + R() * 0.06);
     });
     const pad = 10, y0 = Math.min(...items.map(o => o.y)) - pad, x1 = Math.max(...items.map(o => o.x + o.w)) + pad;
@@ -150,7 +150,13 @@ function place(c, g, listW) {
     const w = o.w * k, h = o.h * k, x = flip ? W - (o.x * k) - w : o.x * k, y = o.y * k;
     const mx = x + w / 2 - cx, my = y + h / 2 - cy, d = Math.hypot(mx, my) || 1;
     el.style.cssText = `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;z-index:${o.z};`
-      + `--r:${(flip ? -o.r : o.r).toFixed(2)}deg;--dx:${(mx / d * (o.far ? 16 : 9)).toFixed(1)}px;--dy:${(my / d * (o.far ? 16 : 9)).toFixed(1)}px`;
+      + `--r:${(flip ? -o.r : o.r).toFixed(2)}deg;--dx:${(mx / d * (o.far ? 16 : 9)).toFixed(1)}px;--dy:${(my / d * (o.far ? 16 : 9)).toFixed(1)}px`
+      // a phone screen: the exports carry a white band down the sides and foot and white outside
+      // the phone's rounded corners, which drew a white outline round every dark screen. The
+      // picture is cropped past it (.scr in projects.html, SCR_CROP in pjdither.js) and the
+      // print takes the phone's corners
+      + (o.scr ? `;border-radius:${(w * 0.05).toFixed(1)}px` : "");
+    el.classList.toggle("scr", !!o.scr);
   }
 }
 

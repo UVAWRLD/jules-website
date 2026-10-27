@@ -12,6 +12,7 @@
 // before the colour has come back. The theme swaps the two colours (light dots on
 // dark in the dark theme) by redrawing from the stored dots.
 
+const SCR_CROP = [0.02, 0.03];                        // a phone screen: 2% off each side, 3% off the foot
 const BAYER = (() => {                       // 8 x 8 ordered-dither thresholds, 0..63
   const m = [[0]];
   let b = m;
@@ -97,9 +98,11 @@ export function ditherPrints(list, cards) {
     if (w < 4 || h < 4 || !pr.img.naturalWidth) return false;
     const src = document.createElement("canvas"); src.width = w; src.height = h;
     const g = src.getContext("2d", { willReadFrequently: true });
-    const iw = pr.img.naturalWidth, ih = pr.img.naturalHeight, s = Math.max(w / iw, h / ih);
-    const sw = w / s, sh = h / s;
-    g.drawImage(pr.img, (iw - sw) / 2, 0, sw, sh, 0, 0, w, h);
+    // a phone screen is shown cropped past the white band its export carries (src/projects.js)
+    const [cx, cb] = pr.fig.classList.contains("scr") ? SCR_CROP : [0, 0];
+    const ox = pr.img.naturalWidth * cx, iw = pr.img.naturalWidth - 2 * ox, ih = pr.img.naturalHeight * (1 - cb);
+    const s = Math.max(w / iw, h / ih), sw = w / s, sh = h / s;
+    g.drawImage(pr.img, ox + (iw - sw) / 2, 0, sw, sh, 0, 0, w, h);
     const px = g.getImageData(0, 0, w, h).data, n = w * h, L = new Float32Array(n);
     const hist = new Uint32Array(256);
     for (let i = 0, j = 0; i < n; i++, j += 4) L[i] = px[j] * .299 + px[j + 1] * .587 + px[j + 2] * .114;

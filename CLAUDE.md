@@ -507,7 +507,13 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   which scale to the card's width. A set that is mostly phone screens (Vybe) is stacked like a hand of
   cards instead: every screen at the same height, each overlapping the next by about a third,
   turned more the further it is from the middle, the middle one on top, a logo among them at half
-  height. The prints hang up to 14px over the card's outer edge (8 on a
+  height. **The screens' exports carry a white band** (3-6px down the sides and foot, and white
+  outside the phone's rounded corners), which drew a white outline round every dark Vybe screen:
+  a screen in that hand (`scr`) is cropped 2% each side and 3% off the foot, in the page
+  (`.pj-layer.scr img`) and in its halftone (`SCR_CROP` in `src/pjdither.js`), and its corners are
+  rounded like the phone's, 5% of its width (2026-10-27). Other prints have 2.5px corners and a
+  light shadow (`--layer-shadow`), squarer and lighter than the first 4px and heavier shadow.
+  The prints hang up to 14px over the card's outer edge (8 on a
   phone). Pictures alternate sides down the cards that are showing, and layout reruns on a change
   of width, a sort or a filter. On hover the card lifts 3px and each print moves 9px away from the
   middle of the group (16 for the outer ones) and turns a touch further; **a click (or tap) on the
