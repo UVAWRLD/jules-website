@@ -15,7 +15,7 @@ import { createDots } from "./tldots.js";
 const WASH_IN = 1100, WASH_OUT = 600;
 
 const CARDS = [
-  { title: "44LLC, NEW YORK", meta: "Three roles · 2024-2026 · New York and remote", body: [
+  { title: "44LLC, NEW YORK", logo: "44llc", meta: "Three roles · 2024-2026 · New York and remote", body: [
     ["h", "The company:"],
     ["p", "44LLC is a strategy and design studio in Brooklyn. It works with hotel groups, hospitality brands and private clients, from the first positioning of a project to the standards that architects and operators build from. Clients include Jumeirah and Rosewood."],
     ["h", "Strategy Consultant · 2026 · Remote"],
@@ -26,21 +26,21 @@ const CARDS = [
     ["p", "Most of my first year went into pitches. I built brand strategy proposals for hospitality groups and private clients, taking each from first positioning to final presentation, and wrote the brand-led concepts behind Jumeirah’s residential and villa standards."],
     ["p", "Focus: Positioning · Pitches · Product management · Production tooling"],
   ]},
-  { title: "NYC INNOVATION COLLECTIVE, NEW YORK", meta: "Associate · 2024-2025 · New York", body: [
+  { title: "NYC INNOVATION COLLECTIVE, NEW YORK", logo: "nyc-innovation-collective", meta: "Associate · 2024-2025 · New York", body: [
     ["h", "The company:"],
     ["p", "A nonprofit alliance of New York tech organisations. Its members are accelerators, incubators and other startup programmes, and it works to make the city’s startup scene better connected and easier to get into."],
     ["h", "The role:"],
     ["p", "I started with the numbers. After cleaning up the membership records, I segmented members by stage and sector so we knew who to approach for which events and partnerships. That work shaped the website redesign, which I built around the two things people came for: joining and attending. I also ran the events themselves, mostly founder meetups and panel evenings."],
     ["p", "Focus: Data analysis · UX/UI · Community · Events"],
   ]},
-  { title: "VYBE TOGETHER, NEW YORK", meta: "Creative Director & Co-Founder · 2020-2024 · New York", body: [
+  { title: "VYBE TOGETHER, NEW YORK", logo: "vybe", meta: "Creative Director & Co-Founder · 2020-2024 · New York", body: [
     ["h", "The company:"],
     ["p", "An app for finding and hosting small get-togethers nearby. A host posts a gathering, guests apply, and the host decides who comes."],
     ["h", "The role:"],
     ["p", "I co-founded Vybe and led its brand, go-to-market and app design, working with our product and engineering team from first concept to launch. In 2020 our first marketing video went much further than the product had. It reached national press before we had users, and we took it down. That taught me how fast a brand’s tone can run ahead of what it’s selling, and it also showed how far one small team’s idea could travel. When we came back, the brand was built around what the app had always been for: small gatherings, with the host choosing the guests."],
     ["p", "Focus: Brand · Go-to-market · App design · Founding team"],
   ]},
-  { title: "JUICE HOUSE, NEW YORK", meta: "Creative Brand Strategist · 2024 · New York", body: [
+  { title: "JUICE HOUSE, NEW YORK", logo: "juice-house", meta: "Creative Brand Strategist · 2024 · New York", body: [
     ["h", "The company:"],
     ["p", "Juice House is a creative agency and content collective based in Minneapolis, with an office in New York. It works on campaigns, content production, and influencer and digital strategy."],
     ["h", "The role:"],
@@ -54,21 +54,21 @@ const CARDS = [
     ["p", "I designed parts of the try-on experience and approached fashion brands about piloting the technology."],
     ["p", "Focus: Fashion tech · AR · Partnerships"],
   ]},
-  { title: "GROUPE RENAULT, GUYANCOURT", meta: "Product Design Intern · 2019 · Technocentre, Guyancourt", body: [
+  { title: "GROUPE RENAULT, GUYANCOURT", logo: "renault", meta: "Product Design Intern · 2019 · Technocentre, Guyancourt", body: [
     ["h", "The company:"],
     ["p", "The French carmaker behind Renault, Dacia and Alpine, renamed Renault Group in 2021. Its Technocentre, south-west of Paris, is where the group designs and engineers its vehicles."],
     ["h", "The role:"],
     ["p", "I joined the design team for an internship on interior and in-car interface concepts. The work ran from sketches to models and user tests, and ended in design reviews. It was my first look at how a large company takes a product from idea to decision."],
     ["p", "Focus: Product design · Automotive · User testing"],
   ]},
-  { title: "PARSONS SCHOOL OF DESIGN, NEW YORK", meta: "BBA, Strategic Design & Management · 2020-2024 · New York", body: [
+  { title: "PARSONS SCHOOL OF DESIGN, NEW YORK", logo: "parsons", meta: "BBA, Strategic Design & Management · 2020-2024 · New York", body: [
     ["h", "The school:"],
     ["p", "Parsons School of Design is part of The New School. Strategic Design & Management is its business degree, applying design methods to strategy, organisations and new ventures."],
     ["h", "The degree:"],
     ["p", "I graduated with a minor in Product Design, a 3.91 GPA and a place on the Dean’s List. For my capstone I developed a product and brand strategy for a new venture, tested it with users, and presented it to faculty and industry reviewers."],
     ["p", "Focus: Strategic design · Product design · Business"],
   ]},
-  { title: "INTERNATIONAL SCHOOL OF PARIS, PARIS", meta: "Bilingual International Baccalaureate (IB) · 2016-2020 · Paris", body: [
+  { title: "INTERNATIONAL SCHOOL OF PARIS, PARIS", logo: "isp", meta: "Bilingual International Baccalaureate (IB) · 2016-2020 · Paris", body: [
     ["h", "The school:"],
     ["p", "An international school in Paris, where I took the International Baccalaureate. Mine was the bilingual IB, with French and English both studied as first languages."],
     ["h", "Subjects:"],
@@ -93,14 +93,40 @@ const CARDS = [
 ];
 
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+// Small grey logos beside the names (public/img/timeline/logos/, each a mask filled with a grey,
+// so they turn with the theme): the file, its width over its height, and a size for the slight
+// marks (the diamond, DataCamp's, ISP's thin script) so they hold their own beside the bolder
+// ones. Refletée has none: none could be found. Certificates and volunteering take theirs from the
+// issuer.
+const LOGOS = {
+  "44llc": ["44llc.png", 0.8], "nyc-innovation-collective": ["nyc-innovation-collective.png", 1.23],
+  "vybe": ["vybe.png", 1.17], "juice-house": ["juice-house.png", 1.71], "renault": ["renault.svg", 0.7],
+  "parsons": ["parsons.svg", 6.7], "isp": ["isp.png", 0.74], "datacamp": ["datacamp.svg", 0.75],
+  "google": ["google.svg", 1], "mit": ["mit.svg", 1.93], "unicef": ["unicef.svg", 4.16],
+};
+const ISSUER_LOGO = { "DataCamp": "datacamp", "Google | Coursera": "google", "MITx | edX": "mit",
+  "UNICEF": "unicef", "International School of Paris": "isp" };
+const logo = key => {
+  const l = LOGOS[key];
+  if (!l) return "";
+  // every logo covers about the same area, so a tall mark stands taller and a wordmark lower
+  const s = Math.min(1.15, Math.max(0.6, Math.sqrt(1.2 / l[1]))).toFixed(3);
+  return `<i class="tl-logo" style="--m:url(public/img/timeline/logos/${l[0]});--a:${l[1]};--s:${s}" aria-hidden="true"></i>`;
+};
+// the name's last word and its logo never part, so a logo is not left alone on a line
+const named = (text, key) => {
+  const t = esc(text), mark = logo(key), k = t.lastIndexOf(" ");
+  return mark ? `${t.slice(0, k + 1)}<span class="tl-nw">${t.slice(k + 1)}${mark}</span>` : t;
+};
 function render(c) {
   const body = c.body.map(([kind, a, b, y, d]) => {
     if (kind === "h") return `<p class="tc-h">${esc(a)}</p>`;
     if (kind === "p") return `<p class="tc-p">${esc(a)}</p>`;
     // a certificate: its name may carry a small course number or a link, the only markup allowed
-    return `<div class="tc-cert"><b>${a}</b><span>${esc(b)}</span><em>${esc(y)}</em><p class="tc-p">${esc(d)}</p></div>`;
+    return `<div class="tc-cert"><b>${a}</b><span>${named(b, ISSUER_LOGO[b])}</span><em>${esc(y)}</em><p class="tc-p">${esc(d)}</p></div>`;
   }).join("");
-  return `<header class="tc-head"><div><h2 id="tcTitle">${esc(c.title)}</h2><p class="tc-meta">${esc(c.meta)}</p></div>
+  return `<header class="tc-head"><div><h2 id="tcTitle">${named(c.title, c.logo)}</h2><p class="tc-meta">${esc(c.meta)}</p></div>
     <button class="tc-close" type="button" data-act="close">Close ×</button></header>
     <div class="tc-body">${body}</div>
     <footer class="tc-foot"><button type="button" data-act="prev">← Previous</button><button type="button" data-act="next">Next →</button></footer>`;

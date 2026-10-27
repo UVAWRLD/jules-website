@@ -299,6 +299,16 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   Inconsolata for the meta line and Previous / Next as designed. The certificate's name, issuer
   and year use the page list's sizes, since the card's came out at 7 to 8px. The stray house
   icons beside Close / Previous / Next on cards 4, 7 and 8 were left out as copy leftovers.
+  **Corners and logos** (2026-10-27): the card has 12px corners (between the Projects cards' 8 and
+  the Thoughts cards' 14) and more room inside (22 / 30 / 20 x k). Each name in a card carries a
+  small grey logo (`LOGOS` in the script, files in `public/img/timeline/logos/`), in the
+  certificates and volunteering beside the issuer (`ISSUER_LOGO`). They are masks filled with a
+  grey near the body grey, centred on the capitals, and sized to cover about the same area
+  (`sqrt(1.2 / aspect)`, held 0.6-1.15), so a tall mark stands taller and a wordmark lower. The
+  name's last word and its logo never part. Sources: the firms' own sites, Simple Icons (Renault,
+  Google, DataCamp), Wikimedia (MIT, UNICEF, Parsons); Vybe's from its project print; ISP is its
+  "isp" mark alone. Refletée has none: none was found. Logos in the closed list were tried and
+  left out (Jules: cards only).
 - **The clipped photo** (`src/pinup.js`; Figma: Timeline WIP, the print left of the title). A
   wallet-size photo print of Jules (64 x 89mm) held by one paperclip over its top edge. The print
   is the photo on a paper-coloured card (the border in CSS, in the source's proportions) with

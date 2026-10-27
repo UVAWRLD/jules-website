@@ -208,11 +208,13 @@
   .tc-card{position:fixed;inset:0;margin:auto;z-index:16;height:fit-content;
     width:calc(var(--k) * 386.1px);max-width:calc(100vw - 24px);max-height:calc(100dvh - 48px);
     overflow:auto;overscroll-behavior:contain;
-    background:var(--paper);border:calc(var(--k) * 1.38px) solid var(--card-line);
+    background:var(--paper);border:calc(var(--k) * 1.38px) solid var(--card-line);border-radius:12px;
     box-shadow:calc(var(--k) * 5.5px) calc(var(--k) * 5.5px) calc(var(--k) * 9.6px) rgba(0,0,0,.25);
     transform-origin:50% 0;outline:none}
+  /* rounded like the cards on Projects and Thoughts, with more room inside than the design's
+     13.79 x 22.06 (Jules, 2026-10-27) */
   .tc-inner{display:flex;flex-direction:column;gap:calc(var(--k) * 9.66px);
-    padding:calc(var(--k) * 13.79px) calc(var(--k) * 22.06px)}
+    padding:calc(var(--k) * 22px) calc(var(--k) * 30px) calc(var(--k) * 20px)}
   /* Close sits in the corner, over the meta line's end, so the meta can run the full width */
   .tc-head{position:relative}
   .tc-head h2{margin:0 0 calc(var(--k) * -5.51px);padding-right:calc(var(--k) * 60px);font-weight:700;font-size:calc(var(--k) * 15.46px);
@@ -238,6 +240,14 @@
   .tc-cert b a:hover{text-decoration:underline;text-underline-offset:2px}
   .tc-cert span{font-size:calc(var(--k) * 8.643px);line-height:1.4;color:var(--body)}
   .tc-cert em{font-style:normal;font-weight:500;font-size:calc(var(--k) * 9.075px);line-height:1.4;color:var(--faint)}
+  /* the small grey logos beside the names (src/tlcards.js): masks filled with a grey near the
+     body grey, centred on the capitals, each sized to cover about the same area (--s) */
+  .tl-nw{white-space:nowrap}
+  .tl-logo{--h:calc(.95em * var(--s, 1));display:inline-block;vertical-align:calc(.36em - var(--h) / 2);
+    margin-left:.55em;height:var(--h);width:calc(var(--h) * var(--a));
+    background:color-mix(in srgb, var(--muted) 30%, var(--body));
+    -webkit-mask:var(--m) no-repeat left center/contain;mask:var(--m) no-repeat left center/contain}
+  .tc-cert span .tl-logo{--h:calc(1em * var(--s, 1));margin-left:.5em}
   .tc-foot{display:flex;justify-content:space-between;
     font-family:"Inconsolata",ui-monospace,monospace;font-size:calc(var(--k) * 9.79px);line-height:1.75}
 
