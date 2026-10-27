@@ -307,8 +307,9 @@ same locally). Built from Figma: V4.0 / **Timeline WIP** (node 1700:2). The home
   (`sqrt(1.2 / aspect)`, held 0.6-1.15), so a tall mark stands taller and a wordmark lower. The
   name's last word and its logo never part. Sources: the firms' own sites, Simple Icons (Renault,
   Google, DataCamp), Wikimedia (MIT, UNICEF, Parsons); Vybe's from its project print; ISP is its
-  "isp" mark alone. Refletée has none: none was found. Logos in the closed list were tried and
-  left out (Jules: cards only).
+  "isp" mark alone. Refletée has none: none was found. In the list too: an entry's logo sits on
+  its name's first line at the right, on the right edge of the description text below
+  (`.tl-hl`, a flex row); a certificate's or volunteer post's follows its issuer, as in the card.
 - **The clipped photo** (`src/pinup.js`; Figma: Timeline WIP, the print left of the title). A
   wallet-size photo print of Jules (64 x 89mm) held by one paperclip over its top edge. The print
   is the photo on a paper-coloured card (the border in CSS, in the source's proportions) with

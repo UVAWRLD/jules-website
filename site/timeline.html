@@ -247,7 +247,9 @@
     margin-left:.55em;height:var(--h);width:calc(var(--h) * var(--a));
     background:color-mix(in srgb, var(--muted) 30%, var(--body));
     -webkit-mask:var(--m) no-repeat left center/contain;mask:var(--m) no-repeat left center/contain}
-  .tc-cert span .tl-logo{--h:calc(1em * var(--s, 1));margin-left:.5em}
+  .tl-body h3.tl-hl{display:flex;justify-content:space-between;align-items:flex-start;gap:1em}
+  .tl-hl .tl-logo{flex:none;margin:calc(.66em - var(--h) / 2) 0 0;vertical-align:0}
+  .tc-cert span .tl-logo, .tl-cert span .tl-logo{--h:calc(1em * var(--s, 1));margin-left:.5em}
   .tc-foot{display:flex;justify-content:space-between;
     font-family:"Inconsolata",ui-monospace,monospace;font-size:calc(var(--k) * 9.79px);line-height:1.75}
 
