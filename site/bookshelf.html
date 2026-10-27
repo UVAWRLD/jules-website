@@ -72,19 +72,33 @@
   .bk-plank .top{position:absolute;left:0;right:0;top:0;height:calc(var(--pz) * 2);transform-origin:50% 0;
     transform:translateZ(var(--pz)) rotateX(-90deg);
     background:linear-gradient(to bottom, var(--shelf-top), var(--shelf-hi))}
-  .bk-plank .sh{position:absolute;top:calc(var(--pz) - 6px);height:16px;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(0,0,0,.30), rgba(0,0,0,0));filter:blur(2px)}
+  /* each book's shadow on the shelf: tight while it stands there; as it lifts the contact goes,
+     the shadow spreads, softens and lightens and slides a little toward you with it; taken down,
+     it is gone. (The shelf's top face is turned back, so its -y is toward you; a book stands with
+     its middle at y = --pz, so its cover meets the shelf at --pz less half its thickness, --bt.
+     The shadow is centred on that edge: half under the book, half showing in front of it.) */
+  .bk-plank .sh{position:absolute;top:calc(var(--pz) - var(--bt, 10px) / 2 - 9px);height:18px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(0,0,0,.42), rgba(0,0,0,.16) 55%, rgba(0,0,0,0));filter:blur(1.2px);
+    transition:opacity .55s ease, transform .6s cubic-bezier(.22,.8,.3,1), filter .6s ease}
+  .bk-plank .sh.lift{opacity:.55;transform:translateY(-13px) scale(1.06, 1.7);filter:blur(4.5px)}
+  .bk-plank .sh.gone{opacity:0;transform:translateY(-26px) scale(1.3, 2.4);filter:blur(9px);
+    transition:opacity .45s ease, transform .7s cubic-bezier(.16,1,.3,1), filter .7s ease}
+  .bk-shelf.has-out .bk-plank .sh:not(.gone){opacity:.55}
   :root{--shelf-top:#f3f3f1;--shelf-hi:#fdfdfc;--shelf-lo:#e6e6e3}
   :root[data-theme="dark"]{--shelf-top:#2c2c29;--shelf-hi:#34342f;--shelf-lo:#22221f}
 
   /* ---- a book: a solid W x H x T, its cover to the front; the spine on its left, the page
      block on its right and on top, each lit as if from the upper left ---- */
   .book{position:relative;flex:none;width:var(--w);height:var(--h);padding:0;border:0;background:none;cursor:pointer;
-    transform-style:preserve-3d;-webkit-tap-highlight-color:transparent;transition:opacity .4s ease}
+    transform-style:preserve-3d;-webkit-tap-highlight-color:transparent;--veil:color-mix(in srgb, var(--paper) 58%, transparent)}
   .book:focus-visible{outline:none}
+  /* the lift is the translate property, the turn and the reach toward you the transform, so they
+     can be timed apart: taken down, a book rises first and then comes forward; put back, it goes
+     back and then settles; hovering, both together */
   .book .b3{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 100%;
-    transform:rotateY(var(--ry, 14deg));transition:transform .7s cubic-bezier(.2,.75,.2,1)}
-  .book .f{position:absolute;backface-visibility:hidden}
+    translate:0 0;transform:rotateY(var(--ry, 14deg));
+    transition:transform .75s cubic-bezier(.22,.8,.3,1), translate .5s cubic-bezier(.4,0,.2,1) .18s}
+  .book .f{position:absolute;backface-visibility:hidden;box-shadow:inset 0 0 0 400px transparent;transition:box-shadow .45s ease}
   .book .front{inset:0;transform:translateZ(calc(var(--t) / 2));background:var(--spine) center/100% 100% no-repeat;
     border-radius:0 2px 2px 0}
   .book .front::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
@@ -112,16 +126,28 @@
     transform:rotateX(90deg) translateZ(calc(var(--h) / 2 - 1.5px));
     background:linear-gradient(0deg, rgba(0,0,0,.10), rgba(0,0,0,0) 40%), repeating-linear-gradient(0deg, #f8f5ec 0 .8px, #e6e0d2 .8px 1.6px)}
   .book .back{inset:0;transform:rotateY(180deg) translateZ(calc(var(--t) / 2));background:var(--spine);filter:brightness(.8)}
+  /* its shadow on the wall behind. It is inside the book, so it is pushed back by as much as the
+     book comes forward, to stay on the wall, growing softer and fainter the further the book is */
   .book .cast{position:absolute;inset:4% -4% 0 6%;transform:translateZ(calc(var(--t) / -2 - 3px)) translate(10px, 2px);
-    background:rgba(0,0,0,.30);filter:blur(12px);border-radius:4px;pointer-events:none;transition:transform .7s cubic-bezier(.2,.75,.2,1), opacity .7s}
+    background:rgba(0,0,0,.30);filter:blur(12px);border-radius:4px;pointer-events:none;
+    transition:transform .75s cubic-bezier(.22,.8,.3,1), opacity .6s ease, filter .6s ease}
 
   /* hover: lifted a little and turned, to show its spine; out: brought forward, cover to you */
   @media (hover:hover){
-    .book:hover .b3{transform:translateY(-8px) translateZ(18px) rotateY(calc(var(--ry, 14deg) + 16deg))}
+    .book:hover .b3{translate:0 -8px;transform:translateZ(18px) rotateY(calc(var(--ry, 14deg) + 16deg));
+      transition:transform .55s cubic-bezier(.22,.8,.3,1), translate .45s cubic-bezier(.22,.8,.3,1)}
+    .book:hover .cast{transform:translateZ(calc(var(--t) / -2 - 21px)) translate(14px, 7px);opacity:.75;filter:blur(16px)}
   }
-  .book:focus-visible .b3{transform:translateY(-8px) translateZ(18px) rotateY(calc(var(--ry, 14deg) + 16deg))}
-  .book.out .b3,.book.out:hover .b3{transform:translateY(-10px) translateZ(110px) rotateY(-10deg) scale(1.06)}
-  .bk-shelf.has-out .book:not(.out){opacity:.45}
+  .book:focus-visible .b3{translate:0 -8px;transform:translateZ(18px) rotateY(calc(var(--ry, 14deg) + 16deg))}
+  .book.out .b3,.book.out:hover .b3{translate:0 -16px;transform:translateZ(110px) rotateY(-10deg) scale(1.06);
+    transition:transform .85s cubic-bezier(.16,1,.3,1) .06s, translate .4s cubic-bezier(.22,.8,.3,1)}
+  .book.out .cast,.book.out:hover .cast{transform:translateZ(calc(var(--t) / -2 - 105px)) translate(24px, 18px);opacity:.38;filter:blur(24px)}
+  /* the others fade toward the paper: a veil over each face, not opacity, which would flatten the
+     3D books and make them jump the moment the fade starts */
+  .bk-shelf.has-out .book:not(.out) .f{box-shadow:inset 0 0 0 400px var(--veil)}
+  .bk-shelf.has-out .book:not(.out) .sp{opacity:.45}
+  .bk-shelf.has-out .book:not(.out) .cast{opacity:.45}
+  .book .sp{transition:opacity .45s ease}
 
   /* ---- the captions under each shelf, faint for the book under the cursor, full for the one
      taken down. On a computer they sit in the gap between the shelves, over nothing, so the
@@ -146,7 +172,7 @@
   .bk-hint{margin:0;font-size:11px;color:var(--muted)}
 
 
-  @media (prefers-reduced-motion: reduce){ .book .b3,.book .cast,.bk-detail .cap{transition-duration:.01s} }
+  @media (prefers-reduced-motion: reduce){ .book .b3,.book .b3 *,.book .cast,.bk-plank .sh,.bk-detail .cap{transition-duration:.01s !important;transition-delay:0s !important} }
   @media (max-width:820px){
     .bk{padding-top:118px}
     .bk-head h1{font-size:30px}

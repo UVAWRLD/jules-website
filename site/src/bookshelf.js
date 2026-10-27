@@ -73,7 +73,8 @@ export async function createBookshelf() {
       const top = row.querySelector(".bk-plank .top"), base = row.getBoundingClientRect().left;
       for (const el of row.querySelectorAll(".book")) {
         const r = el.getBoundingClientRect(), sh = document.createElement("span");
-        sh.className = "sh";
+        sh.className = "sh"; sh.dataset.slug = el.dataset.slug;
+        sh.style.setProperty("--bt", el.style.getPropertyValue("--t"));
         sh.style.left = (r.left - base - r.width * .02).toFixed(0) + "px";
         sh.style.width = (r.width * 1.08).toFixed(0) + "px";
         top.appendChild(sh);
@@ -100,6 +101,11 @@ export async function createBookshelf() {
       c.classList.toggle("on", on);
       c.classList.toggle("peek", !on && s === peek && !c.closest(".bk-detail").querySelector(`.cap[data-slug="${CSS.escape(open || "")}"]`));
       c.setAttribute("aria-hidden", on ? "false" : "true");
+    }
+    // its shadow on the shelf follows the book: lifted while hovered, gone while taken down
+    for (const s of shelf.querySelectorAll(".sh")) {
+      s.classList.toggle("gone", s.dataset.slug === open);
+      s.classList.toggle("lift", s.dataset.slug === peek && s.dataset.slug !== open);
     }
   }
   function take(el) {

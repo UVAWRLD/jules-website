@@ -998,6 +998,19 @@ books.
   to the full detail was too stark). A first version kept a caption's room open under every
   shelf, which spread the shelves too far apart for Jules. On a phone (820 and under, no hover)
   the caption opens under its shelf on a tap and pushes the rest down, as before.
+- **Shadows and motion** (2026-10-27, Jules: the shadow on the shelf did not look natural, and
+  the motion was clunky). Each book's shadow on the shelf (`.sh`, on the plank's top face, tagged
+  with the book's slug) is centred on the edge where its cover meets the shelf, so half of it
+  shows in front as a contact shadow; it used to sit at the book's middle depth, hidden behind
+  it, so a lifted book floated over nothing. Hovered (`.lift`) it softens, spreads and slides
+  forward under the book; taken down (`.gone`) it fades out. The wall shadow (`.cast`) is pushed
+  back by as much as the book comes forward, so it stays on the wall, softer and fainter. The
+  lift is the `translate` property and the reach forward and turn the `transform`, timed apart:
+  taking a book down lifts it and then brings it forward, putting it back the reverse. The
+  others fade with a paper-coloured inset shadow over each face, not `opacity`: opacity below 1
+  flattens a `preserve-3d` element, so the faded books lost their perspective and jumped the
+  moment the fade began. Judged on full resolution frames from headless Chrome over CDP (the
+  preview pane's screenshots are too small to see shadows).
 - **Rows are balanced**: as few shelves as hold the books, shared out evenly (19 books are 5, 5,
   5, 4 on a computer, never 6, 6, 6, 1), so no book stands alone on a shelf.
 - Encore un moment… is read (4); Ideas and Opinions (Einstein, Modern Library 1994, Jules's cover
