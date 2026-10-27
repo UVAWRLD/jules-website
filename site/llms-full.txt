@@ -386,21 +386,22 @@ Sixteen flyers for The Palace, on West Broadway and on Canal St, for Zack Bia, J
 
 ## Bookshelf
 
-- Encore un moment…, by Edgar Morin, reading now
-- Thinking in Systems: A Primer, by Donella H. Meadows, reading now, 240 pages
-- Determined: A Science of Life Without Free Will, by Robert M. Sapolsky, reading now, 528 pages
-- Nexus: A Brief History of Information Networks from the Stone Age to AI, by Yuval Noah Harari, rated 3 out of 5, 528 pages
-- Ubik, by Philip K. Dick, rated 5 out of 5, 224 pages
-- Skin in the Game: Hidden Asymmetries in Daily Life, by Nassim Nicholas Taleb, read Dec 2025, rated 4 out of 5, 304 pages
-- Smarter Faster Better: The Secrets of Being Productive in Life and Business, by Charles Duhigg, rated 5 out of 5, 400 pages
-- Meditations, by Marcus Aurelius, rated 4 out of 5, 176 pages
-- Homo Deus: A History of Tomorrow, by Yuval Noah Harari, rated 5 out of 5, 528 pages
-- The Joy of x: A Guided Tour of Math, from One to Infinity, by Steven Strogatz, rated 4 out of 5, 316 pages
-- How to Win at the Sport of Business: If I Can Do It, You Can Do It, by Mark Cuban, read Sep 2025, rated 5 out of 5, 128 pages
-- Animal Farm, by George Orwell, rated 5 out of 5, 141 pages
-- Thinking, Fast and Slow, by Daniel Kahneman, rated 3 out of 5, 499 pages
-- I, Robot, by Isaac Asimov, rated 5 out of 5, 224 pages
-- 1984, by George Orwell, rated 4 out of 5, 256 pages
-- Brave New World, by Aldous Huxley, rated 5 out of 5, 288 pages
-- Sapiens: A Brief History of Humankind, by Yuval Noah Harari, rated 5 out of 5, 512 pages
-- Zero to One: Notes on Startups, or How to Build the Future, by Peter Thiel, rated 4 out of 5, 224 pages
+- Ideas and Opinions, by Albert Einstein, reading now, 418 pages. Einstein's own essays and speeches on science, religion, politics, education and peace.
+- Thinking in Systems: A Primer, by Donella H. Meadows, reading now, 240 pages. How stocks, flows and feedback loops shape what systems do, and where to push to change them.
+- Determined: A Science of Life Without Free Will, by Robert M. Sapolsky, reading now, 528 pages. A neuroscientist's case that biology and circumstance leave no room for free will.
+- Encore un moment…, by Edgar Morin, rated 4 out of 5. Edgar Morin, past a hundred, on the crises of our time and what a century of living taught him.
+- Nexus: A Brief History of Information Networks from the Stone Age to AI, by Yuval Noah Harari, rated 3 out of 5, 528 pages. How information networks, from myths to AI, have shaped power and truth through history.
+- Ubik, by Philip K. Dick, rated 5 out of 5, 224 pages. Psychic spies, half-lifers and a world that keeps decaying into the past.
+- Skin in the Game: Hidden Asymmetries in Daily Life, by Nassim Nicholas Taleb, read Dec 2025, rated 4 out of 5, 304 pages. Why the people who take decisions should bear their risks, and what breaks when they don't.
+- Smarter Faster Better: The Secrets of Being Productive in Life and Business, by Charles Duhigg, rated 5 out of 5, 400 pages. The science of productivity: motivation, focus, teams and decisions, told through stories.
+- Meditations, by Marcus Aurelius, rated 4 out of 5, 176 pages. A Roman emperor's private notes to himself on duty, death and keeping calm.
+- Homo Deus: A History of Tomorrow, by Yuval Noah Harari, rated 5 out of 5, 528 pages. What humanity might chase next, once famine, plague and war are mostly tamed.
+- The Joy of x: A Guided Tour of Math, from One to Infinity, by Steven Strogatz, rated 4 out of 5, 316 pages. A friendly tour of mathematics, from counting to infinity, in short chapters.
+- How to Win at the Sport of Business: If I Can Do It, You Can Do It, by Mark Cuban, read Sep 2025, rated 5 out of 5, 128 pages. Mark Cuban's blunt lessons on hustle, preparation and competing in business.
+- Animal Farm, by George Orwell, rated 5 out of 5, 141 pages. A farmyard revolution turns into the tyranny it overthrew.
+- Thinking, Fast and Slow, by Daniel Kahneman, rated 3 out of 5, 499 pages. The mind's two systems, quick intuition and slow reason, and the biases between them.
+- I, Robot, by Isaac Asimov, rated 5 out of 5, 224 pages. Linked stories of robots bound by the Three Laws, and the odd ways they bend them.
+- 1984, by George Orwell, rated 4 out of 5, 256 pages. Under Big Brother's eye, one man tries to keep hold of the truth and of himself.
+- Brave New World, by Aldous Huxley, rated 5 out of 5, 288 pages. A future of engineered contentment, where comfort has taken the place of freedom.
+- Sapiens: A Brief History of Humankind, by Yuval Noah Harari, rated 5 out of 5, 512 pages. How one species of ape came to rule the world, through language, money and shared myths.
+- Zero to One: Notes on Startups, or How to Build the Future, by Peter Thiel, rated 4 out of 5, 224 pages. On building the future by making something new rather than copying what already works.

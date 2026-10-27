@@ -199,7 +199,7 @@ def book_line(b):
             bits.append(f'rated {b["rating"]} out of 5')
     if b.get("pages"):
         bits.append(f'{b["pages"]} pages')
-    return ", ".join(bits)
+    return ", ".join(bits) + (f'. {e(b["blurb"])}' if b.get("blurb") else "")
 
 
 def body_books(books):

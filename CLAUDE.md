@@ -990,3 +990,9 @@ books.
   takes it down: forward, cover to you, the others fade to 45%, and its title, subtitle, author,
   rating (five dots), read date and pages open under its shelf. A click elsewhere or Escape puts
   it back. The crow lands on the rule under the title.
+- **Captions** (2026-10-27): each book has a one line `blurb` in `books.json`, shown under its
+  title. A row's captions are all in the page, stacked in one grid cell under the shelf, so the
+  room for the longest is always kept and nothing moves; hovering (or focusing) a book shows its
+  caption at 38%, taking it down at full strength (Jules: the jump from nothing to the full
+  detail was too stark). Encore un moment… is read (4); Ideas and Opinions (Einstein, Modern
+  Library 1994, Jules's cover image) added to the reading.

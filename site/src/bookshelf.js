@@ -6,9 +6,9 @@
 // left edge; the spine is the left face (its colour sampled from the cover, the title running down
 // it), the page block the right face and the top; a soft shadow falls behind it on the wall and
 // under it on the shelf. Each shelf is seen from a little above. Hover lifts a book and turns it
-// to show its spine; a click or a tap takes it down: it comes forward, cover to you, the others
-// fade back, and its title, author and my rating open under its shelf. A click anywhere else, or
-// Escape, puts it back.
+// to show its spine, and its title, author, a line on what it is and my rating show faintly under
+// its shelf; a click or a tap takes it down: it comes forward, cover to you, the others fade back,
+// and its caption comes up in full. A click anywhere else, or Escape, puts it back.
 //
 // The books come from public/books/books.json (my Goodreads shelf, in the editions on it; the
 // covers at full size). The books I am reading ("status": "reading") come first and say so in
@@ -62,7 +62,8 @@ export async function createBookshelf() {
         <div class="bk-books">${r.map(b => book(b, H0)).join("")}</div>
         <div class="bk-plank"><span class="top"></span><span class="front"></span></div>
       </div>
-      <div class="bk-detail" data-row="${n}" aria-live="polite"><div class="in"></div></div>`).join("");
+      <div class="bk-detail" data-row="${n}" aria-live="polite"><div class="in">${r.map(b =>
+        `<div class="cap" data-slug="${esc(b.slug)}" aria-hidden="true">${detail(b)}</div>`).join("")}</div></div>`).join("");
     // a soft shadow under each book, on the shelf's top
     for (const row of shelf.querySelectorAll(".bk-row")) {
       const top = row.querySelector(".bk-plank .top"), base = row.getBoundingClientRect().left;
@@ -81,25 +82,37 @@ export async function createBookshelf() {
   function detail(b) {
     const status = b.status === "reading" ? "Reading now" : b.read ? `Read ${esc(b.read)}` : "Read";
     return `<h2>${esc(b.title)}</h2>${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ""}<p>${esc(b.author)}</p>
+      ${b.blurb ? `<p class="blurb">${esc(b.blurb)}</p>` : ""}
       <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span>${b.pages ? `<span>${b.pages} pages</span>` : ""}</span>`;
   }
 
-  function take(el) {
-    const slug = el.dataset.slug, b = order.find(x => x.slug === slug);
-    shelf.querySelectorAll(".book.out").forEach(x => x !== el && x.classList.remove("out"));
-    el.classList.add("out"); shelf.classList.add("has-out"); open = slug;
-    const n = el.closest(".bk-row").dataset.row;
-    for (const d of shelf.querySelectorAll(".bk-detail")) {
-      const on = d.dataset.row === n;
-      if (on) d.querySelector(".in").innerHTML = detail(b);
-      d.classList.toggle("on", on);
+  // Every book's caption is already under its shelf, stacked in one place and hidden, so the space
+  // is there before anything shows and nothing below moves. The book under the cursor (or with
+  // focus) shows its caption faintly; the one taken down shows it in full.
+  let peek = null;
+  function captions() {
+    for (const c of shelf.querySelectorAll(".cap")) {
+      const s = c.dataset.slug, on = s === open;
+      c.classList.toggle("on", on);
+      c.classList.toggle("peek", !on && s === peek && !c.closest(".bk-detail").querySelector(`.cap[data-slug="${CSS.escape(open || "")}"]`));
+      c.setAttribute("aria-hidden", on ? "false" : "true");
     }
+  }
+  function take(el) {
+    shelf.querySelectorAll(".book.out").forEach(x => x !== el && x.classList.remove("out"));
+    el.classList.add("out"); shelf.classList.add("has-out"); open = el.dataset.slug;
+    captions();
   }
   function putBack() {
     shelf.querySelectorAll(".book.out").forEach(x => x.classList.remove("out"));
-    shelf.querySelectorAll(".bk-detail.on").forEach(d => d.classList.remove("on"));
     shelf.classList.remove("has-out"); open = null;
+    captions();
   }
+  const hover = (el, on) => { if (on) peek = el.dataset.slug; else if (peek === el.dataset.slug) peek = null; captions(); };
+  shelf.addEventListener("pointerover", e => { const el = e.pointerType === "mouse" && e.target.closest(".book"); if (el) hover(el, true); });
+  shelf.addEventListener("pointerout", e => { const el = e.target.closest(".book"); if (el && !el.contains(e.relatedTarget)) hover(el, false); });
+  shelf.addEventListener("focusin", e => { const el = e.target.closest(".book"); if (el) hover(el, true); });
+  shelf.addEventListener("focusout", e => { const el = e.target.closest(".book"); if (el) hover(el, false); });
 
   shelf.addEventListener("click", e => {
     const el = e.target.closest(".book"); if (!el) return;
