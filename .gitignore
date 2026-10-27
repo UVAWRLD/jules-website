@@ -7,3 +7,6 @@ image *.png
 *.glb
 *.gltf
 __pycache__/
+
+# Claude Code settings, local only
+.claude/
