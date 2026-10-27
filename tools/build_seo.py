@@ -4,7 +4,7 @@
     python3 tools/build_seo.py
 
 Run it after anything below changes: the projects export, books.json, the Timeline's cards
-(CARDS in site/src/tlcards.js), or the words in PAGES and PERSON here. It rewrites, in place:
+(CARDS in site/src/tlcards.js), a new essay (ESSAYS), or the words in PAGES and PERSON here. It rewrites, in place:
 
   - each page's <head> between <!-- seo:head --> markers: title, description, canonical,
     the social preview tags (Open Graph and X) and the structured data (schema.org JSON-LD:
@@ -29,6 +29,7 @@ URL = "https://www.julesbockelee.com"
 SHARE = f"{URL}/public/img/share.jpg"
 LINKEDIN = "https://www.linkedin.com/in/julesbockelee/"
 X = "https://x.com/julesbockelee"
+SUBSTACK = "https://julesbockelee.substack.com"
 
 DESCRIPTION = ("Jules Bockelee Morvan is a product and brand strategist in Paris and New York, working "
                "between the brand, the product and the people who build it, across hospitality, tech "
@@ -48,7 +49,25 @@ PAGES = {
     "bookshelf.html": dict(path="/bookshelf", title="Bookshelf · Jules Bockelee Morvan",
                            description="The books Jules Bockelee Morvan has read and is reading, "
                            "with the rating Jules gave each.", kind="CollectionPage"),
+    "thoughts.html": dict(path="/thoughts", title="Thoughts · Jules Bockelee Morvan",
+                          description="Essays by Jules Bockelee Morvan, in full here and also on X "
+                          "and Substack.", kind="CollectionPage"),
 }
+
+# The essays on the Thoughts page, newest first. Each is its own page, thoughts/<slug>.html, whose
+# text is in its HTML (no script draws it), so crawlers read it as it is; this adds its head.
+ESSAYS = [
+    dict(slug="salt-water-for-a-thirsty-man", title="Salt Water for a Thirsty Man",
+         description="What we lost when our contacts became an audience, and why I am building Pollex.",
+         date="2026-10-25", image="public/img/thoughts/salt-water.jpg", width=2000, height=961,
+         alt="The Pollex mark over a photograph of wild turkeys on stone steps",
+         x="https://x.com/julesbockelee/status/2114435127497445791",
+         substack=f"{SUBSTACK}/p/salt-water-for-a-thirsty-man"),
+]
+for a in ESSAYS:
+    PAGES[f"thoughts/{a['slug']}.html"] = dict(
+        path=f"/thoughts/{a['slug']}", title=f"{a['title']} · Jules Bockelee Morvan",
+        description=f"{a['description']} An essay by Jules Bockelee Morvan.", kind="Article", essay=a)
 
 PERSON = {
     "@type": "Person",
@@ -62,7 +81,7 @@ PERSON = {
     "url": f"{URL}/",
     "image": f"{URL}/public/img/timeline/portrait.jpg",
     "email": "mailto:hello@julesbockelee.com",
-    "sameAs": [LINKEDIN, X],
+    "sameAs": [LINKEDIN, X, SUBSTACK],
     "homeLocation": [{"@type": "Place", "name": "Paris, France"},
                      {"@type": "Place", "name": "New York, NY, United States"}],
     "alumniOf": [
@@ -118,8 +137,25 @@ def abs_url(src):
     return f"{URL}/{src}"
 
 
+def essay_text(a):
+    """The essay's words as plain text, from its page: paragraphs, the references last."""
+    s = (ROOT / f"thoughts/{a['slug']}.html").read_text()
+    body = re.search(r'<div class="ar-text">(.*?)\n    </div>\n', s, re.S).group(1)
+    return [strip(x) for x in re.findall(r"<(?:p|h2)[^>]*>(.*?)</(?:p|h2)>", body, re.S)]
+
+
 def ld(page, cfg, projects, books):
     url = URL + cfg["path"]
+    if cfg["kind"] == "Article":
+        a = cfg["essay"]
+        node = {"@type": "BlogPosting", "@id": url, "url": url, "mainEntityOfPage": url,
+                "headline": a["title"], "description": a["description"], "inLanguage": "en",
+                "datePublished": a["date"], "author": {"@id": PERSON["@id"]},
+                "publisher": {"@id": PERSON["@id"]}, "isPartOf": {"@id": WEBSITE["@id"]},
+                "image": abs_url(a["image"]), "sameAs": [a["x"], a["substack"]],
+                "wordCount": len(" ".join(essay_text(a)).split())}
+        graph = {"@context": "https://schema.org", "@graph": [PERSON, WEBSITE, node]}
+        return json.dumps(graph, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     node = {"@type": cfg["kind"], "@id": url, "url": url, "name": cfg["title"],
             "description": cfg["description"], "inLanguage": "en", "isPartOf": {"@id": WEBSITE["@id"]},
             "primaryImageOfPage": SHARE}
@@ -142,6 +178,12 @@ def ld(page, cfg, projects, books):
                 "author": {"@type": "Person", "name": b["author"]} if b.get("author") else None,
                 "isbn": b.get("isbn"), "numberOfPages": b.get("pages"), "image": abs_url(b["cover"]),
             }.items() if v}} for i, b in enumerate(books)]}
+    if page == "thoughts.html":
+        node["mainEntity"] = {"@type": "ItemList", "numberOfItems": len(ESSAYS), "itemListElement": [
+            {"@type": "ListItem", "position": i + 1, "item": {
+                "@type": "BlogPosting", "@id": f"{URL}/thoughts/{a['slug']}", "headline": a["title"],
+                "url": f"{URL}/thoughts/{a['slug']}", "datePublished": a["date"],
+                "image": abs_url(a["image"])}} for i, a in enumerate(ESSAYS)]}
     graph = {"@context": "https://schema.org", "@graph": [PERSON, WEBSITE, node]}
     # </script> can never appear inside; keep it on a few lines
     return json.dumps(graph, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
@@ -150,22 +192,29 @@ def ld(page, cfg, projects, books):
 def head(page, cfg, projects, books):
     url = URL + cfg["path"]
     t, d = e(cfg["title"]), e(cfg["description"])
+    a = cfg.get("essay") or (ESSAYS[0] if page == "thoughts.html" else None)
+    image = (abs_url(a["image"]), a["width"], a["height"], a["alt"]) if a else (
+        SHARE, 1200, 630, "Jules Bockelee Morvan, product and brand strategist, over a halftone "
+        "drawing of the calanques at Cassis")
+    kind = {"ProfilePage": "profile", "Article": "article"}.get(cfg["kind"], "website")
+    extra = [f'<meta property="article:published_time" content="{a["date"]}">',
+             '<meta property="article:author" content="Jules Bockelee Morvan">'] if cfg.get("essay") else []
     return "\n".join([
         f"<title>{t}</title>",
         f'<meta name="description" content="{d}">',
         '<meta name="author" content="Jules Bockelee Morvan">',
         f'<link rel="canonical" href="{url}">',
-        '<meta property="og:type" content="{}">'.format("profile" if cfg["kind"] == "ProfilePage" else "website"),
+        f'<meta property="og:type" content="{kind}">',
         '<meta property="og:site_name" content="Jules Bockelee Morvan">',
         f'<meta property="og:title" content="{t}">',
         f'<meta property="og:description" content="{d}">',
         f'<meta property="og:url" content="{url}">',
-        f'<meta property="og:image" content="{SHARE}">',
-        '<meta property="og:image:width" content="1200">',
-        '<meta property="og:image:height" content="630">',
-        '<meta property="og:image:alt" content="Jules Bockelee Morvan, product and brand strategist, '
-        'over a halftone drawing of the calanques at Cassis">',
+        f'<meta property="og:image" content="{image[0]}">',
+        f'<meta property="og:image:width" content="{image[1]}">',
+        f'<meta property="og:image:height" content="{image[2]}">',
+        f'<meta property="og:image:alt" content="{e(image[3])}">',
         '<meta property="og:locale" content="en_US">',
+        *extra,
         '<meta name="twitter:card" content="summary_large_image">',
         '<meta name="twitter:site" content="@julesbockelee">',
         '<meta name="twitter:creator" content="@julesbockelee">',
@@ -266,6 +315,7 @@ def llms(projects, books, cards):
         f"- [Timeline]({URL}/timeline): experience, education, certificates, skills, languages, volunteering",
         f"- [Projects]({URL}/projects): {len(projects)} selected projects in strategy, UX/UI, product and graphic design",
         f"- [Bookshelf]({URL}/bookshelf): the books Jules has read and is reading",
+        f"- [Thoughts]({URL}/thoughts): essays by Jules, also on X and Substack",
         f"- [Everything in full]({URL}/llms-full.txt): every project, Timeline entry and book as plain text",
         "",
         "## Timeline",
@@ -273,6 +323,9 @@ def llms(projects, books, cards):
     ]
     for c in cards:
         lines.append(f"- {strip(c['title'])}: {strip(c['meta'])}")
+    lines += ["", "## Essays", ""]
+    for a in ESSAYS:
+        lines.append(f"- [{a['title']}]({URL}/thoughts/{a['slug']}) ({a['date']}): {a['description']}")
     lines += ["", "## Selected projects", ""]
     for p in projects:
         lead = p.get("headline") or first(p.get("description"))
@@ -280,7 +333,8 @@ def llms(projects, books, cards):
     lines += ["", "## Contact", "",
               "- Email: hello@julesbockelee.com",
               f"- LinkedIn: {LINKEDIN}",
-              f"- X: {X}", ""]
+              f"- X: {X}",
+              f"- Substack: {SUBSTACK}", ""]
     short = "\n".join(lines)
 
     full = [f"# Jules Bockelee Morvan, in full", "", f"> {DESCRIPTION}", "",
@@ -308,6 +362,12 @@ def llms(projects, books, cards):
                  p.get("description") or "", ""]
         if p.get("contribution"):
             full += [f"Contribution: {p['contribution']}", ""]
+    full += ["## Essays", ""]
+    for a in ESSAYS:
+        full += [f"### {a['title']}", "", f"{a['description']} {a['date']}. {URL}/thoughts/{a['slug']} "
+                 f"(also on X: {a['x']}, and Substack: {a['substack']})", ""]
+        for para in essay_text(a):
+            full += [f"**{para}**" if para == "References" else para, ""]
     full += ["## Bookshelf", ""] + [f"- {strip(book_line(b))}" for b in books] + [""]
     return short, "\n".join(full)
 

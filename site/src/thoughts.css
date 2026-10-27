@@ -1,0 +1,156 @@
+/* The Thoughts pages: the list (thoughts.html) and each essay (thoughts/<slug>.html).
+   Header, page bar, crow and footer as on the Projects page; the essay is set for reading, one
+   column of 640px on a computer, the window less 24px a side on a phone, and the type a size up
+   from the rest of the site. */
+#crowStage{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+
+/* ---- the list ---- */
+.th{width:920px;max-width:calc(100% - 48px);margin:0 auto;padding:163px 0 0}
+.th-head{position:relative;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:17px}
+.th-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)}
+.th-head h1{margin:0;font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:38px;line-height:.95;color:var(--ink)}
+.th-note{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin:0;font-size:9px;line-height:normal;white-space:nowrap}
+.th-note b{font-weight:700;text-transform:uppercase;color:var(--ink)}
+.th-note span{color:var(--muted)}
+.th-intro{margin:17px 0 0;max-width:450px;font-size:13px;line-height:1.35;color:var(--body)}
+
+.th-list{margin:56px 0 0;padding:0 0 120px;list-style:none;display:grid;gap:18px}
+/* one essay, after the blog cards in Jules's reference: a light card with a fine edge, the
+   picture inset in it on the left with the same margin all round, the words on the right. The
+   whole card is the link (the title's ::after covers it); the pills sit above that so they keep
+   their own links */
+.th-card{position:relative;display:grid;grid-template-columns:1.08fr 1fr;padding:6px;background:var(--surface);
+  border:1px solid color-mix(in srgb, var(--ink) 7%, transparent);border-radius:14px;
+  box-shadow:0 1px 2px rgba(0,0,0,.03), var(--lift-shadow);transition:box-shadow .3s ease, transform .3s ease}
+.th-card:hover{box-shadow:0 1px 2px rgba(0,0,0,.03), var(--lift-shadow-hi);transform:translateY(-2px)}
+.th-card figure{position:relative;margin:0;min-height:290px;border-radius:9px 0 0 9px;overflow:hidden;background:#2b2a26}
+/* the picture fades into the card on the side the words are, as in the reference: over its
+   last fifth or so, on an ease in and out, so it melts away rather than stops */
+.th-card figure::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to right, transparent 78%, color-mix(in srgb, var(--surface) 6%, transparent) 82.4%, color-mix(in srgb, var(--surface) 25%, transparent) 86.8%, color-mix(in srgb, var(--surface) 55%, transparent) 91.2%, color-mix(in srgb, var(--surface) 84%, transparent) 95.6%, var(--surface))}
+.th-card figure img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.th-card:hover figure img{transform:scale(1.025)}
+.th-body{display:flex;flex-direction:column;padding:22px 26px 18px 30px}
+.th-tag{align-self:flex-start;padding:4px 9px;border-radius:999px;background:var(--pill);font-size:10.5px;font-weight:600;line-height:1.2;color:var(--strong)}
+.th-card h2{margin:16px 0 0;font-weight:700;font-size:30px;line-height:1.08;letter-spacing:-.025em;color:var(--ink);text-wrap:balance}
+.th-card h2 a{color:inherit;text-decoration:none}
+.th-card h2 a::after{content:"";position:absolute;inset:0;z-index:1}
+.th-card p{margin:12px 0 0;max-width:340px;font-size:13.5px;line-height:1.45;color:var(--body)}
+.th-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:28px}
+.th-meta{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+.th-meta i{width:5px;height:5px;border-radius:50%;background:var(--ink)}
+.th-meta b{font-weight:600;color:var(--strong)}
+.th-on{position:relative;z-index:2;display:flex;gap:5px}
+/* the next one, not written yet: the same card, a dark grey where the picture goes, its words
+   blurred out under a "Coming soon" tag where the other has "Essay" */
+.th-soon{box-shadow:0 1px 2px rgba(0,0,0,.03);pointer-events:none}
+.th-soon figure{background:var(--surface)}
+/* soft grey shapes, blurred right out, where the picture will be */
+.th-soon figure::before{content:"";position:absolute;inset:-30px;filter:blur(22px);
+  background:radial-gradient(42% 55% at 38% 46%, color-mix(in srgb, var(--ink) 48%, var(--paper)), transparent 70%),
+    radial-gradient(38% 45% at 64% 62%, color-mix(in srgb, var(--ink) 32%, var(--paper)), transparent 72%),
+    color-mix(in srgb, var(--ink) 16%, var(--paper))}
+.th-soon .th-blur{display:flex;flex-direction:column;filter:blur(5px);opacity:.55;user-select:none}
+.th-soon .th-blur b{display:block;margin-top:16px;font-size:30px;line-height:1.08;letter-spacing:-.025em;color:var(--ink)}
+.th-soon .th-blur span{display:block;margin-top:12px;max-width:340px;font-size:13.5px;line-height:1.45;color:var(--body)}
+
+/* ---- the essay ---- */
+.ar{--fs:17.5px;width:640px;max-width:calc(100% - 48px);margin:0 auto;padding:150px 0 0}
+.ar-crumb{margin:0 0 22px;font-size:11px;color:var(--muted)}
+.ar-crumb a{color:var(--muted);text-decoration:none}
+.ar-crumb a:hover{color:var(--ink)}
+.ar-crumb span{margin:0 6px}
+.ar h1{margin:0;font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:56px;line-height:.98;
+  letter-spacing:-.005em;color:var(--ink);text-wrap:balance}
+.ar-dek{margin:16px 0 0;font-size:19px;line-height:1.4;color:var(--body);text-wrap:pretty}
+/* the title block ends on the rule, which the crow lands on */
+.ar-top{position:relative;padding-bottom:28px}
+.ar-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)}
+.ar-head{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.ar-by{margin:0;font-size:12px;line-height:1.5;color:var(--muted)}
+.ar-by b{font-weight:600;color:var(--strong)}
+.ar-by span{margin:0 6px}
+.ar-on{display:flex;align-items:center;gap:6px}
+.ar-on small{margin:0 4px 0 10px;font-size:11px;color:var(--muted)}
+
+/* the cover sits in the text's column, edge to edge with it */
+.ar-cover{margin:38px 0 0;border-radius:6px;overflow:hidden;background:#2b2a26}
+.ar-cover img{display:block;width:100%;height:auto;aspect-ratio:2000/961}
+
+.ar-text{margin-top:44px;font-size:var(--fs);line-height:1.62;color:var(--strong);
+  text-wrap:pretty;hyphens:manual;transition:font-size .25s ease}
+.ar-text p{margin:0 0 1.05em}
+.ar-text a{color:inherit;text-decoration:underline;text-decoration-color:var(--hairline);
+  text-decoration-thickness:1px;text-underline-offset:3px;transition:text-decoration-color .2s}
+.ar-text a:hover{text-decoration-color:var(--ink)}
+.ar-text em.px{font-style:italic;font-weight:700;color:#FF5600}
+/* the line the essay turns on, set apart */
+.ar-text .pull{margin:1.6em 0;padding:0 0 0 22px;border-left:1.5px solid var(--ink);
+  font-family:"Libre Caslon Condensed",Georgia,serif;font-weight:500;font-size:1.55em;line-height:1.18;color:var(--ink)}
+.ar-text h2{margin:2.6em 0 1em;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.ar-refs p{margin:0 0 .8em;padding-left:1.4em;text-indent:-1.4em;font-size:12.5px;line-height:1.5;color:var(--body);
+  overflow-wrap:anywhere}
+
+/* the end: where else it lives, and back to the list */
+.ar-end{margin-top:44px;padding:22px 24px;border-radius:6px;background:var(--surface);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ar-end p{margin:0;font-size:13px;line-height:1.4;color:var(--body)}
+.ar-end p b{display:block;font-weight:600;color:var(--ink)}
+.ar-back{display:inline-block;margin-top:26px;font-size:12px;color:var(--muted);text-decoration:none}
+.ar-back:hover{color:var(--ink)}
+
+/* the reading bar (after the read-mode bar in Jules's reference): time left, and the text size.
+   Dark pills floating at the bottom, in after the header, out at the end. */
+.rbar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:30;display:flex;gap:6px;
+  transform:translate(-50%, 24px);opacity:0;pointer-events:none;transition:opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1)}
+.rbar.on{opacity:1;transform:translate(-50%, 0);pointer-events:auto}
+.rbar > *{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border:0;border-radius:999px;
+  background:var(--ink);color:var(--paper);font:inherit;font-size:12.5px;font-weight:600;white-space:nowrap;
+  box-shadow:0 8px 26px rgba(0,0,0,.18)}
+.rbar .clock{width:14px;height:14px;flex:none}
+.rbar button{cursor:pointer;width:38px;padding:0;justify-content:center;font-family:"Libre Caslon Condensed",Georgia,serif;font-size:16px;font-weight:500}
+.rbar button span{font-size:.72em}
+.rbar .bar{position:relative;width:46px;height:2px;border-radius:2px;background:color-mix(in srgb, var(--paper) 25%, transparent);overflow:hidden}
+.rbar .bar i{position:absolute;inset:0;background:var(--paper);transform-origin:0 50%;transform:scaleX(var(--p, 0))}
+
+@media (max-width:980px){
+  .th-card{grid-template-columns:1fr}
+  .th-card figure{min-height:0;aspect-ratio:2000/961;border-radius:9px 9px 0 0}
+  /* stacked, it fades downward into the words */
+  .th-card figure::after{background:linear-gradient(to bottom, transparent 78%, color-mix(in srgb, var(--surface) 6%, transparent) 82.4%, color-mix(in srgb, var(--surface) 25%, transparent) 86.8%, color-mix(in srgb, var(--surface) 55%, transparent) 91.2%, color-mix(in srgb, var(--surface) 84%, transparent) 95.6%, var(--surface))}
+}
+@media (max-width:820px){
+  .th{padding-top:110px}
+  .th-head h1{font-size:30px}
+  .th-head{flex-wrap:wrap;row-gap:10px}
+  .th-intro{font-size:12px}
+  .th-list{margin-top:36px}
+  .th-list{padding-bottom:72px}
+  .th-body{padding:18px 14px 12px}
+  .th-card h2{font-size:24px;margin-top:12px}
+  .th-soon .th-blur b{font-size:24px;margin-top:12px}
+  .th-card p{font-size:13px}
+  .th-foot{padding-top:20px}
+
+  .ar{--fs:17px;padding-top:104px}
+  .ar h1{font-size:38px;line-height:1}
+  .ar-dek{font-size:16.5px;margin-top:12px}
+  .ar-top{padding-bottom:22px}
+  .ar-head{margin-top:14px;flex-direction:column;align-items:flex-start;gap:12px}
+  .ar-cover{margin-top:26px;border-radius:5px}
+  .ar-text{margin-top:30px;line-height:1.6}
+  .ar-text .pull{padding-left:16px;font-size:1.4em}
+  .ar-end{padding:18px}
+}
+/* the footer at the foot of the window however short the page (both pages put the class on body) */
+body.foot-down{display:flex;flex-direction:column;min-height:100vh;min-height:100svh}
+body.foot-down > main{flex:1 0 auto}
+body.foot-down > .pj-foot{flex:none}
+
+@media (max-width:519px){
+  .th-note{width:100%;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){
+  .th-card, .th-card figure img, .rbar, .ar-text{transition:none}
+}

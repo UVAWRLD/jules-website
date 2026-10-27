@@ -10,6 +10,7 @@ Jules has seen good ideas get lost in the handover more often than anywhere else
 - [Timeline](https://www.julesbockelee.com/timeline): experience, education, certificates, skills, languages, volunteering
 - [Projects](https://www.julesbockelee.com/projects): 34 selected projects in strategy, UX/UI, product and graphic design
 - [Bookshelf](https://www.julesbockelee.com/bookshelf): the books Jules has read and is reading
+- [Thoughts](https://www.julesbockelee.com/thoughts): essays by Jules, also on X and Substack
 - [Everything in full](https://www.julesbockelee.com/llms-full.txt): every project, Timeline entry and book as plain text
 
 ## Timeline
@@ -24,6 +25,10 @@ Jules has seen good ideas get lost in the handover more often than anywhere else
 - INTERNATIONAL SCHOOL OF PARIS, PARIS: Bilingual International Baccalaureate (IB) · 2016-2020 · Paris
 - CERTIFICATES: Data and entrepreneurship · 2020-2026
 - VOLUNTEERING: UNICEF and the International School of Paris · 2016-2020
+
+## Essays
+
+- [Salt Water for a Thirsty Man](https://www.julesbockelee.com/thoughts/salt-water-for-a-thirsty-man) (2026-10-25): What we lost when our contacts became an audience, and why I am building Pollex.
 
 ## Selected projects
 
@@ -67,3 +72,4 @@ Jules has seen good ideas get lost in the handover more often than anywhere else
 - Email: hello@julesbockelee.com
 - LinkedIn: https://www.linkedin.com/in/julesbockelee/
 - X: https://x.com/julesbockelee
+- Substack: https://julesbockelee.substack.com

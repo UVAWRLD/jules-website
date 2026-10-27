@@ -64,6 +64,9 @@ src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
 src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
+thoughts.html         the Thoughts page (in Other… on the home page): the essays as cards
+thoughts/<slug>.html  each essay, its full text in the HTML (src/thoughts.css for both, src/reader.js
+                      the reading bar, src/share.js the Share buttons); public/img/thoughts/ covers
 public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
 public/models/        crow-cloud.bin, crow-anim.bin, crow.json, hourglass.bin, hourglass.json
                       (baked; see tools/MODELS.md). The source models are not committed.
@@ -448,8 +451,8 @@ into the crow's buffer and screened on the crow's lattice.
 The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, **Projects** and
 **Other…**. Other… is a button that drops a small menu under itself, styled as the crow's card
 (paper, hairline, soft shadow): a click or tap opens and closes it, and a click elsewhere or
-Escape closes it. It holds what is not built yet: **Thoughts**, which was a dead link in the nav,
-is there as "soon". On a screen under 520px the four do not fit one line (the name alone is
+Escape closes it. It holds **Bookshelf** and **Thoughts** (Thoughts was a dead link in the nav,
+then "soon" here, until the first essay, 2026-10-27). On a screen under 520px the four do not fit one line (the name alone is
 143px), so the links go under the name, spaced by baseline so that name to links and links to
 the first line of the copy are about the same (35px and 33px on a 375px phone). The
 break is an empty element (`.nav-br`) taking a line of its own: the first version stretched the
@@ -538,15 +541,19 @@ bar has Projects first, but the site keeps Timeline first, as Jules asked).
   newest first and oldest first (undated last); **+ Add Filter** drops a menu of the cards' tags,
   each chosen tag becomes a chip (× to remove), and a card shows only with every chosen tag. The
   count follows. "Nothing matches" when nothing does. Escape closes the menu and clears the search.
-- **Footer** (the same on the Timeline, Projects and Bookshelf; its CSS is `.pj-foot` in
-  `src/site.css`, the markup is written into each page): a faint rule, the mark, "Have a complicated
-  thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the paper plane first),
-  LinkedIn, X (x.com/julesbockelee; it replaced Instagram, 2026-10-05) and © 2026.
-  Under 820px the links sit at the right on the address's line (Jules's mark), 14px apart, from
-  360px, which is every current phone (at 375 the address ends at 201 and the links start at 225;
-  460 was tried first and left a 430px iPhone with the links on a line of their own); below 360
-  they take their own line, on the right. The footer sits closer to the page there (48px above,
-  36 inside).
+- **Footer** (the same on the Timeline, Projects, Bookshelf and Thoughts pages; its CSS is
+  `.pj-foot` in `src/site.css`, the markup is written into each page): a faint rule, the mark,
+  "Have a complicated thing to make clear?", hello@julesbockelee.com (a `mailto:` that sends the
+  paper plane first), the LinkedIn, X and Substack pills (`.soc`, below) and © 2026. X replaced
+  Instagram 2026-10-05; Substack was added 2026-10-27, when the plain text links became pills.
+  Under 820px the pills take a line of their own under the address, lined up with its text (37px
+  in), the year at the right; three pills did not fit beside the address the way two text links
+  had. The footer sits closer to the page there (48px above, 36 inside).
+- **The social pills** (`.soc` in `src/site.css`; Jules's reference: soft tinted labels with an
+  icon): small (22px tall), light grey, the service's mark and name in the body grey, on a very
+  soft, diffused shadow, darkening on hover. A first version tinted each in its brand colour
+  (LinkedIn blue, Substack orange); Jules wanted them without colour. The marks are masks in
+  `public/img/social/` (linkedin, x, substack, share), so they take the text colour.
 - **Colours are tokens** in `src/site.css` (`--surface`, `--pill`, `--hairline`, `--lift-shadow`,
   `--layer-shadow`, in both themes; the frame's #11110F, #50504C, #85847E are the ink, body and
   muted), so the page takes the dark theme.
@@ -1015,3 +1022,46 @@ books.
   5, 4 on a computer, never 6, 6, 6, 1), so no book stands alone on a shelf.
 - Encore un moment… is read (4); Ideas and Opinions (Einstein, Modern Library 1994, Jules's cover
   image) added to the reading.
+
+
+## Thoughts (thoughts.html, thoughts/<slug>.html)
+
+Jules's essays, each published here in full and also on X and Substack (2026-10-27: the first,
+"Salt Water for a Thirsty Man", on Pollex; its text and cover taken from the Substack post).
+Built from Jules's references: a reader app's floating read-mode bar, an article page with a
+label, big title, hairline and byline, a blog index of framed cards, and soft labelled pills.
+Header, page bar, crow and footer as on the other pages; both pages' CSS is `src/thoughts.css`.
+
+- **The list** (`/thoughts`): the Projects header ("Thoughts", the note, the rule the crow lands
+  on, the intro), then one card an essay. A card is light (`--surface`) with a fine edge and a
+  6px frame: the picture inset on the left with rounded outer corners, **fading into the card**
+  over its last fifth on an eased curve (`figure::after`; about 100px on a computer). 58% faded
+  too much of the photo and 11% read as a hard stop; Jules wanted it in between and natural.
+  The words on the right: an "Essay" tag, the title in Satoshi Bold 30px (not the Caslon of the
+  page title, Jules's choice), the description, "10 min read · date", and Share / X / Substack.
+  The whole card is the link (the title's `::after`); the pills sit above it. Under 980px the
+  picture goes on top and fades downward. After the essays, a **"Coming soon" card**: the same
+  card, a blur of greys for the picture, the tag in the "Essay" spot and a blurred stand-in title
+  below it, not clickable.
+- **The footer stays at the foot of the window** on both pages, however short the list
+  (`body.foot-down`: a flex column at least the window tall, `main` taking the rest).
+- **An essay** (`/thoughts/<slug>`, a file in `thoughts/` with `<base href="/">`, so its links are
+  the same as the other pages'): "Thoughts / Essay", the title in Caslon Medium (56px, 38 on a
+  phone), the subtitle, the rule (the crow lands on it), the byline with Share and "Read it on"
+  X / Substack, the cover at the text's width (it first ran 90px wider each side, and full bleed
+  on a phone; Jules wanted it within the text's edges), then the text: 640px wide, Satoshi 17.5px
+  on 1.62 (17 on a phone). Citations stay links, faintly underlined; one line is set apart as a
+  pull quote (`.pull`); "Pollex" keeps its orange from the Substack post. References small, with
+  a hanging indent. At the end, a box with Share / X / Substack and "← All thoughts".
+- **The reading bar** (`src/reader.js`): dark pills floating at the bottom (above the iPhone home
+  bar, `viewport-fit=cover` and the safe area): minutes left with a thin progress line, and "Aa",
+  which steps the text through 16, 17.5 and 19.5px and remembers it (`localStorage` "readSize").
+  It comes in once the byline has scrolled away and goes when the end box is in view.
+- **Share** (`src/share.js`, `[data-share]`, optional `data-url` and `data-title`): the system
+  share sheet where there is one (iPhone, Android, Safari), else it copies the link and says
+  "Link copied" for a moment. The link is the page's canonical address, so it is always www.
+- **A new essay**: copy the essay's file in `thoughts/`, put its cover (2000px JPEG) in
+  `public/img/thoughts/`, add a card to `thoughts.html` (newest first) and an entry to `ESSAYS`
+  in `tools/build_seo.py`, then run it: the essay's head (BlogPosting, article tags, its cover as
+  the share image), the list's ItemList, the sitemap and both llms files (the full text goes in
+  llms-full.txt).
