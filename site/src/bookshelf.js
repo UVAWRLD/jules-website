@@ -56,8 +56,12 @@ export async function createBookshelf() {
   function layout() {
     const phone = innerWidth <= 520, mid = innerWidth <= 820;
     const per = phone ? 3 : mid ? 4 : 6, H0 = phone ? 14.2 : mid ? 18 : 22.4;
-    const rows = [];
-    for (let i = 0; i < order.length; i += per) rows.push(order.slice(i, i + per));
+    // as few shelves as hold them all, the books shared out evenly, so no book is left on its own
+    const n = Math.ceil(order.length / per), rows = [];
+    for (let i = 0, k = 0; k < n; k++) {
+      const m = Math.floor(order.length / n) + (k < order.length % n ? 1 : 0);
+      rows.push(order.slice(i, i += m));
+    }
     shelf.innerHTML = rows.map((r, n) => `<div class="bk-row" data-row="${n}">
         <div class="bk-books">${r.map(b => book(b, H0)).join("")}</div>
         <div class="bk-plank"><span class="top"></span><span class="front"></span></div>
@@ -81,9 +85,9 @@ export async function createBookshelf() {
   const stars = n => `<span class="bk-stars" aria-label="${n} out of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span>`;
   function detail(b) {
     const status = b.status === "reading" ? "Reading now" : b.read ? `Read ${esc(b.read)}` : "Read";
-    return `<h2>${esc(b.title)}</h2>${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ""}<p>${esc(b.author)}</p>
-      ${b.blurb ? `<p class="blurb">${esc(b.blurb)}</p>` : ""}
-      <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span>${b.pages ? `<span>${b.pages} pages</span>` : ""}</span>`;
+    return `<div class="hd"><h2>${esc(b.title)}</h2>${b.subtitle ? `<span>${esc(b.subtitle)}</span>` : ""}<span class="by">${esc(b.author)}</span>
+      <span class="meta">${b.status === "reading" ? "" : stars(b.rating || 0)}<span>${status}</span>${b.pages ? `<span>${b.pages} pages</span>` : ""}</span></div>
+      ${b.blurb ? `<p>${esc(b.blurb)}</p>` : ""}`;
   }
 
   // Every book's caption is already under its shelf, stacked in one place and hidden, so the space
@@ -101,10 +105,13 @@ export async function createBookshelf() {
   function take(el) {
     shelf.querySelectorAll(".book.out").forEach(x => x !== el && x.classList.remove("out"));
     el.classList.add("out"); shelf.classList.add("has-out"); open = el.dataset.slug;
+    const r = el.closest(".bk-row").dataset.row;
+    shelf.querySelectorAll(".bk-detail").forEach(d => d.classList.toggle("on", d.dataset.row === r));
     captions();
   }
   function putBack() {
     shelf.querySelectorAll(".book.out").forEach(x => x.classList.remove("out"));
+    shelf.querySelectorAll(".bk-detail.on").forEach(d => d.classList.remove("on"));
     shelf.classList.remove("has-out"); open = null;
     captions();
   }

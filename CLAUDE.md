@@ -990,9 +990,15 @@ books.
   takes it down: forward, cover to you, the others fade to 45%, and its title, subtitle, author,
   rating (five dots), read date and pages open under its shelf. A click elsewhere or Escape puts
   it back. The crow lands on the rule under the title.
-- **Captions** (2026-10-27): each book has a one line `blurb` in `books.json`, shown under its
-  title. A row's captions are all in the page, stacked in one grid cell under the shelf, so the
-  room for the longest is always kept and nothing moves; hovering (or focusing) a book shows its
-  caption at 38%, taking it down at full strength (Jules: the jump from nothing to the full
-  detail was too stark). Encore un moment… is read (4); Ideas and Opinions (Einstein, Modern
-  Library 1994, Jules's cover image) added to the reading.
+- **Captions** (2026-10-27): each book has a one line `blurb` in `books.json`. A caption is two
+  lines: title, subtitle, author and rating, then the blurb. On a computer a row's captions are
+  stacked in one grid cell, absolutely placed in the 92px gap under the shelf (the 3D books leave
+  about 80px clear), so the shelves keep their spacing and nothing moves: hovering (or focusing)
+  a book shows its caption at 38%, taking it down at full strength (Jules: the jump from nothing
+  to the full detail was too stark). A first version kept a caption's room open under every
+  shelf, which spread the shelves too far apart for Jules. On a phone (820 and under, no hover)
+  the caption opens under its shelf on a tap and pushes the rest down, as before.
+- **Rows are balanced**: as few shelves as hold the books, shared out evenly (19 books are 5, 5,
+  5, 4 on a computer, never 6, 6, 6, 1), so no book stands alone on a shelf.
+- Encore un moment… is read (4); Ideas and Opinions (Einstein, Modern Library 1994, Jules's cover
+  image) added to the reading.

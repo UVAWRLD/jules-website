@@ -123,19 +123,22 @@
   .book.out .b3,.book.out:hover .b3{transform:translateY(-10px) translateZ(110px) rotateY(-10deg) scale(1.06)}
   .bk-shelf.has-out .book:not(.out){opacity:.45}
 
-  /* ---- the captions under each shelf: all of a row's stacked in one cell, so the row keeps the
-     room for its longest and nothing moves; faint for the book under the cursor, full for the one
-     taken down ---- */
-  .bk-detail{margin:-56px 0 70px}
-  .bk-detail .in{display:grid;padding:0 3%}
-  .bk-detail .cap{grid-area:1/1;display:flex;flex-direction:column;gap:4px;opacity:0;visibility:hidden;transform:translateY(5px);
+  /* ---- the captions under each shelf, faint for the book under the cursor, full for the one
+     taken down. On a computer they sit in the gap between the shelves, over nothing, so the
+     spacing never changes and nothing moves; on a phone (no hover) the one taken down opens under
+     its shelf and pushes the rest down. A row's captions are stacked in one grid cell. ---- */
+  .bk-detail{position:relative;z-index:2;height:0}
+  .bk-detail .in{position:absolute;left:0;right:0;top:-70px;display:grid;padding:0 3%}
+  .bk-detail .cap{grid-area:1/1;display:flex;flex-direction:column;gap:3px;opacity:0;visibility:hidden;transform:translateY(4px);
     transition:opacity .45s ease, transform .55s cubic-bezier(.2,.75,.2,1), visibility 0s .55s}
   .bk-detail .cap.peek{opacity:.38;visibility:visible;transform:none;transition-delay:0s}
   .bk-detail .cap.on{opacity:1;visibility:visible;transform:none;transition-delay:0s}
-  .bk-detail h2{margin:0;font-weight:500;font-size:23px;line-height:1.1;color:var(--ink)}
-  .bk-detail p{margin:0;font-size:12.5px;color:var(--body)}
-  .bk-detail p.blurb{margin-top:4px;max-width:560px;color:var(--ink)}
-  .bk-detail .meta{display:flex;align-items:center;gap:12px;margin-top:6px;font-family:"Inconsolata",ui-monospace,monospace;
+  .bk-detail .hd{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px}
+  .bk-detail h2{margin:0;font-weight:500;font-size:18px;line-height:1.2;color:var(--ink)}
+  .bk-detail .hd span{font-size:12px;color:var(--muted)}
+  .bk-detail .hd .by{color:var(--body)}
+  .bk-detail p{margin:0;font-size:12.5px;line-height:1.35;color:var(--ink)}
+  .bk-detail .meta{display:flex;align-items:center;gap:12px;margin-left:6px;font-family:"Inconsolata",ui-monospace,monospace;
     font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .bk-stars{display:inline-flex;gap:3px}
   .bk-stars i{width:7px;height:7px;border-radius:50%;border:1px solid var(--ink)}
@@ -150,6 +153,11 @@
     .bk-shelf{margin-top:60px}
     .bk-row{margin-bottom:58px}
     .bk-books{padding:0 2%}
+    .bk-detail{height:auto;margin:0;overflow:hidden;max-height:0;transition:max-height .55s cubic-bezier(.2,.75,.2,1), margin .55s}
+    .bk-detail.on{max-height:240px;margin:-40px 0 58px}
+    .bk-detail .in{position:static}
+    .bk-detail .cap{gap:4px}
+    .bk-detail .meta{flex-basis:100%;margin:2px 0 0}
   }
   @media (max-width:520px){ .bk-head{flex-direction:column;align-items:flex-start;gap:10px} .bk-note{align-items:flex-start} }
 </style>
