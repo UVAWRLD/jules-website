@@ -117,6 +117,9 @@
   .more-item em{font-style:normal;font-family:"Inconsolata",ui-monospace,monospace;font-size:10px;color:var(--muted)}
   .copy p{margin:21px 0 0}
   .copy nav+p{margin-top:17px}
+  /* colours set here, not inherited: during the theme's cross-fade an inherited colour fades
+     again at every level it passes through, so the name and this line lagged behind the rest */
+  .copy nav h1, .copy .lede{color:var(--ink)}
   .copy .lede{font-weight:500}
   .copy .dim{color:color-mix(in srgb, var(--muted) 85%, var(--ink))}   /* a shade darker than --muted, easier to read */
   .copy .gap{margin-top:25px}
