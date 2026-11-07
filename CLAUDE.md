@@ -44,7 +44,7 @@ index.html            the home page: markup and its CSS, plus the tuning panel
 robots.txt, sitemap.xml, llms.txt, llms-full.txt   for crawlers (tools/build_seo.py)
 timeline.html         the Timeline page: static, plus the live crow (src/crowstage.js)
 projects.html         the Projects page (Figma: Projects portfolio, node 2315:386)
-bookshelf.html        the Bookshelf page (in Other… on the home page): my books as 3D books on a
+bookshelf.html        the Bookshelf page ("Library" in the navs): my books as 3D books on a
                       shelf (src/bookshelf.js, public/books/books.json, public/img/books/)
 src/projects.js       the Projects page: builds the cards from public/projects, and its controls
 src/pjdither.js       the Projects prints' halftone reveal
@@ -64,7 +64,7 @@ src/chain.js          the pull chain that switches light and dark
 src/tlcards.js        the Timeline's detail cards: their text, the pop-up, Previous / Next
 src/tldots.js         the dot screen behind a detail card, built in at random
 src/pinup.js          the photo clipped beside the Timeline title: the clip, the swing, the fall
-thoughts.html         the Thoughts page (in Other… on the home page): the essays as cards
+thoughts.html         the Thoughts page: the essays as cards
 thoughts/<slug>.html  each essay, its full text in the HTML (src/thoughts.css for both, src/reader.js
                       the reading bar, src/share.js the Share buttons); public/img/thoughts/ covers
 public/img/projects/  the Projects page's icons, from Figma (search, sliders-horizontal)
@@ -416,10 +416,13 @@ lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their
 ## The page bar, on every page but the home page
 
 Opposite the logo, on its line and at its inset (4.86% on a computer, 24px on a phone): the
-site's pages, **Timeline** then **Projects**, then **← Back ⌂** home (Figma: the page header).
-The page you are on is ink, bold, and underlined with a 1.5px rule (`aria-current="page"`); the
-others are muted with a small ↗ and darken on hover. The order is fixed, so nothing moves between
-pages. It is absolute at the top like the logo and scrolls away with it. The CSS (`.pagenav`) is
+site's pages, **Timeline**, **Projects**, **Thoughts**, **Library** (the Bookshelf page, still at
+`/bookshelf`), then **← Back ⌂** home (Figma: the page header). The page you are on is ink, bold,
+and underlined with a 1.5px rule (`aria-current="page"`; an essay marks Thoughts the same way with
+`aria-current="true"`, and it stays a link); the others are muted with a small ↗ and darken on
+hover. The order is fixed, so nothing moves between pages. Under 520px the five do not fit beside
+the logo: the ↗ go and Back is the house alone (its label stays "Back home"), 14px apart; at 360
+and under 9px apart in 12px type, which leaves 19px clear of the logo at 320. It is absolute at the top like the logo and scrolls away with it. The CSS (`.pagenav`) is
 in `src/site.css`; the markup is written into each page. **Every new page other than the home
 page gets it**, with its own entry added to every page's bar. It replaced the "← Back ⌂" that
 sat on the title row of the Timeline and Projects pages.
@@ -464,12 +467,13 @@ into the crow's buffer and screened on the crow's lattice.
 
 ## The home page nav, and the Projects page
 
-The nav (Figma: Projects portfolio, the header) is the name, then **Timeline**, **Projects** and
-**Other…**. Other… is a button that drops a small menu under itself, styled as the crow's card
-(paper, hairline, soft shadow): a click or tap opens and closes it, and a click elsewhere or
-Escape closes it. It holds **Bookshelf** and **Thoughts** (Thoughts was a dead link in the nav,
-then "soon" here, until the first essay, 2026-10-27). On a screen under 520px the four do not fit one line (the name alone is
-143px), so the links go under the name, spaced by baseline so that name to links and links to
+The nav is the name, then **Timeline**, **Projects**, **Thoughts** and **Library** (2026-11-06,
+from Jules's mark-up; the last two sat in an "Other…" drop-down menu until then). The links
+are 12px apart (the name stays 19px from them; `a+a` pulled in 7px, above 520px), so Library ends
+2px inside the longest line of text below, about 397px into the 420px column. A longer label
+would break that. The name's box did not change, so
+the crow lands where he did. On a screen under 520px the five do not fit one line (the name alone
+is 143px), so the links go under the name, spaced by baseline so that name to links and links to
 the first line of the copy are about the same (35px and 33px on a 375px phone). The
 break is an empty element (`.nav-br`) taking a line of its own: the first version stretched the
 name to the full width instead, and since the crow stands 62% of the way along the name's box,
@@ -977,8 +981,8 @@ step. Do not reach for three.js: it is 150KB to draw one triangle.
 
 Jules's Goodreads books (2026-10-01: the Read shelf, 18 books, from a screenshot; his rating is
 the stars he gave), as solid CSS 3D books standing covers-out on white floating shelves (after
-his references: a "My bookshelf" grid of white shelves, Stripe Press's spines), linked from Other…
-on the home page. The first version, spines out on one thin plank with Open Library covers, read
+his references: a "My bookshelf" grid of white shelves, Stripe Press's spines), linked as Library
+in the navs. The first version, spines out on one thin plank with Open Library covers, read
 as coloured blocks and the covers were poor; he asked for better covers and books that look like
 books.
 
