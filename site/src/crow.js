@@ -77,7 +77,7 @@ export function createCrow(base = BASE, opts = {}) {
   let M = null, out = new Float32Array(0), skinned = null, skinnedN = null;
   let frameMats = null, blendFrom = null, blendT = 0;
   let foot = 0;                        // model y of the feet, so it stands on the perch
-  let perch = [0, 0], path = null;
+  let perch = [0, 0], path = null, from = [0, 0];   // from: where the perch was when the path was laid
 
   load(base).then(m => {
     M = m;
@@ -151,12 +151,14 @@ export function createCrow(base = BASE, opts = {}) {
   function flyIn(w, h) {
     const px = DIR > 0 ? perch[0] : w - perch[0], py = perch[1];
     path = mirror([[-0.15 * w, py - 0.3 * h], [0.16 * w, py - 0.36 * h], [px - 0.4 * w, py - 0.12 * h], [px, py]], w);
+    from = perch.slice();
     startPhase("flyIn");
   }
   function takeoff(w) {
     const px = DIR > 0 ? perch[0] : w - perch[0], py = perch[1];
     const rise = Math.min(0.13 * w, 130);   // the model leaps on its own, so ours is gentle
     path = mirror([[px, py], [px + 0.08 * w, py - rise], [px + 0.45 * w, py - rise * 1.2], [w * 1.2, py - rise * 1.05]], w);
+    from = perch.slice();
     startPhase("takeoff");
   }
 
@@ -216,7 +218,9 @@ export function createCrow(base = BASE, opts = {}) {
     if (st.phase === "flyIn") {
       const T = 2.1, t = clamp(st.t / T, 0, 1), e = easeOut(t);
       const [x, y] = bez(path, e), [x2, y2] = bez(path, Math.min(e + 0.02, 1));
-      pose.x = x; pose.y = y;
+      // if the page scrolls (or reflows) in flight, the perch moves: the path's end goes with
+      // it, so he still lands on the line, while its start stays where he came from
+      pose.x = x + (perchX - from[0]) * e; pose.y = y + (perchY - from[1]) * e;
       pose.yaw = swayYaw + lerp(-0.85, PERCH_YAW, ease(clamp((t - 0.5) / 0.5, 0, 1)));
       pose.pitch = clamp(-(y2 - y) * 0.02, -0.5, 0.6) + swayPitch;
       pose.roll = clamp((y2 - y) * 0.004, -0.35, 0.35);
@@ -237,8 +241,10 @@ export function createCrow(base = BASE, opts = {}) {
         pose.pitch = swayPitch; pose.yaw = swayYaw + PERCH_YAW;
       } else {
         const f = clamp((st.t - lead) / (T - lead), 0, 1);
-        const [x, y] = bez(path, easeIn(f) * 0.35 + easeOut(f) * 0.65);
-        pose.x = x; pose.y = y;
+        const g = easeIn(f) * 0.35 + easeOut(f) * 0.65;
+        const [x, y] = bez(path, g);
+        // leaving, it is the other way round: the start goes with the perch, the end does not
+        pose.x = x + (perchX - from[0]) * (1 - g); pose.y = y + (perchY - from[1]) * (1 - g);
         pose.pitch = lerp(0.3, -0.05, ease(f)) + swayPitch;
         pose.roll = lerp(0, -0.2, ease(f));
         pose.yaw = swayYaw + lerp(-0.5, -1.05, ease(f));

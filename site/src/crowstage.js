@@ -135,6 +135,7 @@ export function createCrowStage({ perchOn, perchAt = 0.5, dir = -1, base = "" })
   img.src = base + "public/img/dot-lut.png";
 
   const crow = createCrow(base + "public/models/", { dir });
+  if (new URLSearchParams(location.search).has("grab")) window.__crow = crow;   // for testing, as on the home page
   const ui = createCrowUI({ crow, fine, canvasWidth: () => W });
   // the paper plane the email links send off (src/mailplane.js), in the bird's dots on his stage
   const plane = createPlane({ reduce });

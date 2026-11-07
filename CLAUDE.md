@@ -403,6 +403,11 @@ size and pitch from the same band, so it is the same bird. `createCrowStage({per
 dir})` perches him on the bottom edge of any element. `src/crow.js` takes `{dir}`: -1 mirrors
 the flight paths across the window and the model in screen space after the pose, with the
 light kept at the upper left, so he is lit the same way facing either way.
+**Scrolling in flight.** The flight paths are laid out in window coordinates when he sets off, so
+each frame they are shifted by how far the perch has moved since (`from` in `src/crow.js`): the
+end of the arrival goes with the perch, so he still lands on the line, and so does the start of
+the departure. `?grab` exposes him as `window.__crow` here too (`bbox`, `phase`); headless Chrome
+needs `--use-angle=swiftshader --enable-unsafe-swiftshader`, or there is no WebGL and no bird.
 `src/crowui.js` is the card, the leader, the hit area and the red dot pointer, moved out of
 `src/halftone.js` so every page with the bird shares them; it adds its own markup if a page
 lacks it, and the page's renderer calls `update(canvasRect)` once a frame. Their CSS is in
