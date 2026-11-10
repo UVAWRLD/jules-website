@@ -1071,7 +1071,7 @@ Header, page bar, crow and footer as on the other pages; both pages' CSS is `src
   The whole card is the link (the title's `::after`); the pills sit above it. Under 980px the
   picture goes on top and fades downward. After the essays, a **"Coming soon" card**: the same
   card, a blur of greys for the picture, the tag in the "Essay" spot and a blurred stand-in title
-  below it, not clickable.
+  below it, not clickable. The whole card thins away toward its foot (a mask on an eased curve, solid at the top, gone at the bottom), so it dissolves into the page; under 980px the fade starts lower, below the "Coming soon" tag.
 - **The footer stays at the foot of the window** on both pages, however short the list
   (`body.foot-down`: a flex column at least the window tall, `main` taking the rest).
 - **An essay** (`/thoughts/<slug>`, a file in `thoughts/` with `<base href="/">`, so its links are

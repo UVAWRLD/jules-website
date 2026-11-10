@@ -43,7 +43,10 @@
 .th-on{position:relative;z-index:2;display:flex;gap:5px}
 /* the next one, not written yet: the same card, a dark grey where the picture goes, its words
    blurred out under a "Coming soon" tag where the other has "Essay" */
-.th-soon{box-shadow:0 1px 2px rgba(0,0,0,.03);pointer-events:none}
+.th-soon{box-shadow:0 1px 2px rgba(0,0,0,.03);pointer-events:none;
+  /* the whole card thins away down its height, on an eased curve, into the page */
+  --fade:linear-gradient(to bottom,#000 12%,rgba(0,0,0,.84) 32%,rgba(0,0,0,.55) 54%,rgba(0,0,0,.26) 74%,rgba(0,0,0,.08) 90%,transparent);
+  -webkit-mask-image:var(--fade);mask-image:var(--fade)}
 .th-soon figure{background:var(--surface)}
 /* soft grey shapes, blurred right out, where the picture will be */
 .th-soon figure::before{content:"";position:absolute;inset:-30px;filter:blur(22px);
@@ -116,6 +119,8 @@
 
 @media (max-width:980px){
   .th-card{grid-template-columns:1fr}
+  /* stacked, the tag sits low on the card: the fade starts below it, or it would be lost */
+  .th-soon{--fade:linear-gradient(to bottom,#000 62%,rgba(0,0,0,.8) 72%,rgba(0,0,0,.5) 82%,rgba(0,0,0,.22) 90%,rgba(0,0,0,.06) 96%,transparent)}
   .th-card figure{min-height:0;aspect-ratio:2000/961;border-radius:9px 9px 0 0}
   /* stacked, it fades downward into the words */
   .th-card figure::after{background:linear-gradient(to bottom, transparent 78%, color-mix(in srgb, var(--surface) 6%, transparent) 82.4%, color-mix(in srgb, var(--surface) 25%, transparent) 86.8%, color-mix(in srgb, var(--surface) 55%, transparent) 91.2%, color-mix(in srgb, var(--surface) 84%, transparent) 95.6%, var(--surface))}
